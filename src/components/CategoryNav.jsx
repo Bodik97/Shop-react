@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 import bgImage from "../img/background-img.png";
 
 const categories = [
-  { id: "workwear", name: "Спецодяг", image: "/placeholder/workwear.jpg" },
-  { id: "boots", name: "Спецвзуття", image: "/placeholder/boots.jpg" },
-  { id: "tools", name: "Інструменти", image: "/placeholder/tools.jpg" },
+  { id: "workwear", name: "Пістолети ", image: "/placeholder/workwear.jpg" },
+  { id: "boots", name: "Пневматичні гвинтівки", image: "/placeholder/boots.jpg" },
+  { id: "tools", name: "Ножі", image: "/placeholder/tools.jpg" },
   { id: "accessories", name: "Аксесуари", image: "/placeholder/accessories.jpg" },
 ];
 
