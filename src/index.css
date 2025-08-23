@@ -1,4 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Stardos+Stencil:wght@700&display=swap');
 @import "tailwindcss";
+
+.font-stencil { font-family: 'Stardos Stencil', sans-serif; }
 
 /* приховати горизонтальний скролбар у слайдера */
 .no-scrollbar::-webkit-scrollbar { display: none; }

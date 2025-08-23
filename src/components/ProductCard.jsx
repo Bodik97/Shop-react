@@ -1,25 +1,68 @@
+// src/components/ProductCard.jsx
+import { Link, useNavigate } from "react-router-dom";
+
 export default function ProductCard({ product, onAddToCart, onBuy }) {
+  const navigate = useNavigate();
+  if (!product) return null;
+
+  const goToProduct = () => navigate(`/product/${product.id}`);
+
+  const stop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
   return (
-    <div className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition overflow-hidden h-full flex flex-col">
-      <div className="h-48 bg-gray-100 overflow-hidden">
-        <img src={product.image} alt={product.title}
-             className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
+    <div
+      role="button"
+      tabIndex={0}
+      onClick={goToProduct}
+      onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && goToProduct()}
+      className="group border rounded-xl overflow-hidden bg-white hover:shadow-lg transition cursor-pointer h-full flex flex-col"
+    >
+      {/* Клікабельне зображення */}
+      <div className="aspect-[4/3] bg-gray-100 overflow-hidden">
+        <img
+          src={product.image}
+          alt={product.title}
+          className="w-full h-full object-cover group-hover:scale-[1.03] transition"
+          onClick={(e) => {
+            e.stopPropagation();
+            navigate(`/product/${product.id}`);
+          }}
+        />
       </div>
 
-      <div className="p-4 flex flex-col gap-3 flex-1">
-        <h3 className="text-base font-semibold text-gray-900 line-clamp-2">{product.title}</h3>
-        <p className="text-xl font-bold text-blue-600">{new Intl.NumberFormat("uk-UA").format(product.price)} ₴</p>
+      {/* Контент картки (також клікабельний фон) */}
+      <div className="flex-1 p-3 flex flex-col">
+        <Link
+          to={`/product/${product.id}`}
+          className="font-semibold line-clamp-2 hover:underline"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {product.title}
+        </Link>
 
-        <div className="mt-auto flex gap-2">
+        <div className="mt-2 text-blue-600 font-bold">
+          {new Intl.NumberFormat("uk-UA", { maximumFractionDigits: 0 }).format(product.price)} ₴
+        </div>
+
+        <div className="mt-3 flex gap-2">
           <button
-            onClick={() => onAddToCart(product)}
-            className="flex-1 rounded-lg bg-blue-600 text-white py-2 text-sm font-medium hover:bg-blue-700 transition"
+            className="px-3 py-1 border rounded hover:bg-gray-50"
+            onClick={(e) => {
+              stop(e);
+              onAddToCart?.(product);
+            }}
           >
-            Додати в кошик
+            В кошик
           </button>
           <button
-            onClick={() => onBuy(product)}
-            className="flex-1 rounded-lg border border-blue-600 text-blue-600 py-2 text-sm font-medium hover:bg-blue-50 transition"
+            className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+            onClick={(e) => {
+              stop(e);
+              onBuy?.(product);
+            }}
           >
             Купити
           </button>

@@ -1,27 +1,18 @@
+// src/App.jsx
 import { useEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
+import { products } from "./data/products";
 
 import Header from "./components/Header";
 import CategoryNav from "./components/CategoryNav";
+import CategoryPage from "./components/CategoryPage";
+import BuyModal from "./components/FormsBuy";     // модалка покупки
+import Cart from "./components/ModalBuy";         // кошик
+import PopularSlider from "./components/PopularSlider";
 import ProductCard from "./components/ProductCard";
-import BuyModal from "./components/BuyModal";
-import Cart from "./components/Cart";
-
-import pistolImg from "./img/1.jpeg";
-import pistolImg2 from "./img/2.jpeg";
-import pistolImg3 from "./img/3.jpeg";
-import pistolImg4 from "./img/4.jpeg";
-
-// Приклад товарів
-const demoProducts = [
-  { id: 1, title: "Куртка робоча CXS NAOS", price: 3300, image: pistolImg },
-  { id: 2, title: "Кросівки робочі Record 246 S1", price: 1800, image: pistolImg2 },
-  { id: 3, title: "Набір викруток 6в1", price: 420, image: pistolImg3 },
-  { id: 4, title: "Окуляри захисні", price: 150, image: pistolImg4 },
-];
+import ProductPage from "./components/ProductPage";
 
 export default function App() {
-  // === Стейти ===
   const [cart, setCart] = useState(() => {
     const saved = localStorage.getItem("cart");
     return saved ? JSON.parse(saved) : [];
@@ -29,25 +20,20 @@ export default function App() {
   const [buyOpen, setBuyOpen] = useState(false);
   const [selected, setSelected] = useState(null);
 
-  // === LocalStorage ===
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
-  // === Синхронізація цін ===
   const refreshCartPrices = () => {
     setCart(prev =>
       prev.map(item => {
-        const prod = demoProducts.find(p => p.id === item.id);
+        const prod = products.find(p => p.id === item.id);
         return prod ? { ...item, price: prod.price } : item;
       })
     );
   };
-  useEffect(() => {
-    refreshCartPrices();
-  }, []);
+  useEffect(() => { refreshCartPrices(); }, []);
 
-  // === Логіка кошика ===
   const addToCart = (product) => {
     setCart(prev => {
       const i = prev.findIndex(p => p.id === product.id);
@@ -76,7 +62,6 @@ export default function App() {
     alert("Замовлення відправлено!");
   };
 
-  // === Модалка Buy ===
   const openBuy = (product) => {
     setSelected(product);
     setBuyOpen(true);
@@ -88,10 +73,8 @@ export default function App() {
     alert("Заявку відправлено! Ми зв’яжемося з вами.");
   };
 
-  // === Кількість товарів для бейджа у хедері ===
   const cartCount = cart.reduce((sum, item) => sum + item.qty, 0);
 
-  // === JSX ===
   return (
     <>
       <Header cartCount={cartCount} />
@@ -101,18 +84,56 @@ export default function App() {
           path="/"
           element={
             <main className="max-w-7xl mx-auto px-4 py-6">
-              <h1 className="text-4xl font-bold mb-6">Головна сторінка</h1>
+              <h1 className="
+                    relative
+                    text-center
+                    text-5xl md:text-6xl 
+                    font-stencil uppercase tracking-[0.3em]
+                    text-white
+                    mb-12
+                  "
+                  >AIRSOFT SHOP</h1>
 
               <CategoryNav />
 
               <section className="mt-8">
-                <h2 className="text-2xl font-semibold mb-4">
-                  Популярні товари
-                </h2>
+                <h2 className="
+                      relative
+                      text-left
+                      text-2xl md:text-5xl 
+                      font-stencil uppercase tracking-[0.25em]
+                      text-white
+                      mb-4
+                    "
+                  >Популярні товари</h2>
+                <PopularSlider
+                  products={products.slice(0, 10)}
+                  onAddToCart={addToCart}
+                  onBuy={openBuy}
+                />
+              </section>
+
+              <section className="mt-10">
+                <h2
+                    className="
+                      relative
+                      text-left
+                      text-2xl md:text-5xl 
+                      font-stencil uppercase tracking-[0.25em]
+                      text-white
+                      mb-4
+                    "
+                  >
+                    Товари
+                  </h2>
+
+
+
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {demoProducts.map((product) => (
+                  {products.map((product, i) => (
                     <ProductCard
-                      key={product.id}
+                      key={`${product.id}-${i}`}   // тимчасово, поки id не унікальні
                       product={product}
                       onAddToCart={addToCart}
                       onBuy={openBuy}
@@ -123,6 +144,7 @@ export default function App() {
             </main>
           }
         />
+
         <Route
           path="/cart"
           element={
@@ -134,6 +156,17 @@ export default function App() {
               checkout={checkout}
             />
           }
+        />
+
+        <Route
+          path="/category/:id"
+          element={<CategoryPage onAddToCart={addToCart} onBuy={openBuy} />}
+        />
+
+        
+        <Route
+          path="/product/:id"
+          element={<ProductPage onAddToCart={addToCart} onBuy={openBuy} />}
         />
       </Routes>
 

@@ -1,11 +1,9 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import { HashRouter } from "react-router-dom";
-import App from "./App";
-import "./index.css";
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
 
-ReactDOM.createRoot(document.getElementById("root")).render(
-  <HashRouter>
-    <App />
-  </HashRouter>
-);
+// https://vite.dev/config/
+export default defineConfig({
+  plugins: [react(), tailwindcss()],
+  base: "/Shop-react/",
+})
