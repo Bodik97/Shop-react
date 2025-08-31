@@ -4,9 +4,9 @@ import ProductCard from "./ProductCard";
 
 export default function PopularSlider({
   products = [],
+  onAddToCart,
   onBuy,
-  onOrder,
-
+  title = "Популярні товари",
 }) {
   const trackRef = useRef(null);
   const [canLeft, setCanLeft] = useState(false);
@@ -24,7 +24,6 @@ export default function PopularSlider({
     const el = trackRef.current;
     if (!el) return 0;
     const first = el.querySelector("[data-slide]");
-    // gap-4 => 16px; крок = ширина картки + gap
     return first ? first.getBoundingClientRect().width + 16 : Math.round(el.clientWidth * 0.9);
   };
 
@@ -52,8 +51,9 @@ export default function PopularSlider({
   return (
     <section className="relative">
       <div className="mb-3 flex items-center justify-between">
-        
+        <h2 className="text-2xl font-semibold">{title}</h2>
 
+        {/* Десктоп-стрілки */}
         <div className="hidden sm:flex gap-2">
           <button
             onClick={() => scrollByStep(-1)}
@@ -61,25 +61,21 @@ export default function PopularSlider({
             className={`h-9 w-9 rounded-full border flex items-center justify-center transition
               ${canLeft ? "bg-white hover:bg-gray-50" : "bg-gray-100 opacity-60 cursor-not-allowed"}`}
             aria-label="Попередні"
-          >
-            ‹
-          </button>
+          >‹</button>
           <button
             onClick={() => scrollByStep(1)}
             disabled={!canRight}
             className={`h-9 w-9 rounded-full border flex items-center justify-center transition
               ${canRight ? "bg-white hover:bg-gray-50" : "bg-gray-100 opacity-60 cursor-not-allowed"}`}
             aria-label="Наступні"
-          >
-            ›
-          </button>
+          >›</button>
         </div>
       </div>
 
-      {/* Трек слайдера */}
+      {/* Трек */}
       <div
         ref={trackRef}
-        className="flex gap-4 px-2 overflow-x-auto no-scrollbar scroll-smooth snap-x snap-mandatory"
+        className="relative flex gap-4 px-2 overflow-x-auto no-scrollbar scroll-smooth snap-x snap-mandatory"
       >
         {products.map((p) => (
           <div
@@ -87,36 +83,32 @@ export default function PopularSlider({
             data-slide
             className="
               snap-start flex-none max-w-none
-              basis-full                       /* 1 картка на мобільному */
-              sm:basis-[calc((100%-1rem)/2)]   /* 2 на sm (gap-4 = 1rem) */
-              md:basis-[calc((100%-2rem)/3)]   /* 3 на md */
-              lg:basis-[calc((100%-3rem)/4)]   /* 4 на lg+ */
+              basis-full
+              sm:basis-[calc((100%-1rem)/2)]
+              md:basis-[calc((100%-2rem)/3)]
+              lg:basis-[calc((100%-3rem)/4)]
             "
           >
-            <ProductCard product={p} onBuy={onBuy} onOrder={onOrder} />
+            <ProductCard product={p} onAddToCart={onAddToCart} onBuy={onBuy} />
           </div>
         ))}
       </div>
 
-      {/* Мобільні кнопки поверх країв */}
-      <div className="sm:hidden">
+      {/* Мобільні стрілки поверх треку */}
+      <div className="sm:hidden pointer-events-none">
         {canLeft && (
           <button
             onClick={() => scrollByStep(-1)}
-            className="absolute left-2 top-1/2 -translate-y-1/2 h-9 w-9 rounded-full bg-white/90 border shadow flex items-center justify-center"
+            className="pointer-events-auto absolute left-2 top-1/2 -translate-y-1/2 h-9 w-9 rounded-full bg-white/90 border shadow flex items-center justify-center z-10"
             aria-label="Попередні"
-          >
-            ‹
-          </button>
+          >‹</button>
         )}
         {canRight && (
           <button
             onClick={() => scrollByStep(1)}
-            className="absolute right-2 top-1/2 -translate-y-1/2 h-9 w-9 rounded-full bg-white/90 border shadow flex items-center justify-center"
+            className="pointer-events-auto absolute right-2 top-1/2 -translate-y-1/2 h-9 w-9 rounded-full bg-white/90 border shadow flex items-center justify-center z-10"
             aria-label="Наступні"
-          >
-            ›
-          </button>
+          >›</button>
         )}
       </div>
     </section>
