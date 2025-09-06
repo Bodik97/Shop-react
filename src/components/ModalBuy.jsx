@@ -1,27 +1,58 @@
 // src/components/ModalBuy.jsx
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useId } from "react";
 
-/** Формат ціни (грн) */
+const API_URL =
+  import.meta.env.PROD
+    ? "https://my-project-blue-xi.vercel.app/api/telegram"
+    : "/api/telegram";
+
+/** Формат UAH */
 const formatUAH = (n) =>
   new Intl.NumberFormat("uk-UA", { maximumFractionDigits: 0 }).format(Number(n) || 0) + " ₴";
 
-export default function ModalBuy({ open, product, onClose, onSubmit }) {
+export default function ModalBuy({
+  open,
+  product,
+  cart = [],
+  subtotal = 0,
+  shipping = 0,
+  discount = 0,
+  total = 0,
+  onClose,
+}) {
   const [name, setName] = useState("");
-  const [phone, setPhone] = useState(""); // +380XXXXXXXXX
+  const [phone, setPhone] = useState("");
   const [qty, setQty] = useState(1);
   const [delivery, setDelivery] = useState("nova");
   const [city, setCity] = useState("");
   const [branch, setBranch] = useState("");
   const [comment, setComment] = useState("");
   const [agree, setAgree] = useState(true);
+  const [errors, setErrors] = useState({});
+  const [sending, setSending] = useState(false);
 
-  const dialogRef = useRef(null);
-  const firstFocusRef = useRef(null);
+  const closeBtnRef = useRef(null);
 
+  const isCart = Array.isArray(cart) && cart.length > 0;
   const price = Number(product?.price || 0);
-  const total = useMemo(() => price * Math.max(1, Number(qty) || 1), [price, qty]);
+  const singleTotal = useMemo(() => price * Math.max(1, Number(qty) || 1), [price, qty]);
+  const cartComputed = useMemo(
+    () => Math.max(0, (Number(subtotal) || 0) - (Number(discount) || 0) + (Number(shipping) || 0)),
+    [subtotal, discount, shipping]
+  );
+  const displayTotal = isCart ? (Number(total) || cartComputed) : singleTotal;
 
-  // Скидання при відкритті / зміні товару
+  // ids
+  const nameId = `name-${useId()}`;
+  const phoneId = `phone-${useId()}`;
+  const cityId = `city-${useId()}`;
+  const branchId = `branch-${useId()}`;
+  const commentId = `comment-${useId()}`;
+  const qtyId = `qty-${useId()}`;
+  const deliveryNovaId = `delivery-nova-${useId()}`;
+  const agreeId = `agree-${useId()}`;
+
+  // open/reset
   useEffect(() => {
     if (!open) return;
     setName("");
@@ -32,22 +63,17 @@ export default function ModalBuy({ open, product, onClose, onSubmit }) {
     setBranch("");
     setComment("");
     setAgree(true);
+    setErrors({});
+    setSending(false);
+    const t = setTimeout(() => closeBtnRef.current?.focus(), 0);
+    document.documentElement.classList.add("overflow-hidden", "overscroll-none");
+    return () => {
+      clearTimeout(t);
+      document.documentElement.classList.remove("overflow-hidden", "overscroll-none");
+    };
   }, [open, product?.id]);
 
-  // Заборона скролу фону та автофокус
-  useEffect(() => {
-    const root = document.documentElement;
-    if (open) {
-      root.classList.add("overflow-hidden", "overscroll-none");
-      const t = setTimeout(() => firstFocusRef.current?.focus(), 0);
-      return () => {
-        clearTimeout(t);
-        root.classList.remove("overflow-hidden", "overscroll-none");
-      };
-    }
-  }, [open]);
-
-  // Esc для закриття
+  // esc
   useEffect(() => {
     if (!open) return;
     const onKey = (e) => e.key === "Escape" && onClose?.();
@@ -57,27 +83,78 @@ export default function ModalBuy({ open, product, onClose, onSubmit }) {
 
   if (!open) return null;
 
-  // Простенька валідація
-  const errors = {};
-  if (!name.trim()) errors.name = "Вкажіть ім'я";
-  if (!/^\+380\d{9}$/.test(phone)) errors.phone = "Телефон у форматі +380XXXXXXXXX";
-  if (!city.trim()) errors.city = "Вкажіть місто";
-  if (!branch.trim()) errors.branch = "Вкажіть відділення/адресу";
-  if (!agree) errors.agree = "Потрібна згода на обробку даних";
+  function validateLocal() {
+    const err = {};
+    if (!name.trim() || name.trim().length < 2) err.name = "Вкажіть ім’я";
+    if (!/^\+380\d{9}$/.test(phone)) err.phone = "Формат: +380XXXXXXXXX";
+    if (!city.trim()) err.city = "Вкажіть місто";
+    if (!branch.trim()) err.branch = "Вкажіть відділення/адресу";
+    if (!agree) err.agree = "Потрібна згода на обробку даних";
+    setErrors(err);
+    return Object.keys(err).length === 0;
+  }
 
-  const submit = (e) => {
+  function buildOrderPayload() {
+    if (isCart) {
+      const items = cart.map(i => {
+        const q = Math.max(1, Number(i.qty) || 1);
+        const p = Number(i.price) || 0;
+        return { id: i.id, title: i.title, qty: q, price: p, lineTotal: p * q };
+      });
+      return {
+        items,
+        subtotal,
+        discount,
+        shipping: shipping || 0,
+        total: displayTotal,
+        mode: "cart",
+      };
+    }
+    const q = Math.max(1, Number(qty) || 1);
+    const p = Number(price) || 0;
+    return {
+      items: [{ id: product?.id, title: product?.title, qty: q, price: p, lineTotal: p * q }],
+      subtotal: p * q,
+      discount: 0,
+      shipping: shipping || 0,
+      total: displayTotal,
+      mode: "single",
+    };
+  }
+
+  const submit = async (e) => {
     e.preventDefault();
-    if (Object.keys(errors).length) return;
+    if (sending) return;
+    if (!validateLocal()) return;
+    setSending(true);
+
     const payload = {
-      product: { id: product?.id, title: product?.title, price },
-      qty: Math.max(1, Number(qty) || 1),
-      total,
-      customer: { name, phone },
-      delivery: { method: delivery, city, branch },
-      comment: comment?.trim(),
+      name: name.trim(),
+      phone: phone.trim(),
+      comment: comment.trim(),
+      delivery,
+      city: city.trim(),
+      branch: branch.trim(),
+      order: buildOrderPayload(),
       createdAt: new Date().toISOString(),
     };
-    onSubmit?.(payload);
+
+    try {
+      const r = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok || data?.ok !== true) {
+        throw new Error(data?.error || "Помилка відправки");
+      }
+      onClose?.();
+    } catch (err) {
+      setErrors(prev => ({ ...prev, submit: err.message || "Щось пішло не так" }));
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -88,267 +165,381 @@ export default function ModalBuy({ open, product, onClose, onSubmit }) {
       aria-labelledby="buy-title"
     >
       {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-        onClick={() => onClose?.()}
-      />
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => !sending && onClose?.()} />
 
-      {/* Контейнер модалки: максимально мобільний-friendly bottom-sheet */}
-      <div
-        ref={dialogRef}
-        className="
-          relative w-full max-w-full sm:w-[640px]
-          bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl border
-          p-4 sm:p-6
-          max-h-[90vh] overflow-auto
-          pb-[calc(env(safe-area-inset-bottom)+1rem)]
-        "
-      >
-        {/* Header */}
-        <div className="flex items-start justify-between gap-3">
+      {/* container */}
+      <div className="relative w-full max-w-full sm:max-w-[720px] mx-2 sm:mx-4 bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl border max-h-[92vh] overflow-auto">
+        {/* header */}
+        <div className="sticky top-0 z-10 flex items-center justify-between gap-2 px-3 py-3 sm:px-6 sm:py-4 bg-white/95 backdrop-blur border-b">
           <div className="min-w-0">
-            <h2
-              id="buy-title"
-              className="text-lg sm:text-xl font-bold text-gray-900 leading-snug"
-            >
-              Швидка покупка
+            <h2 id="buy-title" className="text-[18px] sm:text-xl font-bold text-gray-900 leading-snug">
+              {isCart ? "Оформлення замовлення" : "Швидка покупка"}
             </h2>
-            {product && (
-              <p className="mt-0.5 text-gray-500 text-sm line-clamp-2">
-                {product.title}
-              </p>
-            )}
+            <p className="mt-0.5 text-gray-700 text-sm line-clamp-2">
+              {isCart ? "Кошик" : product?.title || "—"}
+            </p>
           </div>
-
           <button
-            ref={firstFocusRef}
+            ref={closeBtnRef}
             type="button"
             aria-label="Закрити"
-            onClick={() => onClose?.()}
-            className="h-10 w-10 grid place-items-center rounded-xl border hover:bg-gray-50"
+            onClick={() => !sending && onClose?.()}
+            className="inline-flex items-center justify-center h-10 w-10 rounded-xl border hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 disabled:opacity-50"
+            disabled={sending}
           >
             ✕
           </button>
         </div>
 
-        {/* Товар (мобільне вертикальне розміщення) */}
-        {product && (
-          <div className="mt-4 flex flex-col sm:flex-row sm:items-center gap-4">
-            <div className="flex items-center gap-3">
-              <img
-                src={product.image}
-                alt={product.title}
-                className="w-18 h-18 sm:w-20 sm:h-20 rounded-lg object-cover border"
-              />
-              <div className="flex-1 min-w-0">
-                <div className="font-semibold text-gray-900 text-sm sm:text-base line-clamp-2">
-                  {product.title}
+        {/* form */}
+        <form onSubmit={submit} noValidate autoComplete="on" aria-busy={sending}>
+          {/* body */}
+          <div className="px-3 sm:px-6 pt-4 pb-28 sm:pb-6 space-y-5">
+            {/* single preview */}
+            {!isCart && product && (
+              <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                <div className="flex items-center gap-3 min-w-0">
+                  <img
+                    src={product.image}
+                    alt={product.title}
+                    className="w-18 h-18 sm:w-24 sm:h-24 rounded-xl object-cover border"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <div className="font-semibold text-gray-900 text-sm sm:text-base line-clamp-2">
+                      {product.title}
+                    </div>
+                    <div className="mt-1 text-blue-700 font-bold text-base sm:text-lg tabular-nums">
+                      {formatUAH(price)}
+                    </div>
+                  </div>
                 </div>
-                <div className="mt-1 text-blue-700 font-bold text-base sm:text-lg">
-                  {formatUAH(price)}
+                <div className="flex items-center gap-2 sm:ml-auto">
+                  <button
+                    type="button"
+                    aria-label="−"
+                    onClick={() => setQty((q) => Math.max(1, Number(q || 1) - 1))}
+                    className="inline-flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-black !text-white hover:bg-black/90 active:scale-95 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-black disabled:opacity-40"
+                    disabled={sending || qty <= 1}
+                  >
+                    −
+                  </button>
+
+                  <label htmlFor={qtyId} className="sr-only">
+                    Кількість
+                  </label>
+                  <input
+                    id={qtyId}
+                    name="qty"
+                    type="number"
+                    min={1}
+                    max={99}
+                    inputMode="numeric"
+                    value={qty}
+                    onChange={(e) => setQty(Math.max(1, Math.min(99, Number(e.target.value) || 1)))}
+                    className="w-14 sm:w-16 h-9 sm:h-10 rounded-xl border-2 border-slate-300 bg-white text-slate-900 tabular-nums font-semibold text-base text-center focus:outline-none focus:ring-2 focus:ring-blue-600 disabled:opacity-50"
+                    disabled={sending}
+                  />
+
+                  <button
+                    type="button"
+                    aria-label="+"
+                    onClick={() => setQty((q) => Math.min(99, Number(q || 1) + 1))}
+                    className="inline-flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-black !text-white hover:bg-black/90 active:scale-95 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-black disabled:opacity-40"
+                    disabled={sending || qty >= 99}
+                  >
+                    +
+                  </button>
                 </div>
               </div>
-            </div>
+            )}
 
-            {/* Qty — стає під картинкою на вузьких екранах */}
-            <div className="flex items-center gap-2 sm:ml-auto">
-              <button
-                type="button"
-                aria-label="Зменшити кількість"
-                onClick={() => setQty((q) => Math.max(1, Number(q || 1) - 1))}
-                className="h-10 w-10 rounded-xl border hover:bg-gray-50"
-              >
-                −
-              </button>
-              <input
-                type="number"
-                min={1}
-                inputMode="numeric"
-                value={qty}
-                onChange={(e) => setQty(Math.max(1, Number(e.target.value) || 1))}
-                className="w-14 h-10 rounded-xl border text-center text-base"
-              />
-              <button
-                type="button"
-                aria-label="Збільшити кількість"
-                onClick={() => setQty((q) => Math.min(99, Number(q || 1) + 1))}
-                className="h-10 w-10 rounded-xl border hover:bg-gray-50"
-              >
-                +
-              </button>
-            </div>
-          </div>
-        )}
+            {/* cart summary */}
+            {isCart && (
+              <section aria-labelledby="order-summary" className="space-y-2">
+                <h3 id="order-summary" className="text-sm font-semibold text-gray-900">
+                  Ваше замовлення
+                </h3>
+                <div className="rounded-2xl border bg-gray-50 p-3 max-h-40 sm:max-h-48 overflow-auto">
+                  {cart.map((i) => {
+                    const q = Math.max(1, Number(i.qty) || 1);
+                    const p = Number(i.price) || 0;
+                    return (
+                      <div key={i.id} className="flex justify-between gap-3 text-sm text-gray-800">
+                        <span className="truncate">
+                          {i.title} × {q}
+                        </span>
+                        <span className="tabular-nums">{formatUAH(p * q)}</span>
+                      </div>
+                    );
+                  })}
+                  <hr className="my-2 border-slate-200" />
+                  <Row label="Сума товарів" value={formatUAH(subtotal)} />
+                  {discount > 0 && <Row label="Знижка" value={`−${formatUAH(discount)}`} />}
+                  <Row label="Доставка" value={shipping ? formatUAH(shipping) : "Безкоштовно"} />
+                  <Row strong label="Разом" value={formatUAH(displayTotal)} />
+                </div>
+              </section>
+            )}
 
-        {/* Форма */}
-        <form onSubmit={submit} className="mt-5 space-y-4">
-          {/* Поля 1 ряду — на мобілці по одному, на великих поруч */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm text-gray-600 mb-1">Ім’я</label>
-              <input
-                type="text"
-                placeholder="Ваше ім’я"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className={`w-full rounded-xl border px-3 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                  errors.name ? "border-red-400" : "border-gray-300"
-                }`}
-              />
-              {errors.name && (
-                <p className="mt-1 text-xs text-red-600">{errors.name}</p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm text-gray-600 mb-1">Телефон</label>
-              <input
-                type="tel"
-                placeholder="+380XXXXXXXXX"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value.replace(/\s/g, ""))}
-                className={`w-full rounded-xl border px-3 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                  errors.phone ? "border-red-400" : "border-gray-300"
-                }`}
-              />
-              <p
-                className={`mt-1 text-xs ${
-                  errors.phone ? "text-red-600" : "text-gray-500"
-                }`}
-              >
-                Формат: +380XXXXXXXXX
-              </p>
-            </div>
-          </div>
-
-          {/* Доставка — блоки по вертикалі на мобілці */}
-          <div>
-            <label className="block text-sm text-gray-600 mb-1">Доставка</label>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-              <label className="flex items-center gap-2 rounded-xl border px-3 py-2.5 cursor-pointer">
-                <input
-                  type="radio"
-                  name="delivery"
-                  value="nova"
-                  checked={delivery === "nova"}
-                  onChange={() => setDelivery("nova")}
+            {/* contacts */}
+            <section aria-labelledby="contacts">
+              <h3 id="contacts" className="text-sm font-semibold text-gray-900 mb-2">
+                Контакти
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <Field
+                  id={nameId}
+                  name="name"
+                  label="Ім’я"
+                  placeholder="Ваше ім’я"
+                  autoComplete="name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  error={errors.name}
+                  help="Вкажіть ім’я отримувача."
+                  required
+                  disabled={sending}
                 />
-                Нова Пошта
-              </label>
-              <label className="flex items-center gap-2 rounded-xl border px-3 py-2.5 cursor-pointer">
-                <input
-                  type="radio"
-                  name="delivery"
-                  value="ukr"
-                  checked={delivery === "ukr"}
-                  onChange={() => setDelivery("ukr")}
+                <Field
+                  id={phoneId}
+                  name="phone"
+                  type="tel"
+                  label="Телефон"
+                  placeholder="+380XXXXXXXXX"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value.replace(/\s/g, ""))}
+                  error={errors.phone}
+                  help="Формат: +380XXXXXXXXX"
+                  inputMode="tel"
+                  autoComplete="tel"
+                  required
+                  pattern="^\\+380\\d{9}$"
+                  maxLength={13}
+                  disabled={sending}
                 />
-                Укрпошта
-              </label>
-              <label className="flex items-center gap-2 rounded-xl border px-3 py-2.5 cursor-pointer">
-                <input
-                  type="radio"
+              </div>
+            </section>
+
+            {/* delivery */}
+            <section aria-labelledby="shipping">
+              <h3 id="shipping" className="text-sm font-semibold text-gray-900 mb-2">
+                Доставка
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <RadioCard
+                  id={deliveryNovaId}
                   name="delivery"
-                  value="courier"
-                  checked={delivery === "courier"}
-                  onChange={() => setDelivery("courier")}
+                  label="Нова Пошта"
+                  checked={delivery === "NovaPosta"}
+                  onChange={() => setDelivery("NovaPosta")}
+                  disabled={sending}
                 />
-                Кур’єр
-              </label>
-            </div>
-          </div>
+                
+              </div>
+            </section>
 
-          {/* Адреса */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm text-gray-600 mb-1">Місто</label>
-              <input
-                type="text"
-                placeholder="Київ"
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
-                className={`w-full rounded-xl border px-3 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                  errors.city ? "border-red-400" : "border-gray-300"
-                }`}
-              />
-              {errors.city && (
-                <p className="mt-1 text-xs text-red-600">{errors.city}</p>
+            {/* address */}
+            <section aria-labelledby="address">
+              <h3 id="address" className="text-sm font-semibold text-gray-900 mb-2">
+                Адреса
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <Field
+                  id={cityId}
+                  name="city"
+                  label="Місто"
+                  placeholder="Київ"
+                  autoComplete="address-level2"
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  error={errors.city}
+                  help="Населений пункт для доставки."
+                  required
+                  disabled={sending}
+                />
+                <Field
+                  id={branchId}
+                  name="branch"
+                  label="Відділення/адреса"
+                  placeholder="Відділення №1"
+                  autoComplete="address-line1"
+                  value={branch}
+                  onChange={(e) => setBranch(e.target.value)}
+                  error={errors.branch}
+                  help="Відділення пошти або адреса кур’єра."
+                  required
+                  disabled={sending}
+                />
+              </div>
+            </section>
+
+            {/* comment */}
+            <section aria-labelledby="comment">
+              <h3 id="comment" className="text-sm font-semibold text-gray-900 mb-2">
+                Коментар
+              </h3>
+              <div>
+                <label htmlFor={commentId} className="block text-sm text-gray-800 mb-1">
+                  Коментар (необов’язково)
+                </label>
+                <textarea
+                  id={commentId}
+                  name="comment"
+                  rows={3}
+                  placeholder="Побажання до замовлення…"
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  className="w-full rounded-xl border border-gray-300/70 bg-white px-3 py-2.5 text-[15px] text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600 disabled:opacity-50"
+                  disabled={sending}
+                />
+                <p className="mt-1 text-xs text-gray-700">Додайте важливі деталі для доставлення.</p>
+                {errors.submit && <p className="mt-1 text-xs text-red-700">{errors.submit}</p>}
+              </div>
+            </section>
+
+            {/* agree */}
+            <section>
+              <div className="flex items-start gap-2 text-sm">
+                <input
+                  id={agreeId}
+                  name="agree"
+                  type="checkbox"
+                  checked={agree}
+                  onChange={(e) => setAgree(e.target.checked)}
+                  aria-invalid={!!errors.agree}
+                  aria-describedby={errors.agree ? `${agreeId}-error` : undefined}
+                  className="mt-0.5 h-5 w-5 rounded accent-blue-600"
+                  disabled={sending}
+                  required
+                />
+                <label htmlFor={agreeId} className={errors.agree ? "text-red-700" : "text-gray-800"}>
+                  Погоджуюсь на обробку персональних даних та умови повернення.
+                </label>
+              </div>
+              {errors.agree && (
+                <p id={`${agreeId}-error`} className="mt-1 text-xs text-red-700">
+                  {errors.agree}
+                </p>
               )}
-            </div>
-
-            <div>
-              <label className="block text-sm text-gray-600 mb-1">
-                Відділення/адреса
-              </label>
-              <input
-                type="text"
-                placeholder="Відділення №1"
-                value={branch}
-                onChange={(e) => setBranch(e.target.value)}
-                className={`w-full rounded-xl border px-3 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                  errors.branch ? "border-red-400" : "border-gray-300"
-                }`}
-              />
-              {errors.branch && (
-                <p className="mt-1 text-xs text-red-600">{errors.branch}</p>
-              )}
-            </div>
+            </section>
           </div>
 
-          {/* Коментар */}
-          <div>
-            <label className="block text-sm text-gray-600 mb-1">
-              Коментар (необов’язково)
-            </label>
-            <textarea
-              rows={3}
-              placeholder="Побажання до замовлення…"
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              className="w-full rounded-xl border border-gray-300 px-3 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
+          {/* sticky footer */}
+          <div className="sticky bottom-0 z-10 bg-white/95 backdrop-blur border-t px-3 sm:px-6 py-3 [padding-bottom:env(safe-area-inset-bottom)]">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <div className="min-w-0 order-2 sm:order-1">
+                <div className="text-xs text-gray-600">{isCart ? "Разом" : "До сплати"}</div>
+                <div className="text-xl font-extrabold text-blue-700 tabular-nums">
+                  {formatUAH(displayTotal)}
+                </div>
+              </div>
 
-          {/* Згода */}
-          <label className="flex items-start gap-2 text-sm">
-            <input
-              type="checkbox"
-              checked={agree}
-              onChange={(e) => setAgree(e.target.checked)}
-              className="mt-1"
-            />
-            <span className={errors.agree ? "text-red-600" : "text-gray-600"}>
-              Погоджуюсь на обробку персональних даних та умови повернення.
-            </span>
-          </label>
-
-          {/* Підсумок для мобілки — кнопки 100% ширини */}
-          <div className="pt-2 space-y-3">
-            <div className="flex items-center justify-between text-gray-700">
-              <span>Разом:</span>
-              <span className="text-xl font-extrabold text-blue-700">
-                {formatUAH(total)}
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <button
-                type="button"
-                onClick={() => onClose?.()}
-                className="h-12 w-full rounded-xl border font-semibold hover:bg-gray-50 active:scale-[0.99] transition"
-              >
-                Скасувати
-              </button>
-              <button
-                type="submit"
-                className="h-12 w-full rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 active:scale-[0.99] transition"
-              >
-                Оформити
-              </button>
+              <div className="flex flex-col sm:flex-row gap-2 order-1 sm:order-2">
+                <button
+                  type="button"
+                  onClick={() => onClose?.()}
+                  className="h-12 sm:h-11 w-full sm:w-auto rounded-2xl bg-black px-4 !text-white md:hover:bg-black/90 active:scale-[0.98] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-black disabled:opacity-50"
+                  disabled={sending}
+                >
+                  Скасувати
+                </button>
+                <button
+                  type="submit"
+                  className="h-12 sm:h-11 w-full sm:w-auto rounded-2xl bg-black px-5 font-semibold !text-white md:hover:bg-black/90 active:scale-[0.98] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-black disabled:opacity-50"
+                  disabled={sending}
+                >
+                  {sending ? "Відправляємо…" : "Оформити"}
+                </button>
+              </div>
             </div>
           </div>
         </form>
       </div>
+
+      <style>{`
+        @keyframes bm-fade { from { opacity: 0 } to { opacity: 1 } }
+        @keyframes bm-zoom { from { opacity: 0; transform: translateY(8px) scale(.98) } to { opacity: 1; transform: translateY(0) scale(1) } }
+      `}</style>
     </div>
+  );
+}
+
+/* helpers */
+function Row({ label, value, strong = false }) {
+  return (
+    <div className={`flex justify-between gap-3 ${strong ? "font-semibold" : ""}`}>
+      <span className="text-gray-800">{label}</span>
+      <span className="tabular-nums text-gray-900">{value}</span>
+    </div>
+  );
+}
+
+function Field({
+  id,
+  name,
+  type = "text",
+  label,
+  placeholder,
+  value,
+  onChange,
+  autoComplete,
+  inputMode,
+  help,
+  error,
+  required,
+  pattern,
+  maxLength,
+  disabled,
+}) {
+  return (
+    <div>
+      <label htmlFor={id} className="block text-sm text-gray-800 mb-1">
+        {label} {required && <span className="text-rose-600">*</span>}
+      </label>
+      <input
+        id={id}
+        name={name}
+        type={type}
+        autoComplete={autoComplete}
+        inputMode={inputMode}
+        placeholder={placeholder}
+        value={value}
+        onChange={onChange}
+        required={required}
+        aria-invalid={!!error}
+        aria-describedby={help ? `${id}-help` : undefined}
+        pattern={pattern}
+        maxLength={maxLength}
+        disabled={disabled}
+        className={`w-full rounded-xl border px-3 py-2.5 text-[15px] text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 ${
+          error ? "border-red-400 focus:ring-red-600" : "border-gray-300/70 focus:ring-blue-600"
+        } disabled:opacity-50`}
+      />
+      <p id={`${id}-help`} className={`mt-1 text-xs ${error ? "text-red-700" : "text-gray-700"}`}>
+        {error || help}
+      </p>
+    </div>
+  );
+}
+
+function RadioCard({ id, name, label, checked, onChange, disabled }) {
+  return (
+    <label
+      htmlFor={id}
+      className={`rounded-xl border px-3 py-2.5 flex items-center gap-2 cursor-pointer text-sm ${
+        checked ? "border-blue-600 ring-2 ring-blue-200" : "border-gray-300 hover:bg-gray-50"
+      } ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
+    >
+      <input
+        id={id}
+        type="radio"
+        name={name}
+        checked={checked}
+        onChange={onChange}
+        className="h-4 w-4 accent-blue-600"
+        disabled={disabled}
+      />
+      <span className="text-gray-900">{label}</span>
+    </label>
   );
 }

@@ -26,4 +26,11 @@ export default defineConfig([
       'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
     },
   },
+  // ← ДОДАНО окремо для serverless / Node файлів
+  {
+    files: ['api/**/*.js'],
+    languageOptions: {
+      globals: globals.node, // дозволяє process, module, require
+    },
+  },
 ])

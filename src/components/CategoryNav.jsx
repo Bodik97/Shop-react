@@ -13,10 +13,9 @@ const FALLBACK_IMG =
   </text></svg>`);
 
 export default function CategoryNav() {
-  // складаємо картинку категорії з першого товару цієї категорії
   const catsWithImages = useMemo(() => {
-    return categories.map(cat => {
-      const p = products.find(pr => pr.category === cat.id);
+    return categories.map((cat) => {
+      const p = products.find((pr) => pr.category === cat.id);
       return { ...cat, image: p?.image || FALLBACK_IMG };
     });
   }, []);
@@ -30,7 +29,7 @@ export default function CategoryNav() {
     if (!el) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    let speed = 0.4;
+    let speed = 0.5;
     const loop = () => {
       if (!paused) {
         if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 1) {
@@ -45,18 +44,51 @@ export default function CategoryNav() {
     return () => cancelAnimationFrame(frameRef.current);
   }, [paused]);
 
+  const scrollByViewport = (dir = 1) => {
+    const el = trackRef.current;
+    if (!el) return;
+    el.scrollBy({ left: dir * el.clientWidth, behavior: "smooth" });
+  };
+
   return (
     <section
-      className="py-6 rounded-2xl overflow-hidden"
+      className="relative py-8 sm:py-10 rounded-2xl overflow-hidden"
       style={{ backgroundImage: `url(${bgImage})`, backgroundSize: "cover", backgroundPosition: "center" }}
     >
-      <div className="max-w-7xl mx-auto px-4">
-        <h2 className="text-xl md:text-2xl font-bold text-white drop-shadow mb-4">Категорії</h2>
+      {/* темний оверлей для контрасту */}
+      <div className="absolute inset-0 bg-black/40" aria-hidden />
+      <div className="relative max-w-7xl mx-auto px-4">
+        {/* Заголовок по центру, білий + світіння */}
+        <h2 className="text-center text-2xl md:text-3xl font-extrabold text-white mb-6 drop-shadow-[0_0_10px_rgba(255,255,255,0.8)]">
+          Категорії
+          <span
+            aria-hidden
+            className="block mx-auto mt-2 h-[3px] w-28 rounded-full bg-white/80 blur-[1px]"
+          />
+        </h2>
 
         <div className="relative">
+          {/* стрілки прокрутки */}
+          <button
+            type="button"
+            onClick={() => scrollByViewport(-1)}
+            className="hidden md:flex absolute left-2 top-1/2 -translate-y-1/2 z-10 h-10 w-10 items-center justify-center rounded-xl bg-white/90 hover:bg-white shadow"
+            aria-label="Назад"
+          >
+            ‹
+          </button>
+          <button
+            type="button"
+            onClick={() => scrollByViewport(1)}
+            className="hidden md:flex absolute right-2 top-1/2 -translate-y-1/2 z-10 h-10 w-10 items-center justify-center rounded-xl bg-white/90 hover:bg-white shadow"
+            aria-label="Вперед"
+          >
+            ›
+          </button>
+
           <div
             ref={trackRef}
-            className="flex gap-4 overflow-x-auto scroll-smooth no-scrollbar pb-2"
+            className="flex gap-4 overflow-x-auto scroll-smooth no-scrollbar pb-2 snap-x snap-mandatory"
             onMouseEnter={() => setPaused(true)}
             onMouseLeave={() => setPaused(false)}
             onTouchStart={() => setPaused(true)}
@@ -67,8 +99,9 @@ export default function CategoryNav() {
             ))}
           </div>
 
-          <div className="pointer-events-none absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-[#00000055] to-transparent rounded-l-2xl" />
-          <div className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-[#00000055] to-transparent rounded-r-2xl" />
+          {/* градієнтні шторки */}
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-black/50 to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-black/50 to-transparent" />
         </div>
       </div>
     </section>
@@ -78,12 +111,13 @@ export default function CategoryNav() {
 function CategoryCard({ cat }) {
   const [src, setSrc] = useState(cat.image || FALLBACK_IMG);
   return (
-    <div className="flex-shrink-0 w-64 sm:w-72 md:w-80">
+    <div className="flex-shrink-0 w-56 sm:w-64 md:w-72 snap-start">
       <Link
         to={`/category/${cat.id}`}
-        className="group block rounded-xl bg-white/95 backdrop-blur border border-gray-200 shadow-sm hover:shadow-md transition overflow-hidden"
+        className="group block rounded-2xl bg-white/90 backdrop-blur border border-white/60 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition overflow-hidden"
       >
-        <div className="relative h-36 bg-gray-100">
+        {/* фіксований формат зображення для рівних карток */}
+        <div className="relative aspect-[16/9] bg-gray-100">
           <img
             src={src}
             alt={cat.name}
@@ -91,11 +125,38 @@ function CategoryCard({ cat }) {
             loading="lazy"
             onError={() => setSrc(FALLBACK_IMG)}
           />
-          <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
+          <div className="absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
         </div>
-        <div className="p-3">
-          <h3 className="text-sm font-semibold text-gray-800">{cat.name}</h3>
-          <p className="text-xs text-gray-500">Перейти →</p>
+        <div className="p-4">
+          <h3 className="text-[15px] font-semibold text-gray-900">{cat.name}</h3>
+          <p className="mt-0.5 text-xs text-gray-500">
+            <span className="inline-flex items-center gap-1 relative">
+              {/* мобільний пінг-підказка */}
+              <span className="relative mr-1 md:hidden inline-flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full rounded-full bg-indigo-500 opacity-75 animate-ping" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-indigo-500" />
+              </span>
+
+              <span className="font-medium text-gray-700">Перейти</span>
+
+              <svg
+                viewBox="0 0 24 24"
+                className="h-4 w-4 opacity-80 transition-transform md:group-hover:translate-x-0.5
+                          motion-safe:animate-pulse md:motion-safe:animate-none"
+                aria-hidden="true"
+              >
+                <path fill="currentColor" d="M10 6l6 6-6 6v-4H4v-4h6V6z" />
+              </svg>
+
+              {/* підкреслення, що з’являється на ховері (десктоп) */}
+              <span
+                aria-hidden
+                className="absolute -bottom-0.5 left-0 right-0 h-px bg-gray-300 opacity-0
+                          md:group-hover:opacity-100 transition-opacity"
+              />
+            </span>
+          </p>
+
         </div>
       </Link>
     </div>
