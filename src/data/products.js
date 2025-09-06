@@ -21,7 +21,7 @@ import imgWinGun_2 from "../img/pistolets/WinGun/pist-2.jpg";
 import imgWinGun_3 from "../img/pistolets/WinGun/pist-3.jpg";
 import imgWinGun_4 from "../img/pistolets/WinGun/pist-4.jpg";
 import imgWinGun_5 from "../img/pistolets/WinGun/pist-5.jpg";
-import imgWinGun_6 from "../img/pistolets/WinGun/pist-6.jpg";
+
 // Glock
 import imgGlock_1 from "../img/pistolets/Glock/pist-1.jpg";
 import imgGlock_2 from "../img/pistolets/Glock/pist-2.jpg";

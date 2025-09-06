@@ -51,37 +51,43 @@ export default async function handler(req, res) {
       }).join("\n")
     : "";
 
-  const GAP = "\n\u00A0\n"; // більший відступ: пустий рядок із NBSP
+  const br = (n=1) => "\n".repeat(n);
+const GAP = br(2) + "\u200B"; // 2 переноси + zero-width + ще 2
 
-  const text = [
-    `<b>🧾 НОВА ЗАЯВКА</b>   <i>${esc(stamp)}</i>`,
+const block = (...lines) => lines.filter(Boolean).join("\n");
 
-    GAP,
+const text = [
+  block(`<b>🧾 НОВА ЗАЯВКА</b>   <i>${esc(stamp)}</i>`),
+
+  GAP + block(
     `👤 <b>Клієнт:</b>`,
     `Ім’я: <b>${esc(name)}</b>`,
     `Телефон: <b>${esc(phone)}</b>`,
-    email ? `Email: <b>${esc(email)}</b>` : null,
+    email && `Email: <b>${esc(email)}</b>`
+  ),
 
-    GAP,
+  GAP + block(
     `🚚 <b>Доставка:</b>`,
-    `Метод: <b>${esc(delivery || "-")}</b>`,
-    `Місто: <b>${esc(city || "-")}</b>`,
-    `Адреса/відділення: <b>${esc(branch || "-")}</b>`,
+    `Метод: <b>${esc(delivery||"-")}</b>`,
+    `Місто: <b>${esc(city||"-")}</b>`,
+    `Адреса/відділення: <b>${esc(branch||"-")}</b>`
+  ),
 
-    orderLines ? GAP + `🛒 <b>Товари:</b>\n${orderLines}` : null,
+  orderLines && (GAP + block(`🛒 <b>Товари:</b>`, orderLines)),
 
-    GAP +
-      [
-        order?.subtotal != null ? `Сума товарів: <b>${fmtUAH(order.subtotal)}</b>` : null,
-        order?.discount > 0 ? `Знижка: <b>−${fmtUAH(order.discount)}</b>` : null,
-        `Доставка: <b>${order?.shipping > 0 ? fmtUAH(order.shipping) : "Безкоштовно"}</b>`,
-        order?.total != null ? `💰 Разом: <b>${fmtUAH(order.total)}</b>` : null,
-      ].filter(Boolean).join("\n"),
+  GAP + block(
+    `Загальний результат покупки $:`,
+    order?.subtotal!=null && `Сума товарів: <b>${fmtUAH(order.subtotal)}</b>`,
+    order?.discount>0 && `Знижка: <b>−${fmtUAH(order.discount)}</b>`,
+    `Доставка: <b>${order?.shipping>0?fmtUAH(order.shipping):"Безкоштовно"}</b>`,
+    order?.total!=null && `💰 Разом: <b>${fmtUAH(order.total)}</b>`
+  ),
 
-    comment ? GAP + `📝 <b>Коментар:</b>\n${esc(comment)}` : null,
-  ]
-    .filter(Boolean)
-    .join("\n");
+  comment && (GAP + block(`📝 <b>Коментар:</b>`, esc(comment))),
+].filter(Boolean).join("\n");
+
+
+  
 
 
   try {

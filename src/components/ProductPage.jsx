@@ -37,6 +37,7 @@ const Badge = ({ children, variant = "blue", className = "" }) => {
 };
 
 export default function ProductPage({ onAddToCart, onBuy }) {
+  // --- хуки ТІЛЬКИ зверху ---
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -61,7 +62,6 @@ export default function ProductPage({ onAddToCart, onBuy }) {
   }, [product]);
 
   const [idx, setIdx] = useState(0);
-
   const clampIndex = useCallback(
     (i) => (imgs.length ? (i + imgs.length) % imgs.length : 0),
     [imgs.length]
@@ -76,6 +76,45 @@ export default function ProductPage({ onAddToCart, onBuy }) {
   const dragging = useRef(false);
   const dragStart = useRef({ x: 0, y: 0 });
 
+  // Toast
+  const [flashCart, setFlashCart] = useState(false);
+  const timerRef = useRef(null);
+
+  // Swipe (ВИНЕСЕНО вище guard)
+  const swipeStartX = useRef(0);
+
+  // Ефекти
+  useEffect(() => {
+    if (!openFS) return;
+    const onKey = (e) => {
+      if (e.key === "ArrowLeft") prev();
+      if (e.key === "ArrowRight") next();
+      if (e.key === "Escape") setOpenFS(false);
+      if (e.key === "+") setScale((s) => Math.min(4, s + 0.5));
+      if (e.key === "-") setScale((s) => Math.max(1, s - 0.5));
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [openFS, prev, next]);
+
+  useEffect(() => () => timerRef.current && clearTimeout(timerRef.current), []);
+
+  // --- ранній guard ПІСЛЯ всіх хуків ---
+  if (!product) {
+    return (
+      <main className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8">
+        <p className="text-gray-700">Товар не знайдено.</p>
+        <button
+          onClick={() => navigate(-1)}
+          className="mt-4 px-4 py-2 border rounded-lg hover:bg-gray-50"
+        >
+          ← Назад
+        </button>
+      </main>
+    );
+  }
+
+  // Обробники
   const openFull = () => {
     setOpenFS(true);
     setScale(1);
@@ -99,52 +138,13 @@ export default function ProductPage({ onAddToCart, onBuy }) {
   };
   const endDrag = () => (dragging.current = false);
 
-  // Гарячі клавіші лише у фулскріні
-  useEffect(() => {
-    if (!openFS) return;
-    const onKey = (e) => {
-      if (e.key === "ArrowLeft") prev();
-      if (e.key === "ArrowRight") next();
-      if (e.key === "Escape") setOpenFS(false);
-      if (e.key === "+") setScale((s) => Math.min(4, s + 0.5));
-      if (e.key === "-") setScale((s) => Math.max(1, s - 0.5));
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [openFS, prev, next]);
-
-  // Toast
-  const [flashCart, setFlashCart] = useState(false);
-  const timerRef = useRef(null);
   const handleAddToCart = () => {
     onAddToCart?.(product);
     setFlashCart(true);
     if (timerRef.current) clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => setFlashCart(false), 2200);
   };
-  useEffect(() => () => timerRef.current && clearTimeout(timerRef.current), []);
 
-  if (!product) {
-    return (
-      <main className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8">
-        <p className="text-gray-700">Товар не знайдено.</p>
-        <button
-          onClick={() => navigate(-1)}
-          className="mt-4 px-4 py-2 border rounded-lg hover:bg-gray-50"
-        >
-          ← Назад
-        </button>
-      </main>
-    );
-  }
-
-  const features = product.features || [];
-  const specs = product.specs || {};
-  const inBox = product.inBox || [];
-  const warranty = product.warranty;
-
-  // Swipe по основному зображенню
-  const swipeStartX = useRef(0);
   const onPointerDown = (e) => {
     swipeStartX.current = e.clientX ?? e.touches?.[0]?.clientX ?? 0;
   };
@@ -153,6 +153,11 @@ export default function ProductPage({ onAddToCart, onBuy }) {
     const dx = x - swipeStartX.current;
     if (Math.abs(dx) > 36) (dx > 0 ? prev() : next());
   };
+
+  const features = product.features || [];
+  const specs = product.specs || {};
+  const inBox = product.inBox || [];
+  const warranty = product.warranty;
 
   return (
     <main className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-6 md:py-8 overflow-x-hidden">
@@ -165,10 +170,7 @@ export default function ProductPage({ onAddToCart, onBuy }) {
         >
           <span className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-emerald-600 to-emerald-500 text-white text-xs font-semibold px-3 py-1.5 shadow-lg ring-1 ring-emerald-700/30">
             <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true">
-              <path
-                fill="currentColor"
-                d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"
-              />
+              <path fill="currentColor" d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z" />
             </svg>
             Додано в кошик
           </span>
@@ -192,9 +194,7 @@ export default function ProductPage({ onAddToCart, onBuy }) {
           ← Назад
         </button>
 
-        <h1
-          className="text-center sm:text-left font-stencil uppercase font-extrabold tracking-[0.15em] text-gray-900 leading-snug drop-shadow-sm text-[clamp(16px,2.5vw,22px)] sm:text-[clamp(18px,2.2vw,26px)] md:text-[clamp(20px,2vw,28px)]"
-        >
+        <h1 className="text-center sm:text-left font-stencil uppercase font-extrabold tracking-[0.15em] text-gray-900 leading-snug drop-shadow-sm text-[clamp(16px,2.5vw,22px)] sm:text-[clamp(18px,2.2vw,26px)] md:text-[clamp(20px,2vw,28px)]">
           {product.title}
         </h1>
 
