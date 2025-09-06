@@ -52,7 +52,7 @@ export default async function handler(req, res) {
     : "";
 
   const br = (n=1) => "\n".repeat(n);
-const GAP = br(2) + "\u200B"; // 2 переноси + zero-width + ще 2
+const GAP = br(1) + "\u200B"; // 2 переноси + zero-width + ще 2
 
 const block = (...lines) => lines.filter(Boolean).join("\n");
 
