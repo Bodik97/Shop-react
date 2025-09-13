@@ -23,7 +23,7 @@ export default function ModalBuy({
   onClose,
 }) {
   const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
+  const [phone, setPhone] = useState("+380");
   const [qty, setQty] = useState(1);
   const [delivery, setDelivery] = useState("nova");
   const [city, setCity] = useState("");
@@ -67,7 +67,7 @@ export default function ModalBuy({
   useEffect(() => {
     if (!open) return;
     setName("");
-    setPhone("");
+    setPhone("+380");
     setQty(1);
     setDelivery("nova");
     setCity("");
@@ -323,42 +323,54 @@ export default function ModalBuy({
 
             {/* contacts */}
             <section aria-labelledby="contacts">
-              <h3 id="contacts" className="text-sm font-semibold text-gray-900 mb-2">
-                Контакти
-              </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                <Field
-                  id={nameId}
-                  name="name"
-                  label="Ім’я"
-                  placeholder="Ваше ім’я"
-                  autoComplete="name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  error={errors.name}
-                  help="Вкажіть ім’я отримувача."
-                  required
-                  disabled={sending}
-                />
-                <Field
-                  id={phoneId}
-                  name="phone"
-                  type="tel"
-                  label="Телефон"
-                  placeholder="+380XXXXXXXXX"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value.replace(/\s/g, ""))}
-                  error={errors.phone}
-                  help="Формат: +380XXXXXXXXX"
-                  inputMode="tel"
-                  autoComplete="tel"
-                  required
-                  pattern="^\\+380\\d{9}$"
-                  maxLength={13}
-                  disabled={sending}
-                />
-              </div>
+  <h3 id="contacts" className="text-sm font-semibold text-gray-900 mb-2">
+    Контакти
+  </h3>
+  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+    {/* Ім’я: дозволяємо лише літери (укр+лат), пробіли, апостроф, дефіс */}
+    <Field
+      id={nameId}
+      name="name"
+      label="Ім’я"
+      placeholder="Ваше ім’я"
+      autoComplete="name"
+      value={name}
+      onChange={(e) => {
+        const v = e.target.value.replace(/[^a-zA-Zа-яА-ЯёЁіІїЇєЄґҐ'’ -]/g, "");
+        setName(v);
+      }}
+      error={errors.name}
+      help="Лише літери, апостроф та дефіс."
+      required
+      disabled={sending}
+    />
+
+    {/* Телефон: фіксований префікс +380, користувач вводить лише 9 цифр */}
+    <Field
+      id={phoneId}
+      name="phone"
+      type="tel"
+      label="Телефон"
+      placeholder="+380XXXXXXXXX"
+      value={phone}
+      onChange={(e) => {
+        const digits = e.target.value.replace(/\D/g, "");
+        // беремо хвіст після '380' і обрізаємо до 9 цифр
+        const tail = (digits.startsWith("380") ? digits.slice(3) : digits).slice(0, 9);
+        setPhone("+380" + tail);
+      }}
+      error={errors.phone}
+      help="Префікс +380 вже заповнений — введіть ще 9 цифр."
+      inputMode="numeric"
+      autoComplete="tel"
+      required
+      pattern="^\+380\d{9}$"
+      maxLength={13}
+      disabled={sending}
+    />
+  </div>
             </section>
+
 
             {/* address */}
             {delivery === "nova" && (
