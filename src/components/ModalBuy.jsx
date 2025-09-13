@@ -1,6 +1,8 @@
 // src/components/ModalBuy.jsx
 import { useEffect, useMemo, useRef, useState, useId } from "react";
-import { MapPin, Landmark, Package, ChevronDown } from "lucide-react";
+import { MapPin, Landmark, Package, ChevronDown, CheckCircle2, Circle } from "lucide-react";
+
+
 
 // src/components/ModalBuy.jsx
 const API_URL = "/api/telegram";
@@ -521,8 +523,10 @@ function Row({ label, value, strong = false }) {
     </div>
   );
 }
-function NPSelect({ label, value, onChange, options, placeholder, disabled, error, required, icon: Icon, chosenText }) {
+function NPSelect({label, value, onChange, options, placeholder, disabled, error, required, icon: Icon, chosenText}) {
   const val = value || "";
+  const selected = !!val;
+
   return (
     <div>
       <div className="flex items-center justify-between mb-1">
@@ -530,24 +534,31 @@ function NPSelect({ label, value, onChange, options, placeholder, disabled, erro
           {Icon ? <Icon className="h-4 w-4 text-gray-500" /> : null}
           {label} {required && <span className="text-rose-600">*</span>}
         </label>
-        <span className={`text-xs px-2 py-0.5 rounded-full whitespace-nowrap ${value ? "bg-blue-100 text-blue-700" : "bg-slate-100 text-slate-600"}`}>
-          {value ? (chosenText || "Вибрано") : "— не вибрано —"}
+
+        <span
+          className={`inline-flex items-center gap-1.5 text-xs px-2 py-0.5 rounded-full ring-1 whitespace-nowrap
+            ${selected ? "bg-emerald-50 text-emerald-700 ring-emerald-200" : "bg-slate-100 text-slate-600 ring-slate-200"}`}
+        >
+          {selected ? (
+            <CheckCircle2 className="h-3.5 w-3.5" />
+          ) : (
+            <Circle className="h-3.5 w-3.5" />
+          )}
+          {selected ? (chosenText || "Вибрано") : "Не вибрано"}
         </span>
       </div>
 
       <div className="relative">
-      <select
+        <select
           value={val}
           onChange={onChange}
           disabled={disabled}
           className={`appearance-none w-full rounded-2xl border-2 bg-white px-3 py-2.5 pr-10 text-[15px] transition
             ${error ? "border-rose-300 focus:ring-rose-500" : "border-slate-300 focus:ring-blue-600"}
-            ${val === "" ? "text-slate-400" : "text-slate-900"}   /* сірий текст для плейсхолдера */
+            ${val === "" ? "text-slate-400" : "text-slate-900"}
             focus:outline-none focus:ring-2`}
         >
-          {/* Плейсхолдер-опція */}
           <option value="" disabled hidden>{placeholder}</option>
-
           {options.map(o => (
             <option key={o.value} value={o.value}>{o.label}</option>
           ))}
@@ -560,6 +571,7 @@ function NPSelect({ label, value, onChange, options, placeholder, disabled, erro
     </div>
   );
 }
+
 
 function Field({
   id,
