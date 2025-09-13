@@ -1,10 +1,9 @@
 // src/components/ModalBuy.jsx
 import { useEffect, useMemo, useRef, useState, useId } from "react";
 
-const API_URL =
-  import.meta.env.PROD
-    ? "https://my-project-blue-xi.vercel.app/api/telegram"
-    : "/api/telegram";
+// src/components/ModalBuy.jsx
+const API_URL = "/api/telegram";
+
 
 /** Формат UAH */
 const formatUAH = (n) =>
@@ -23,7 +22,7 @@ export default function ModalBuy({
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [qty, setQty] = useState(1);
-  const [delivery, setDelivery] = useState("nova");
+  const [delivery, setDelivery] = useState("NovaPosta");
   const [city, setCity] = useState("");
   const [branch, setBranch] = useState("");
   const [comment, setComment] = useState("");
