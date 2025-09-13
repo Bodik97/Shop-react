@@ -37,40 +37,34 @@ export default async function handler(req, res) {
   
       if (op === "cities") {
         if (!areaRef) return res.status(200).json({ ok:true, data:[] });
-        const props = { AreaRef:String(areaRef), Page:1, Limit:300, Language:"UA" };
-        if (q) props.FindByString = String(q);
-        const data = await callNP({ modelName:"AddressGeneral", calledMethod:"getSettlements", methodProperties: props });
-        // ВАЖЛИВО: для складів потрібен саме DeliveryCity як CityRef
-        const out = data.map(s => ({
-          ref: s.DeliveryCity || s.Ref || s.SettlementRef,
-          name: s.Present || s.Description,
-          area: s.AreaDescription || s.Area,
-        }));
+      
+        const data = await callNP({
+          modelName: "Address",
+          calledMethod: "getCities",
+          methodProperties: { AreaRef: String(areaRef) }
+        });
+      
+        const out = data.map(c => ({ ref: c.Ref, name: c.Description }));
         res.setHeader("Cache-Control","s-maxage=3600, stale-while-revalidate");
         return res.status(200).json({ ok:true, data: out });
       }
+      
   
       if (op === "warehouses") {
-        let cr = String(cityRef || "").trim();
-        if (!cr && city) {
-          const found = await callNP({
-            modelName:"AddressGeneral",
-            calledMethod:"getSettlements",
-            methodProperties:{ FindByString:String(city).trim(), Page:1, Limit:1, Language:"UA" },
-          });
-          cr = found?.[0]?.DeliveryCity || found?.[0]?.Ref || "";
-        }
+        const cr = String(cityRef || "").trim();
         if (!cr) return res.status(200).json({ ok:true, data:[] });
-  
+      
         const data = await callNP({
-          modelName:"AddressGeneral",
-          calledMethod:"getWarehouses",
-          methodProperties:{ CityRef: cr, Page:1, Limit:300, Language:"UA" },
+          modelName: "AddressGeneral",
+          calledMethod: "getWarehouses",
+          methodProperties: { CityRef: cr, Page: 1, Limit: 300, Language: "UA" }
         });
-        const out = data.map(w => ({ ref:w.Ref, number:w.Number, name:w.Description }));
+      
+        const out = data.map(w => ({ ref: w.Ref, number: w.Number, name: w.Description }));
         res.setHeader("Cache-Control","s-maxage=1800, stale-while-revalidate");
         return res.status(200).json({ ok:true, data: out });
       }
+      
   
       return res.status(400).json({ ok:false, error:"Bad op" });
     } catch (e) {
