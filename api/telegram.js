@@ -144,16 +144,54 @@ export default async function handler(req, res) {
   ].filter(Boolean).join("\n");
 
   try {
-    const tg = await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        chat_id: CHAT,
-        text,
-        parse_mode: "HTML",
-        disable_web_page_preview: true
-      })
-    }).then(r => r.json());
+    // 10s timeout + 1 retry на 429
+async function sendToTelegram({ TOKEN, CHAT, text }) {
+  const url = `https://api.telegram.org/bot${TOKEN}/sendMessage`;
+  const body = { chat_id: CHAT, text, parse_mode: "HTML", disable_web_page_preview: true };
+
+  const call = async () => {
+    const controller = new AbortController();
+    const t = setTimeout(() => controller.abort(), 10_000);
+    try {
+      const resp = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+        signal: controller.signal,
+      });
+
+      // Telegram інколи повертає 200 із ok:false
+      const data = await resp.json().catch(() => null);
+
+      if (!resp.ok) {
+        throw new Error(`HTTP ${resp.status} ${resp.statusText}`);
+      }
+      if (!data?.ok) {
+        const ra = data?.parameters?.retry_after;
+        if (data?.error_code === 429 && ra) {
+          return { rateLimited: true, retryAfter: ra };
+        }
+        throw new Error(data?.description || "Telegram error");
+      }
+      return { ok: true };
+    } finally {
+      clearTimeout(t);
+    }
+  };
+
+  const r1 = await call();
+  if (r1?.rateLimited) {
+    await new Promise(r => setTimeout(r, (r1.retryAfter || 1) * 1000));
+    return await call();
+  }
+  return r1;
+}
+
+// Виклик у хендлері
+const r = await sendToTelegram({ TOKEN, CHAT, text });
+if (!r?.ok) return res.status(502).json({ ok: false, error: "telegram error" });
+return res.status(200).json({ ok: true });
+
 
     if (!tg?.ok) return res.status(502).json({ ok: false, error: tg?.description || "telegram error" });
     return res.status(200).json({ ok: true });
