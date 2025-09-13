@@ -354,24 +354,6 @@ export default function ModalBuy({
               </div>
             </section>
 
-            {/* delivery */}
-            <section aria-labelledby="shipping">
-              <h3 id="shipping" className="text-sm font-semibold text-gray-900 mb-2">
-                Доставка
-              </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                <RadioCard
-                  id={deliveryNovaId}
-                  name="delivery"
-                  label="Нова Пошта"
-                  checked={delivery === "NovaPosta"}
-                  onChange={() => setDelivery("NovaPosta")}
-                  disabled={sending}
-                />
-                
-              </div>
-            </section>
-
             {/* address */}
             {delivery === "nova" && (
               <section aria-labelledby="np">
