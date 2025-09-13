@@ -523,7 +523,18 @@ function Row({ label, value, strong = false }) {
     </div>
   );
 }
-function NPSelect({label, value, onChange, options, placeholder, disabled, error, required, icon: Icon, chosenText}) {
+function NPSelect({
+  label,
+  value,
+  onChange,
+  options,
+  placeholder,
+  disabled,
+  error,
+  required,
+  icon: Icon,
+  chosenText, // можна не використовувати
+}) {
   const val = value || "";
   const selected = !!val;
 
@@ -535,16 +546,14 @@ function NPSelect({label, value, onChange, options, placeholder, disabled, error
           {label} {required && <span className="text-rose-600">*</span>}
         </label>
 
+        {/* тільки іконка-індикатор */}
         <span
-          className={`inline-flex items-center gap-1.5 text-xs px-2 py-0.5 rounded-full ring-1 whitespace-nowrap
-            ${selected ? "bg-emerald-50 text-emerald-700 ring-emerald-200" : "bg-slate-100 text-slate-600 ring-slate-200"}`}
+          className={`inline-flex items-center justify-center h-6 w-6 rounded-full ring-1
+            ${selected ? "bg-emerald-50 text-emerald-600 ring-emerald-200" : "bg-slate-100 text-slate-400 ring-slate-200"}`}
+          title={selected ? "Вибрано" : "Не вибрано"}
+          aria-label={selected ? "Вибрано" : "Не вибрано"}
         >
-          {selected ? (
-            <CheckCircle2 className="h-3.5 w-3.5" />
-          ) : (
-            <Circle className="h-3.5 w-3.5" />
-          )}
-          {selected ? (chosenText || "Вибрано") : "Не вибрано"}
+          {selected ? <CheckCircle2 className="h-4 w-4" /> : <Circle className="h-4 w-4" />}
         </span>
       </div>
 
@@ -571,6 +580,7 @@ function NPSelect({label, value, onChange, options, placeholder, disabled, error
     </div>
   );
 }
+
 
 
 function Field({
