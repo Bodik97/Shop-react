@@ -332,17 +332,7 @@ export default function Cart({
 
             <div className="my-3 h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
 
-            <Shipping
-              options={options.map(o =>
-                o.id === "post"
-                  ? { ...o, price: 0, badge: "FREE" } // робимо пошту безкоштовною + бейдж
-                  : o
-              )}
-              value={shipId}
-              onChange={setShipId}
-              freeShippingFrom={0}     // поріг = 0, тобто завжди безкоштовно
-              subtotal={subtotal}
-            />
+
 
             <button
               type="button"
