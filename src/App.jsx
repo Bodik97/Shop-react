@@ -18,6 +18,39 @@ import Cart from "./components/Cart";
 const API_URL = "/api/telegram";
 
 export default function App() {
+  // ===== disable browser zoom gestures =====
+useEffect(() => {
+  const prevent = (e) => e.preventDefault();
+
+  // iOS Safari pinch-zoom
+  document.addEventListener("gesturestart", prevent, { passive: false });
+
+  // double-tap zoom (mobile)
+  let last = 0;
+  const onTouchEnd = (e) => {
+    const now = Date.now();
+    if (now - last < 350) e.preventDefault();
+    last = now;
+  };
+  document.addEventListener("touchend", onTouchEnd, { passive: false });
+
+  // ctrl+wheel zoom (desktop)
+  const onWheel = (e) => { if (e.ctrlKey) e.preventDefault(); };
+  window.addEventListener("wheel", onWheel, { passive: false });
+
+  // double-click zoom (desktop)
+  const onDbl = (e) => e.preventDefault();
+  document.addEventListener("dblclick", onDbl, { passive: false });
+
+  return () => {
+    document.removeEventListener("gesturestart", prevent);
+    document.removeEventListener("touchend", onTouchEnd);
+    window.removeEventListener("wheel", onWheel);
+    document.removeEventListener("dblclick", onDbl);
+  };
+}, []);
+// =========================================
+
   // Безвідмовне читання продуктів
   const products = useMemo(() => {
     const raw = Array.isArray(Data.products)

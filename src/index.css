@@ -31,7 +31,8 @@
     .animate-rise { animation: none; }
   }
 }
-html, body { touch-action: manipulation; } /* менше шансів на дабл-тап зум */
+html, body, #root { height: 100%; }
+html, body, button, a { touch-action: manipulation; } 
 
 
 .animate-fadeIn {
