@@ -111,7 +111,7 @@ export default function ModalBuy({
     fetch(`${NP_API}?op=warehouses&cityRef=${encodeURIComponent(cityRef)}`)
     .then(r=>r.json()).then(j=>setWarehouses(j.data||[])).catch(()=>setWarehouses([]));
   }, [cityRef]);
-  
+  if (!open) return null;
 
   function validateLocal() {
     const err = {};
