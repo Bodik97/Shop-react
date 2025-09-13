@@ -370,8 +370,6 @@ export default function ModalBuy({
     />
   </div>
             </section>
-
-
             {/* address */}
             {delivery === "nova" && (
               <section aria-labelledby="np">

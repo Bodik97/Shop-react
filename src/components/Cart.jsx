@@ -319,8 +319,8 @@ export default function Cart({
 
         {/* sidebar */}
         <aside className="hidden lg:block lg:col-span-1">
-          <div className="p-6 bg-white rounded-2xl border sticky top-24">
-            <h2 className="text-xl font-bold mb-4">Підсумок</h2>
+          <div className="p-5 sm:p-6 bg-white/95 backdrop-blur rounded-2xl border shadow-xl ring-1 ring-slate-200 sticky top-24">
+            <h2 className="text-lg sm:text-xl font-bold tracking-tight mb-4">Підсумок</h2>
 
             <Breakdown
               itemsCount={itemsCount}
@@ -330,11 +330,17 @@ export default function Cart({
               total={total}
             />
 
+            <div className="my-3 h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
+
             <Shipping
-              options={options}
+              options={options.map(o =>
+                o.id === "post"
+                  ? { ...o, price: 0, badge: "FREE" } // робимо пошту безкоштовною + бейдж
+                  : o
+              )}
               value={shipId}
               onChange={setShipId}
-              freeShippingFrom={freeShippingFrom}
+              freeShippingFrom={0}     // поріг = 0, тобто завжди безкоштовно
               subtotal={subtotal}
             />
 
@@ -342,26 +348,26 @@ export default function Cart({
               type="button"
               onClick={handleCheckout}
               disabled={!itemsCount}
-              className="inline-flex items-center justify-center w-full h-12 rounded-2xl bg-black text-white font-semibold hover:bg-black/90 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed transition mt-4"
+              className="inline-flex items-center justify-center w-full h-12 rounded-2xl bg-black text-white font-semibold hover:bg-black/90 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed transition mt-4 shadow-lg"
             >
               Оформити замовлення
             </button>
 
             {/* Траст-блок */}
-            <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
-              <div className="flex items-center gap-2 rounded-xl border px-3 py-2">
+            <div className="mt-4 grid grid-cols-2 gap-2 text-sm">
+              <div className="flex items-center gap-2 rounded-xl border px-3 py-2 bg-white">
                 <span className="inline-grid h-7 w-7 place-items-center rounded-lg bg-gray-100">🛡️</span>
                 12 міс гарантія
               </div>
-              <div className="flex items-center gap-2 rounded-xl border px-3 py-2">
+              <div className="flex items-center gap-2 rounded-xl border px-3 py-2 bg-white">
                 <span className="inline-grid h-7 w-7 place-items-center rounded-lg bg-gray-100">↩️</span>
                 14 днів повернення
               </div>
-              <div className="flex items-center gap-2 rounded-xl border px-3 py-2">
+              <div className="flex items-center gap-2 rounded-xl border px-3 py-2 bg-white">
                 <span className="inline-grid h-7 w-7 place-items-center rounded-lg bg-gray-100">💳</span>
                 Оплата при отриманні
               </div>
-              <div className="flex items-center gap-2 rounded-xl border px-3 py-2">
+              <div className="flex items-center gap-2 rounded-xl border px-3 py-2 bg-white">
                 <span className="inline-grid h-7 w-7 place-items-center rounded-lg bg-gray-100">🚚</span>
                 Швидка доставка
               </div>
@@ -372,6 +378,7 @@ export default function Cart({
             </Link>
           </div>
         </aside>
+
       </div>
 
       <div aria-live="polite" className="sr-only">
