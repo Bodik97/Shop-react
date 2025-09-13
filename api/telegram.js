@@ -1,6 +1,6 @@
 /* eslint-env node */
 
-// Дозволені origin'и через env, інакше '*'
+// Дозволені origins (необов’язково)
 const ORIGINS = (process.env.ALLOWED_ORIGINS || "")
   .split(",")
   .map(s => s.trim())
@@ -19,15 +19,17 @@ export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Headers", "Content-Type,Authorization,X-Requested-With");
 
   if (req.method === "OPTIONS") return res.status(204).end();
-  if (req.method === "GET")   return res.status(200).json({ ok: true, endpoint: "/api/telegram" });
-  if (req.method !== "POST")  return res.status(405).json({ ok: false, error: "Only POST" });
+  if (req.method === "GET")     return res.status(200).json({ ok: true, endpoint: "/api/telegram" });
+  if (req.method !== "POST")    return res.status(405).json({ ok: false, error: "Only POST" });
 
-  // Env
-  const TOKEN = process.env.TELEGRAM_TOKEN;
-  const CHAT  = process.env.TELEGRAM_CHAT_ID;
-  if (!TOKEN || !CHAT) return res.status(500).json({ ok: false, error: "Missing TELEGRAM_TOKEN/TELEGRAM_CHAT_ID" });
+  // Env з потрібними назвами
+  const TOKEN = process.env.VITE_BOT_TOKEN || process.env.TELEGRAM_TOKEN;
+  const CHAT  = process.env.VITE_CHAT_ID  || process.env.TELEGRAM_CHAT_ID;
+  if (!TOKEN || !CHAT) {
+    return res.status(500).json({ ok: false, error: "Missing VITE_BOT_TOKEN/VITE_CHAT_ID" });
+  }
 
-  // Body: auto-parse або fallback
+  // Body (auto-parse у Vercel, fallback вручну)
   let b = req.body;
   if (!b || typeof b !== "object") {
     try {
@@ -43,18 +45,18 @@ export default async function handler(req, res) {
     }
   }
 
-  // Утиліти
+  // Utils
   const esc = (s = "") => String(s).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
-  const fmtUAH = (n) => new Intl.NumberFormat("uk-UA", { maximumFractionDigits: 0 }).format(Number(n) || 0) + " ₴";
+  const fmtUAH = n => new Intl.NumberFormat("uk-UA", { maximumFractionDigits: 0 }).format(Number(n) || 0) + " ₴";
   const block = (title, rows) => [`<b>${title}</b>`, ...rows.filter(Boolean)].join("\n");
   const sep = "────────────";
 
-  // Обовʼязкові
+  // Required
   const name  = (b.customer?.name  || b.name  || "").trim();
   const phone = (b.customer?.phone || b.phone || "").trim();
   if (!name || !phone) return res.status(400).json({ ok: false, error: "name and phone required" });
 
-  // Необовʼязкові
+  // Optional
   const email   = (b.customer?.email || b.email || "").trim();
   const comment = (b.comment || "").trim();
   const region  = (b.delivery?.region || b.region || "").trim();
@@ -62,7 +64,7 @@ export default async function handler(req, res) {
   const branch  = (b.delivery?.branch || b.branch || "").trim();
   const shipping = b.shipping || {};
 
-  // Товари
+  // Items
   let items = [];
   if (b.product) {
     const price = Math.max(0, Number(b.product.price) || 0);
@@ -82,14 +84,14 @@ export default async function handler(req, res) {
     });
   }
 
-  // Суми
+  // Amounts
   const subtotal = Number(b?.amounts?.subtotal || b?.order?.subtotal) || items.reduce((s, i) => s + i.lineTotal, 0);
   const discount = Math.max(0, Number(b?.amounts?.discount || b?.order?.discount) || 0);
   const shippingCost = Math.max(0, Number(b?.amounts?.shipping || b?.order?.shipping) || 0);
   const total = Number(b?.amounts?.total || b?.order?.total) || Math.max(0, subtotal - discount + shippingCost);
   const mode  = String(b?.source || b?.order?.mode || (items.length > 1 ? "cart" : "single"));
 
-  // Блоки
+  // Message
   const dt = new Date().toLocaleString("uk-UA", { timeZone: "Europe/Kyiv", hour12: false });
 
   const clientBlock = block("👤 Клієнт", [
@@ -141,9 +143,8 @@ export default async function handler(req, res) {
     metaBlock
   ].filter(Boolean).join("\n");
 
-  // Відправка в Telegram (Node 18+ має global fetch)
   try {
-    const resp = await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
+    const tg = await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -154,7 +155,7 @@ export default async function handler(req, res) {
       })
     }).then(r => r.json());
 
-    if (!resp?.ok) return res.status(502).json({ ok: false, error: resp?.description || "telegram error" });
+    if (!tg?.ok) return res.status(502).json({ ok: false, error: tg?.description || "telegram error" });
     return res.status(200).json({ ok: true });
   } catch (e) {
     return res.status(500).json({ ok: false, error: String(e?.message || e) });
