@@ -78,7 +78,6 @@ export default async function handler(req, res) {
   const total    = Number(b?.amounts?.total || b?.order?.total) || (subtotal ? Math.max(0, subtotal - discount + shipping) : 0);
 
   lines.push("────────────");
-  if (subtotal) lines.push(`Сума товарів: <b>${fmt(subtotal)}</b>`);
   if (discount) lines.push(`Знижка: <b>−${fmt(discount)}</b>`);
   lines.push(`Доставка: <b>${shipping ? fmt(shipping) : "Безкоштовно"}</b>`);
   if (total) lines.push(`💰 Разом: <b>${fmt(total)}</b>`);
