@@ -107,7 +107,6 @@ export default function App() {
     try {
       refreshCartPrices();
 
-      // якщо Cart вже зібрав payload з контактами — шлемо його як є
       const payload = payloadFromCart ?? {
         mode: "cart",
         cart: cart.map((i) => ({
@@ -183,8 +182,12 @@ export default function App() {
                 {products.length ? (
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {products.map((product) => (
-                    <ProductCard product={product} onAddToCart={addToCart} onBuy={openBuy} />
-
+                      <ProductCard
+                        key={product.id}
+                        product={product}
+                        onAddToCart={addToCart}
+                        onBuy={openBuy}
+                      />
                     ))}
                   </div>
                 ) : (
@@ -207,7 +210,7 @@ export default function App() {
               refreshPrices={refreshCartPrices}
               changeQty={changeQty}
               removeFromCart={removeFromCart}
-              checkout={checkout} // ← тепер шле на /api/telegram
+              checkout={checkout}
             />
           }
         />
@@ -218,12 +221,14 @@ export default function App() {
         <Route path="/contact" element={<Contact />} />
       </Routes>
 
-      <ModalBuy
-        open={buyOpen}
-        product={selected}
-        onClose={() => setBuyOpen(false)}
-        // onSubmit НЕ потрібен — ModalBuy сам шле на /api/telegram
-      />
+      {/* Модалку монтуємо лише коли потрібно */}
+      {buyOpen && (
+        <ModalBuy
+          open
+          product={selected}
+          onClose={() => setBuyOpen(false)}
+        />
+      )}
     </>
   );
 }
