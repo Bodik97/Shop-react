@@ -522,6 +522,7 @@ function Row({ label, value, strong = false }) {
   );
 }
 function NPSelect({ label, value, onChange, options, placeholder, disabled, error, required, icon: Icon, chosenText }) {
+  const val = value || "";
   return (
     <div>
       <div className="flex items-center justify-between mb-1">
@@ -535,15 +536,18 @@ function NPSelect({ label, value, onChange, options, placeholder, disabled, erro
       </div>
 
       <div className="relative">
-        <select
-          value={value}
+      <select
+          value={val}
           onChange={onChange}
           disabled={disabled}
           className={`appearance-none w-full rounded-2xl border-2 bg-white px-3 py-2.5 pr-10 text-[15px] transition
-          ${error ? "border-rose-300 focus:ring-rose-500" : "border-slate-300 focus:ring-blue-600"}
-          focus:outline-none focus:ring-2`}
+            ${error ? "border-rose-300 focus:ring-rose-500" : "border-slate-300 focus:ring-blue-600"}
+            ${val === "" ? "text-slate-400" : "text-slate-900"}   /* сірий текст для плейсхолдера */
+            focus:outline-none focus:ring-2`}
         >
-          <option value="">{placeholder}</option>
+          {/* Плейсхолдер-опція */}
+          <option value="" disabled hidden>{placeholder}</option>
+
           {options.map(o => (
             <option key={o.value} value={o.value}>{o.label}</option>
           ))}

@@ -125,13 +125,15 @@ export default function ProductCard({ product, onAddToCart, onBuy }) {
             type="button"
             className="relative inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-black px-4 text-white font-semibold hover:bg-black/90 active:scale-[0.99] transition"
             onClick={(e) => {
-              stop(e);
-              onBuy?.(product);
+              e.preventDefault();
+              e.stopPropagation();        // блокує перехід, якщо картка загорнута в <Link>
+              onBuy?.(product);           // тригер модалки
             }}
             aria-label={`Купити ${product.title}`}
           >
             Купити
           </button>
+
         </div>
       </div>
     </article>

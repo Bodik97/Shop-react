@@ -8,32 +8,30 @@ export default function PopularSlider({
   onBuy,
   title = "Популярні товари",
 }) {
-  // hooks завжди зверху, без умовних повернень до них
   const trackRef = useRef(null);
   const [canLeft, setCanLeft] = useState(false);
   const [canRight, setCanRight] = useState(false);
 
-  // формуємо список «популярних»
-  const list = useMemo(
-    () =>
-      (products || [])
-        .filter(
-          (p) =>
-            p?.popular === true ||
-            p?.isPopular === true ||
-            p?.tags?.includes?.("popular") ||
-            p?.badges?.includes?.("popular")
-        )
-        .sort((a, b) => (b.popularityScore || 0) - (a.popularityScore || 0)),
-    [products]
-  );
+  // Список популярних; якщо немає — фолбек на всі товари
+  const list = useMemo(() => {
+    const popular = (products || [])
+      .filter(
+        (p) =>
+          p?.popular === true ||
+          p?.isPopular === true ||
+          p?.tags?.includes?.("popular") ||
+          p?.badges?.includes?.("popular")
+      )
+      .sort((a, b) => (b.popularityScore || 0) - (a.popularityScore || 0));
+    return popular.length ? popular : products;
+  }, [products]);
 
   const updateArrows = useCallback(() => {
     const el = trackRef.current;
     if (!el) return;
     const { scrollLeft, scrollWidth, clientWidth } = el;
-    setCanLeft(scrollLeft > 0);
-    setCanRight(scrollLeft + clientWidth < scrollWidth - 1);
+    setCanLeft(scrollLeft > 1);
+    setCanRight(Math.ceil(scrollLeft + clientWidth) < scrollWidth);
   }, []);
 
   const getStep = useCallback(() => {
@@ -52,8 +50,18 @@ export default function PopularSlider({
     [getStep]
   );
 
+  // Центруємо перший елемент
+  const centerFirst = useCallback(() => {
+    const el = trackRef.current;
+    if (!el) return;
+    const slide = el.querySelector("[data-slide]");
+    if (!slide) return;
+    const left = slide.offsetLeft - (el.clientWidth - slide.clientWidth) / 2;
+    el.scrollTo({ left: Math.max(0, left), behavior: "auto" });
+  }, []);
+
+  // Ініціалізація / слухачі
   useEffect(() => {
-    
     updateArrows();
     const el = trackRef.current;
     if (!el) return;
@@ -65,21 +73,12 @@ export default function PopularSlider({
       window.removeEventListener("resize", onResize);
     };
   }, [updateArrows]);
-    const centerFirst = useCallback(() => {
-    const el = trackRef.current;
-    if (!el) return;
-    const slide = el.querySelector("[data-slide]");
-    if (!slide) return;
-    const left = slide.offsetLeft - (el.clientWidth - slide.clientWidth) / 2;
-    el.scrollTo({ left: Math.max(0, left), behavior: "auto" });
-  }, []);
 
+  // Після побудови списку — центр і оновлення стрілок
   useEffect(() => {
     centerFirst();
-    updateArrows?.();
+    updateArrows();
   }, [centerFirst, updateArrows, list.length]);
-
-  
 
   if (!list.length) return null;
 
@@ -113,28 +112,29 @@ export default function PopularSlider({
 
       <div
         ref={trackRef}
-        className="relative flex gap-4 overflow-x-auto no-scrollbar scroll-smooth
-                  snap-x snap-mandatory justify-start px-0"
+        role="region"
+        aria-roledescription="carousel"
+        aria-label={title}
+        className="relative flex gap-4 overflow-x-auto no-scrollbar scroll-smooth snap-x snap-mandatory justify-start px-0"
       >
-
         {list.map((p) => (
           <div
             key={p.id}
             data-slide
             className="snap-center snap-always flex-none
-                      basis-full sm:basis-[calc((100%-1rem)/2)]
-                      md:basis-[calc((100%-2rem)/3)]
-                      lg:basis-[calc((100%-3rem)/4)]
-                      flex justify-center"
+                       basis-full sm:basis-[calc((100%-1rem)/2)]
+                       md:basis-[calc((100%-2rem)/3)]
+                       lg:basis-[calc((100%-3rem)/4)]
+                       flex justify-center"
           >
             <div className="w-full max-w-[420px]">
               <ProductCard product={p} onAddToCart={onAddToCart} onBuy={onBuy} />
             </div>
           </div>
         ))}
-
       </div>
 
+      {/* Мобільні стрілки */}
       <div className="sm:hidden pointer-events-none">
         {canLeft && (
           <button
