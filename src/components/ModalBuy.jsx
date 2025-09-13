@@ -340,7 +340,7 @@ export default function ModalBuy({
         setName(v);
       }}
       error={errors.name}
-      help="Лише літери, апостроф та дефіс."
+      help="Лише літери"
       required
       disabled={sending}
     />
@@ -360,7 +360,7 @@ export default function ModalBuy({
         setPhone("+380" + tail);
       }}
       error={errors.phone}
-      help="Префікс +380 вже заповнений — введіть ще 9 цифр."
+      help="Введіть 9 цифр"
       inputMode="numeric"
       autoComplete="tel"
       required
