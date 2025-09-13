@@ -54,7 +54,7 @@ export default function ProductCard({ product, onAddToCart, onBuy }) {
 
         {isPopular && (
           <span
-            className="absolute top-1 left-1 md:-top-3 md:left-3 z-10
+            className="absolute top-5 left-5 md:-top-3 md:left-3 z-10
                       inline-flex items-center gap-1 rounded-full
                       bg-gradient-to-r from-orange-500 via-rose-500 to-pink-500
                       text-white shadow-lg ring-1 ring-white/20 backdrop-blur

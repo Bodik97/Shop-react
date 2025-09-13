@@ -208,158 +208,104 @@ export default function ProductPage({ onAddToCart, onBuy }) {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8">
         {/* Галерея */}
         <section
-          className="lg:col-span-7"
-          role="region"
-          aria-roledescription="carousel"
-          aria-label="Галерея товару"
-          aria-live="polite"
-          onKeyDown={(e) => {
-            if (e.key === "ArrowLeft") prev();
-            if (e.key === "ArrowRight") next();
-          }}
-          tabIndex={0}
+  className="lg:col-span-7"
+  role="region"
+  aria-roledescription="carousel"
+  aria-label="Галерея товару"
+  aria-live="polite"
+  onKeyDown={(e) => {
+    if (e.key === "ArrowLeft") prev();
+    if (e.key === "ArrowRight") next();
+  }}
+  tabIndex={0}
+>
+<div className="relative rounded-2xl overflow-hidden bg-white shadow-lg">
+  <img
+    src={imgs[idx]}
+    alt={product.title}
+    className="w-full aspect-[16/9] object-contain select-none cursor-zoom-in bg-white"
+    onClick={openFull}
+    onPointerDown={onPointerDown}
+    onPointerUp={onPointerUp}
+    onTouchStart={onPointerDown}
+    onTouchEnd={onPointerUp}
+    loading="eager"
+    decoding="async"
+    fetchPriority="high"
+    sizes="(min-width:1024px) 720px, 100vw"
+    draggable={false}
+  />
+
+  {/* Стрілки */}
+  {imgs.length > 1 && (
+    <>
+      <button
+        type="button"
+        onClick={prev}
+        aria-label="Попереднє фото"
+        className="absolute left-4 top-1/2 -translate-y-1/2 h-13 w-13 flex items-center justify-center rounded-full bg-black/40 text-white shadow-lg hover:bg-black/60 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 transition"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          className="h-8 w-8"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         >
-          <div className="relative rounded-2xl overflow-hidden bg-white shadow-sm">
-            <img
-              src={imgs[idx]}
-              alt={product.title}
-              className="w-full aspect-[16/9] object-contain select-none cursor-zoom-in bg-white"
-              onClick={openFull}
-              onPointerDown={onPointerDown}
-              onPointerUp={onPointerUp}
-              onTouchStart={onPointerDown}
-              onTouchEnd={onPointerUp}
-              loading="eager"
-              decoding="async"
-              fetchPriority="high"
-              sizes="(min-width:1024px) 720px, 100vw"
-              draggable={false}
-            />
+          <path d="M15.5 4.5 8 12l7.5 7.5" />
+        </svg>
+      </button>
 
-            {imgs.length > 1 && (
-              <div className="absolute inset-x-0 bottom-3 z-10 flex items-center justify-between px-3">
-                <button
-                  type="button"
-                  onClick={prev}
-                  aria-label="Попереднє фото"
-                  className="h-11 w-11 flex items-center justify-center rounded-full bg-white text-black shadow ring-1 ring-gray-300 hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-                >
-                  <svg viewBox="0 0 24 24" aria-hidden="true" className="h-6 w-6">
-                    <path
-                      d="M15.5 4.5 8 12l7.5 7.5"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </button>
+      <button
+        type="button"
+        onClick={next}
+        aria-label="Наступне фото"
+        className="absolute right-4 top-1/2 -translate-y-1/2 h-13 w-13 flex items-center justify-center rounded-full bg-black/40 text-white shadow-lg hover:bg-black/60 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 transition"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          className="h-8 w-8"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M8.5 4.5 16 12l-7.5 7.5" />
+        </svg>
+      </button>
+    </>
+  )}
+</div>
 
-                <button
-                  type="button"
-                  onClick={next}
-                  aria-label="Наступне фото"
-                  className="h-11 w-11 flex items-center justify-center rounded-full bg-white text-black shadow ring-1 ring-gray-300 hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-                >
-                  <svg viewBox="0 0 24 24" aria-hidden="true" className="h-6 w-6">
-                    <path
-                      d="M8.5 4.5 16 12l-7.5 7.5"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </button>
-              </div>
-            )}
-          </div>
 
-          {/* Індикатори */}
-          {imgs.length > 1 && (
-            <div className="mt-3 flex items-center justify-center gap-2" role="tablist" aria-label="Слайди">
-              {imgs.map((_, i) => {
-                const selected = i === idx;
-                return (
-                  <button
-                    key={i}
-                    type="button"
-                    role="tab"
-                    aria-selected={selected}
-                    aria-label={`Слайд ${i + 1} з ${imgs.length}`}
-                    onClick={() => setIdx(i)}
-                    className={`h-2.5 w-2.5 rounded-full transition-transform ${
-                      selected ? "bg-blue-600 scale-110" : "bg-gray-300 hover:bg-gray-400"
-                    }`}
-                  />
-                );
-              })}
-            </div>
-          )}
+  {/* Індикатори */}
+  {imgs.length > 1 && (
+    <div className="mt-4 flex items-center justify-center gap-2" role="tablist" aria-label="Слайди">
+      {imgs.map((_, i) => {
+        const selected = i === idx;
+        return (
+          <button
+            key={i}
+            type="button"
+            role="tab"
+            aria-selected={selected}
+            aria-label={`Слайд ${i + 1} з ${imgs.length}`}
+            onClick={() => setIdx(i)}
+            className={`h-2 w-2 rounded-full transition ${
+              selected
+                ? "bg-blue-600 ring-2 ring-blue-300 scale-110"
+                : "bg-gray-400 hover:bg-gray-500"
+            }`}
+          />
+        );
+      })}
+    </div>
+  )}
+</section>
 
-          {/* Контентні блоки */}
-          <div className="mt-6 md:mt-8 space-y-6 md:space-y-8">
-            {product.description && (
-              <section className="bg-white/90 rounded-2xl p-4 sm:p-5 md:p-6 shadow-sm">
-                <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-2 md:mb-3">Опис</h2>
-                <p className="text-gray-700 text-sm md:text-base leading-relaxed whitespace-pre-line">
-                  {product.description}
-                </p>
-              </section>
-            )}
-
-            {features.length > 0 && (
-              <section className="bg-white/90 rounded-2xl p-4 sm:p-5 md:p-6 shadow-sm">
-                <h3 className="text-lg md:text-xl font-semibold text-gray-900 mb-2 md:mb-3">Переваги</h3>
-                <ul className="space-y-2 text-sm md:text-base">
-                  {features.map((f, i) => (
-                    <li key={i} className="flex items-start gap-2">
-                      <span className="mt-[7px] h-2 w-2 rounded-full bg-blue-600 shrink-0" />
-                      <span className="text-gray-800">{f}</span>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            )}
-
-            {!!Object.keys(specs).length && (
-              <section className="bg-white/90 rounded-2xl p-4 sm:p-5 md:p-6 shadow-sm">
-                <h3 className="text-lg md:text-xl font-semibold text-gray-900 mb-2 md:mb-3">Характеристики</h3>
-                <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 md:gap-y-3 text-sm md:text-base">
-                  {Object.entries(specs).map(([k, v]) => (
-                    <div key={k} className="flex justify-between gap-4">
-                      <dt className="text-gray-500">{k}</dt>
-                      <dd className="text-gray-900 font-medium text-right">{v}</dd>
-                    </div>
-                  ))}
-                </dl>
-              </section>
-            )}
-
-            {(inBox.length > 0 || warranty) && (
-              <section className="bg-white/90 rounded-2xl p-4 sm:p-5 md:p-6 shadow-sm">
-                <h3 className="text-lg md:text-xl font-semibold text-gray-900 mb-2 md:mb-3">Комплектація та гарантія</h3>
-                {inBox.length > 0 && (
-                  <ul className="list-disc pl-5 md:pl-6 text-gray-800 space-y-1 text-sm md:text-base">
-                    {inBox.map((it, i) => <li key={i}>{it}</li>)}
-                  </ul>
-                )}
-                {warranty && <p className="mt-3 text-gray-700 text-sm md:text-base">{warranty}</p>}
-              </section>
-            )}
-          </div>
-
-          <style>{`
-            @media (prefers-reduced-motion: reduce) {
-              [aria-roledescription="carousel"] * {
-                transition: none !important;
-                animation: none !important;
-              }
-            }
-          `}</style>
-        </section>
 
         {/* Сайдбар */}
         <aside className="lg:col-span-5">

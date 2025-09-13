@@ -320,7 +320,7 @@ export default function Cart({
         {/* sidebar */}
         <aside className="hidden lg:block lg:col-span-1">
           <div className="p-5 sm:p-6 bg-white/95 backdrop-blur rounded-2xl border shadow-xl ring-1 ring-slate-200 sticky top-24">
-            <h2 className="text-lg sm:text-xl font-bold tracking-tight mb-4">Підсумок</h2>
+            <h2 className="text-lg  text-center text-black sm:text-xl font-bold tracking-tight mb-4">Підсумок</h2>
 
             <Breakdown
               itemsCount={itemsCount}

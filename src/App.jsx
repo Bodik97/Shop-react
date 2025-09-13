@@ -18,39 +18,27 @@ import Cart from "./components/Cart";
 const API_URL = "/api/telegram";
 
 export default function App() {
-  // ===== disable browser zoom gestures =====
-useEffect(() => {
-  const prevent = (e) => e.preventDefault();
-
-  // iOS Safari pinch-zoom
-  document.addEventListener("gesturestart", prevent, { passive: false });
-
-  // double-tap zoom (mobile)
-  let last = 0;
-  const onTouchEnd = (e) => {
-    const now = Date.now();
-    if (now - last < 350) e.preventDefault();
-    last = now;
-  };
-  document.addEventListener("touchend", onTouchEnd, { passive: false });
-
-  // ctrl+wheel zoom (desktop)
-  const onWheel = (e) => { if (e.ctrlKey) e.preventDefault(); };
-  window.addEventListener("wheel", onWheel, { passive: false });
-
-  // double-click zoom (desktop)
-  const onDbl = (e) => e.preventDefault();
-  document.addEventListener("dblclick", onDbl, { passive: false });
-
-  return () => {
-    document.removeEventListener("gesturestart", prevent);
-    document.removeEventListener("touchend", onTouchEnd);
-    window.removeEventListener("wheel", onWheel);
-    document.removeEventListener("dblclick", onDbl);
-  };
-}, []);
-// =========================================
-
+  useEffect(() => {
+    const opts = { passive: false };
+  
+    const onWheel = (e) => { if (e.ctrlKey) e.preventDefault(); };        // Ctrl+колесо
+    const onGesture = (e) => e.preventDefault();                           // iOS pinch
+    const onDblClick = (e) => e.preventDefault();                          // подвійний клік
+    const onTouchStart = (e) => { if (e.touches?.length > 1) e.preventDefault(); }; // 2 пальці
+  
+    window.addEventListener("wheel", onWheel, opts);
+    window.addEventListener("gesturestart", onGesture, opts);
+    window.addEventListener("dblclick", onDblClick, opts);
+    window.addEventListener("touchstart", onTouchStart, opts);
+  
+    return () => {
+      window.removeEventListener("wheel", onWheel, opts);
+      window.removeEventListener("gesturestart", onGesture, opts);
+      window.removeEventListener("dblclick", onDblClick, opts);
+      window.removeEventListener("touchstart", onTouchStart, opts);
+    };
+  }, []);
+  
   // Безвідмовне читання продуктів
   const products = useMemo(() => {
     const raw = Array.isArray(Data.products)

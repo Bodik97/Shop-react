@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Stardos+Stencil:wght@700&display=swap');
 @import "tailwindcss";
-
 @keyframes slideUpFade {
   0%   { transform: translateY(6px); opacity: 0; }
   40%  { transform: translateY(-2px); opacity: 1; }
@@ -31,8 +30,6 @@
     .animate-rise { animation: none; }
   }
 }
-html, body, #root { height: 100%; }
-html, body, button, a { touch-action: manipulation; } 
 
 
 .animate-fadeIn {
