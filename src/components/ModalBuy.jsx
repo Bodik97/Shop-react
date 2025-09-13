@@ -1,5 +1,6 @@
 // src/components/ModalBuy.jsx
 import { useEffect, useMemo, useRef, useState, useId } from "react";
+import { MapPin, Landmark, Package, ChevronDown } from "lucide-react";
 
 // src/components/ModalBuy.jsx
 const API_URL = "/api/telegram";
@@ -360,64 +361,63 @@ export default function ModalBuy({
             {/* address */}
             {delivery === "nova" && (
               <section aria-labelledby="np">
-                <h3 id="np" className="text-sm font-semibold text-gray-900 mb-2">Нова Пошта</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-                  {/* Область */}
-                  <div>
-                    <label className="block text-sm text-gray-800 mb-1">Область <span className="text-rose-600">*</span></label>
-                    <select
-                      value={areaRef}
-                      onChange={(e) => {
-                        const ref = e.target.value;
-                        setAreaRef(ref);
-                        const a = areas.find(x => x.ref === ref);
-                        setRegion(a?.name || "");
-                      }}
-                      disabled={sending}
-                      className={`w-full rounded-xl border px-3 py-2.5 text-[15px] ${errors.region ? "border-red-400 focus:ring-red-600" : "border-gray-300/70 focus:ring-blue-600"} focus:outline-none focus:ring-2`}
-                    >
-                      <option value="">Оберіть область</option>
-                      {areas.map(a => <option key={a.ref} value={a.ref}>{a.name}</option>)}
-                    </select>
-                    {errors.region && <p className="mt-1 text-xs text-red-700">{errors.region}</p>}
-                  </div>
-
-                  {/* Місто */}
-                  <div>
-                    <label className="block text-sm text-gray-800 mb-1">Місто <span className="text-rose-600">*</span></label>
-                    <select
-                      value={cityRef}
-                      onChange={(e) => {
-                        const ref = e.target.value;
-                        setCityRef(ref);
-                        const c = cities.find(x => x.ref === ref);
-                        setCity(c?.name || "");
-                      }}
-                      disabled={!areaRef || sending}
-                      className={`w-full rounded-xl border px-3 py-2.5 text-[15px] ${errors.city ? "border-red-400 focus:ring-red-600" : "border-gray-300/70 focus:ring-blue-600"} focus:outline-none focus:ring-2`}
-                    >
-                      <option value="">{areaRef ? "Оберіть місто" : "Спочатку оберіть область"}</option>
-                      {cities.map(c => <option key={c.ref} value={c.ref}>{c.name}</option>)}
-                    </select>
-                    {errors.city && <p className="mt-1 text-xs text-red-700">{errors.city}</p>}
-                  </div>
-
-                  {/* Відділення */}
-                  <div>
-                    <label className="block text-sm text-gray-800 mb-1">Відділення <span className="text-rose-600">*</span></label>
-                    <select
-                      value={branch}
-                      onChange={(e) => setBranch(e.target.value)}
-                      disabled={!cityRef || sending}
-                      className={`w-full rounded-xl border px-3 py-2.5 text-[15px] ${errors.branch ? "border-red-400 focus:ring-red-600" : "border-gray-300/70 focus:ring-blue-600"} focus:outline-none focus:ring-2`}
-                    >
-                      <option value="">{cityRef ? "Оберіть відділення" : "Спочатку оберіть місто"}</option>
-                      {warehouses.map(w => <option key={w.ref} value={w.name}>{w.name}</option>)}
-                    </select>
-                    {errors.branch && <p className="mt-1 text-xs text-red-700">{errors.branch}</p>}
-                  </div>
-                </div>
-              </section>
+              <h3 id="np" className="text-sm font-semibold text-gray-900 mb-2">Нова Пошта</h3>
+            
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+                {/* Область */}
+                <NPSelect
+                  label="Область"
+                  required
+                  icon={MapPin}
+                  value={areaRef}
+                  onChange={(e) => {
+                    const ref = e.target.value;
+                    setAreaRef(ref);
+                    const a = areas.find(x => x.ref === ref);
+                    setRegion(a?.name || "");
+                  }}
+                  options={areas.map(a => ({ value: a.ref, label: a.name }))}
+                  placeholder="Оберіть область"
+                  disabled={sending}
+                  error={errors.region}
+                  chosenText={areas.find(a => a.ref === areaRef)?.name}
+                />
+            
+                {/* Місто */}
+                <NPSelect
+                  label="Місто"
+                  required
+                  icon={Landmark}
+                  value={cityRef}
+                  onChange={(e) => {
+                    const ref = e.target.value;
+                    setCityRef(ref);
+                    const c = cities.find(x => x.ref === ref);
+                    setCity(c?.name || "");
+                  }}
+                  options={cities.map(c => ({ value: c.ref, label: c.name }))}
+                  placeholder={areaRef ? "Оберіть місто" : "Спочатку оберіть область"}
+                  disabled={!areaRef || sending}
+                  error={errors.city}
+                  chosenText={cities.find(c => c.ref === cityRef)?.name}
+                />
+            
+                {/* Відділення */}
+                <NPSelect
+                  label="Відділення"
+                  required
+                  icon={Package}
+                  value={branch}
+                  onChange={(e) => setBranch(e.target.value)}
+                  options={warehouses.map(w => ({ value: w.name, label: w.name }))}
+                  placeholder={cityRef ? "Оберіть відділення" : "Спочатку оберіть місто"}
+                  disabled={!cityRef || sending}
+                  error={errors.branch}
+                  chosenText={branch || undefined}
+                />
+              </div>
+            </section>
+            
             )}
 
 
@@ -518,6 +518,41 @@ function Row({ label, value, strong = false }) {
     <div className={`flex justify-between gap-3 ${strong ? "font-semibold" : ""}`}>
       <span className="text-gray-800">{label}</span>
       <span className="tabular-nums text-gray-900">{value}</span>
+    </div>
+  );
+}
+function NPSelect({ label, value, onChange, options, placeholder, disabled, error, required, icon: Icon, chosenText }) {
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-1">
+        <label className="text-sm text-gray-800 flex items-center gap-1">
+          {Icon ? <Icon className="h-4 w-4 text-gray-500" /> : null}
+          {label} {required && <span className="text-rose-600">*</span>}
+        </label>
+        <span className={`text-xs px-2 py-0.5 rounded-full whitespace-nowrap ${value ? "bg-blue-100 text-blue-700" : "bg-slate-100 text-slate-600"}`}>
+          {value ? (chosenText || "Вибрано") : "— не вибрано —"}
+        </span>
+      </div>
+
+      <div className="relative">
+        <select
+          value={value}
+          onChange={onChange}
+          disabled={disabled}
+          className={`appearance-none w-full rounded-2xl border-2 bg-white px-3 py-2.5 pr-10 text-[15px] transition
+          ${error ? "border-rose-300 focus:ring-rose-500" : "border-slate-300 focus:ring-blue-600"}
+          focus:outline-none focus:ring-2`}
+        >
+          <option value="">{placeholder}</option>
+          {options.map(o => (
+            <option key={o.value} value={o.value}>{o.label}</option>
+          ))}
+        </select>
+
+        <ChevronDown className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500" />
+      </div>
+
+      {error && <p className="mt-1 text-xs text-rose-700">{error}</p>}
     </div>
   );
 }
