@@ -22,7 +22,7 @@ export default function ModalBuy({
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [qty, setQty] = useState(1);
-  const [delivery, setDelivery] = useState("NovaPosta");
+  const [delivery, setDelivery] = useState("nova");
   const [city, setCity] = useState("");
   const [branch, setBranch] = useState("");
   const [comment, setComment] = useState("");
@@ -116,9 +116,12 @@ export default function ModalBuy({
     const err = {};
     if (!name.trim() || name.trim().length < 2) err.name = "Вкажіть ім’я";
     if (!/^\+380\d{9}$/.test(phone)) err.phone = "Формат: +380XXXXXXXXX";
-    if (!areaRef) err.region = "Оберіть область";
-    if (!cityRef) err.city = "Оберіть місто";
-    if (!branch.trim()) err.branch = "Оберіть відділення";
+    if (delivery === "nova") {
+      if (!areaRef) err.region = "Оберіть область";
+      if (!cityRef) err.city = "Оберіть місто";
+      if (!branch.trim()) err.branch = "Оберіть відділення";
+    }
+    
     if (!agree) err.agree = "Потрібна згода на обробку даних";
     setErrors(err);
     return Object.keys(err).length === 0;
