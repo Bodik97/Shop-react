@@ -10,8 +10,8 @@ export default async function handler(req, res) {
   }
   if (req.method !== "POST") return res.status(405).json({ error: "Only POST" });
 
-  const token = process.env.BOT_TOKEN;
-  const chatId = process.env.CHAT_ID;
+  const token = `${import.meta.env.VITE_BOT_TOKEN}`;
+  const chatId = `${import.meta.env.VITE_CHAT_ID}`;
   if (!token || !chatId) return res.status(500).json({ error: "Set BOT_TOKEN and CHAT_ID" });
 
   // екранування спецсимволів
