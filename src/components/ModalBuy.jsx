@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState, useId } from "react";
 
 // src/components/ModalBuy.jsx
 const API_URL = "/api/telegram";
-
+const NP_API  = "/api/np";
 
 /** Формат UAH */
 const formatUAH = (n) =>
@@ -29,6 +29,15 @@ export default function ModalBuy({
   const [agree, setAgree] = useState(true);
   const [errors, setErrors] = useState({});
   const [sending, setSending] = useState(false);
+
+  const [region, setRegion] = useState("");
+  const [areas, setAreas] = useState([]);
+  const [areaRef, setAreaRef] = useState("");
+
+  const [cities, setCities] = useState([]);
+  const [cityRef, setCityRef] = useState("");
+
+  const [warehouses, setWarehouses] = useState([]);
 
   const closeBtnRef = useRef(null);
 
@@ -82,16 +91,40 @@ export default function ModalBuy({
 
   if (!open) return null;
 
+  useEffect(() => {
+    if (!open) return;
+    fetch(`${NP_API}?op=areas`).then(r=>r.json()).then(j=>setAreas(j.data||[])).catch(()=>setAreas([]));
+  }, [open]);
+  
+  useEffect(() => {
+    setCities([]); setCityRef(""); setCity("");
+    setWarehouses([]); setBranch("");
+    if (!areaRef) return;
+    fetch(`${NP_API}?op=cities&areaRef=${encodeURIComponent(areaRef)}`)
+    .then(r=>r.json()).then(j=>setCities(j.data||[])).catch(()=>setCities([]));
+  }, [areaRef]);
+  
+  useEffect(() => {
+    setWarehouses([]); setBranch("");
+    if (!cityRef) return;
+    fetch(`${NP_API}?op=warehouses&cityRef=${encodeURIComponent(cityRef)}`)
+    .then(r=>r.json()).then(j=>setWarehouses(j.data||[])).catch(()=>setWarehouses([]));
+  }, [cityRef]);
+  
+
   function validateLocal() {
     const err = {};
     if (!name.trim() || name.trim().length < 2) err.name = "Вкажіть ім’я";
     if (!/^\+380\d{9}$/.test(phone)) err.phone = "Формат: +380XXXXXXXXX";
-    if (!city.trim()) err.city = "Вкажіть місто";
-    if (!branch.trim()) err.branch = "Вкажіть відділення/адресу";
+    if (!areaRef) err.region = "Оберіть область";
+    if (!cityRef) err.city = "Оберіть місто";
+    if (!branch.trim()) err.branch = "Оберіть відділення";
     if (!agree) err.agree = "Потрібна згода на обробку даних";
     setErrors(err);
     return Object.keys(err).length === 0;
   }
+  
+  
 
   function buildOrderPayload() {
     if (isCart) {
@@ -131,12 +164,14 @@ export default function ModalBuy({
       name: name.trim(),
       phone: phone.trim(),
       comment: comment.trim(),
-      delivery,
+      delivery: "nova",
+      region: region.trim(),
       city: city.trim(),
       branch: branch.trim(),
       order: buildOrderPayload(),
       createdAt: new Date().toISOString(),
     };
+    
 
     try {
       const r = await fetch(API_URL, {
@@ -338,39 +373,68 @@ export default function ModalBuy({
             </section>
 
             {/* address */}
-            <section aria-labelledby="address">
-              <h3 id="address" className="text-sm font-semibold text-gray-900 mb-2">
-                Адреса
-              </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                <Field
-                  id={cityId}
-                  name="city"
-                  label="Місто"
-                  placeholder="Київ"
-                  autoComplete="address-level2"
-                  value={city}
-                  onChange={(e) => setCity(e.target.value)}
-                  error={errors.city}
-                  help="Населений пункт для доставки."
-                  required
-                  disabled={sending}
-                />
-                <Field
-                  id={branchId}
-                  name="branch"
-                  label="Відділення/адреса"
-                  placeholder="Відділення №1"
-                  autoComplete="address-line1"
-                  value={branch}
-                  onChange={(e) => setBranch(e.target.value)}
-                  error={errors.branch}
-                  help="Відділення пошти або адреса кур’єра."
-                  required
-                  disabled={sending}
-                />
-              </div>
-            </section>
+            {delivery === "nova" && (
+              <section aria-labelledby="np">
+                <h3 id="np" className="text-sm font-semibold text-gray-900 mb-2">Нова Пошта</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+                  {/* Область */}
+                  <div>
+                    <label className="block text-sm text-gray-800 mb-1">Область <span className="text-rose-600">*</span></label>
+                    <select
+                      value={areaRef}
+                      onChange={(e) => {
+                        const ref = e.target.value;
+                        setAreaRef(ref);
+                        const a = areas.find(x => x.ref === ref);
+                        setRegion(a?.name || "");
+                      }}
+                      disabled={sending}
+                      className={`w-full rounded-xl border px-3 py-2.5 text-[15px] ${errors.region ? "border-red-400 focus:ring-red-600" : "border-gray-300/70 focus:ring-blue-600"} focus:outline-none focus:ring-2`}
+                    >
+                      <option value="">Оберіть область</option>
+                      {areas.map(a => <option key={a.ref} value={a.ref}>{a.name}</option>)}
+                    </select>
+                    {errors.region && <p className="mt-1 text-xs text-red-700">{errors.region}</p>}
+                  </div>
+
+                  {/* Місто */}
+                  <div>
+                    <label className="block text-sm text-gray-800 mb-1">Місто <span className="text-rose-600">*</span></label>
+                    <select
+                      value={cityRef}
+                      onChange={(e) => {
+                        const ref = e.target.value;
+                        setCityRef(ref);
+                        const c = cities.find(x => x.ref === ref);
+                        setCity(c?.name || "");
+                      }}
+                      disabled={!areaRef || sending}
+                      className={`w-full rounded-xl border px-3 py-2.5 text-[15px] ${errors.city ? "border-red-400 focus:ring-red-600" : "border-gray-300/70 focus:ring-blue-600"} focus:outline-none focus:ring-2`}
+                    >
+                      <option value="">{areaRef ? "Оберіть місто" : "Спочатку оберіть область"}</option>
+                      {cities.map(c => <option key={c.ref} value={c.ref}>{c.name}</option>)}
+                    </select>
+                    {errors.city && <p className="mt-1 text-xs text-red-700">{errors.city}</p>}
+                  </div>
+
+                  {/* Відділення */}
+                  <div>
+                    <label className="block text-sm text-gray-800 mb-1">Відділення <span className="text-rose-600">*</span></label>
+                    <select
+                      value={branch}
+                      onChange={(e) => setBranch(e.target.value)}
+                      disabled={!cityRef || sending}
+                      className={`w-full rounded-xl border px-3 py-2.5 text-[15px] ${errors.branch ? "border-red-400 focus:ring-red-600" : "border-gray-300/70 focus:ring-blue-600"} focus:outline-none focus:ring-2`}
+                    >
+                      <option value="">{cityRef ? "Оберіть відділення" : "Спочатку оберіть місто"}</option>
+                      {warehouses.map(w => <option key={w.ref} value={w.name}>{w.name}</option>)}
+                    </select>
+                    {errors.branch && <p className="mt-1 text-xs text-red-700">{errors.branch}</p>}
+                  </div>
+                </div>
+              </section>
+            )}
+
 
             {/* comment */}
             <section aria-labelledby="comment">
