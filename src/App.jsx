@@ -13,6 +13,7 @@ import About from "./components/About";
 import Contact from "./components/Contact";
 import ModalBuy from "./components/ModalBuy";
 import Cart from "./components/Cart";
+import ThankYou from "./components/ThankYou";
 
 // === налаштування API
 const API_URL = "/api/telegram";
@@ -240,6 +241,7 @@ export default function App() {
         <Route path="/product/:id" element={<ProductPage onAddToCart={addToCart} onBuy={openBuy} />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/thanks" element={<ThankYou />} />
       </Routes>
 
       {/* Модалку монтуємо лише коли потрібно */}

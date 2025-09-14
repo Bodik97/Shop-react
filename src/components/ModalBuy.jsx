@@ -1,7 +1,7 @@
 // src/components/ModalBuy.jsx
 import { useEffect, useMemo, useRef, useState, useId } from "react";
 import { MapPin, Landmark, Package, ChevronDown, CheckCircle2, Circle } from "lucide-react";
-
+import { useNavigate } from "react-router-dom";
 
 
 // src/components/ModalBuy.jsx
@@ -22,6 +22,7 @@ export default function ModalBuy({
   total = 0,
   onClose,
 }) {
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("+380");
   const [qty, setQty] = useState(1);
@@ -52,7 +53,8 @@ export default function ModalBuy({
     [subtotal, discount, shipping]
   );
   const displayTotal = isCart ? (Number(total) || cartComputed) : singleTotal;
-
+  // простий генератор номера замовлення
+   const genOrderId = () => "ORD-" + Date.now().toString(36).toUpperCase();
   // ids
   const nameId = `name-${useId()}`;
   const phoneId = `phone-${useId()}`;
@@ -62,6 +64,9 @@ export default function ModalBuy({
   const qtyId = `qty-${useId()}`;
   const deliveryNovaId = `delivery-nova-${useId()}`;
   const agreeId = `agree-${useId()}`;
+  const areaFieldId = `area-${useId()}`;
+  const cityFieldId = `city-${useId()}`;
+  const branchFieldId = `branch-${useId()}`;
 
   // open/reset
   useEffect(() => {
@@ -189,7 +194,18 @@ export default function ModalBuy({
       if (!r.ok || data?.ok !== true) {
         throw new Error(data?.error || "Помилка відправки");
       }
-      onClose?.();
+      // ✨ summary для ThankYou
+      const summary = {
+          orderId: genOrderId(),
+          itemsCount: isCart ? (cart?.length || 1) : Math.max(1, Number(qty) || 1),
+          total: displayTotal,
+          name,
+          phone,
+          delivery: { region, city, branch },
+        };
+        localStorage.setItem("lastOrderSummary", JSON.stringify(summary));
+        onClose?.();
+        navigate("/thanks", { state: summary });
     } catch (err) {
       setErrors(prev => ({ ...prev, submit: err.message || "Щось пішло не так" }));
     } finally {
@@ -378,6 +394,7 @@ export default function ModalBuy({
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                 {/* Область */}
                 <NPSelect
+                  id={areaFieldId}
                   label="Область"
                   required
                   icon={MapPin}
@@ -397,6 +414,7 @@ export default function ModalBuy({
             
                 {/* Місто */}
                 <NPSelect
+                  id={cityFieldId}
                   label="Місто"
                   required
                   icon={Landmark}
@@ -416,6 +434,7 @@ export default function ModalBuy({
             
                 {/* Відділення */}
                 <NPSelect
+                  id={branchFieldId}
                   label="Відділення"
                   required
                   icon={Package}
@@ -534,6 +553,8 @@ function Row({ label, value, strong = false }) {
   );
 }
 function NPSelect({
+  id,
+  name,
   label,
   value,
   onChange,
@@ -543,7 +564,6 @@ function NPSelect({
   error,
   required,
   icon: Icon,
-  chosenText, // можна не використовувати
 }) {
   const val = value || "";
   const selected = !!val;
@@ -551,16 +571,14 @@ function NPSelect({
   return (
     <div>
       <div className="flex items-center justify-between mb-1">
-        <label className="text-sm text-gray-800 flex items-center gap-1">
+        <label htmlFor={id} className="text-sm text-gray-800 flex items-center gap-1">
           {Icon ? <Icon className="h-4 w-4 text-gray-500" /> : null}
           {label} {required && <span className="text-rose-600">*</span>}
         </label>
 
-        {/* тільки іконка-індикатор */}
         <span
           className={`inline-flex items-center justify-center h-6 w-6 rounded-full ring-1
             ${selected ? "bg-emerald-50 text-emerald-600 ring-emerald-200" : "bg-slate-100 text-slate-400 ring-slate-200"}`}
-          title={selected ? "Вибрано" : "Не вибрано"}
           aria-label={selected ? "Вибрано" : "Не вибрано"}
         >
           {selected ? <CheckCircle2 className="h-4 w-4" /> : <Circle className="h-4 w-4" />}
@@ -569,9 +587,13 @@ function NPSelect({
 
       <div className="relative">
         <select
+          id={id}
+          name={name}
           value={val}
           onChange={onChange}
           disabled={disabled}
+          aria-invalid={!!error}
+          aria-describedby={error ? `${id}-error` : undefined}
           className={`appearance-none w-full rounded-2xl border-2 bg-white px-3 py-2.5 pr-10 text-[15px] transition
             ${error ? "border-rose-300 focus:ring-rose-500" : "border-slate-300 focus:ring-blue-600"}
             ${val === "" ? "text-slate-400" : "text-slate-900"}
@@ -586,10 +608,11 @@ function NPSelect({
         <ChevronDown className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500" />
       </div>
 
-      {error && <p className="mt-1 text-xs text-rose-700">{error}</p>}
+      {error && <p id={`${id}-error`} className="mt-1 text-xs text-rose-700">{error}</p>}
     </div>
   );
 }
+
 
 
 
