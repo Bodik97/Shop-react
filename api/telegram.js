@@ -85,8 +85,8 @@ export default async function handler(req, res) {
 
   // --- Повідомлення ---
   const lines = [];
-  lines.push(`<b>🆕 Нове замовлення</b> <i>${created.toLocaleString("uk-UA")}</i>`);
-  if (orderId) lines.push(`<i>#${esc(orderId)}</i>`);
+  lines.push(`<b>🆕 Замовлення</b> <time>${created.toLocaleString("uk-UA")}</time>`);
+  if (orderId) lines.push(`<strong>#${esc(orderId)}</strong>`);
   lines.push("────────────");
   lines.push(`Ім'я: <b>${esc(name)}</b>`);
   lines.push(`Телефон: <b>${esc(phone)}</b>`);
