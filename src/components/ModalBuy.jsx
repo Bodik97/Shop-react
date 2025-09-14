@@ -171,7 +171,10 @@ export default function ModalBuy({
     if (!validateLocal()) return;
     setSending(true);
 
+    const orderId = genOrderId(); // ← генеруємо ОДИН раз
+
     const payload = {
+      orderId,
       name: name.trim(),
       phone: phone.trim(),
       comment: comment.trim(),
@@ -197,6 +200,7 @@ export default function ModalBuy({
       // ✨ summary для ThankYou
       const summary = {
           orderId: genOrderId(),
+          orderId,
           itemsCount: isCart ? (cart?.length || 1) : Math.max(1, Number(qty) || 1),
           total: displayTotal,
           name,

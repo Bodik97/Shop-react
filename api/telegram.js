@@ -46,8 +46,9 @@ export default async function handler(req, res) {
   const created = b.createdAt ? new Date(b.createdAt) : new Date();
 
   const lines = [];
-  lines.push(`<b>🆕 Нова заявка</b>   <i>${created.toLocaleString("uk-UA")}</i>`);
-  lines.push("────────────");
+  lines.push(`<b>🆕 Нове замовлення</b> <i>${created.toLocaleString('uk-UA')}</i>`);
+  if (orderId) lines.push(`<i>#${esc(orderId)}</i>`);
+  lines.push('────────────');
   lines.push(`Ім'я: <b>${esc(name)}</b>`);
   lines.push(`Телефон: <b>${esc(phone)}</b>`);
   if (email) lines.push(`Email: <b>${esc(email)}</b>`);
