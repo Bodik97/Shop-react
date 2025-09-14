@@ -85,7 +85,7 @@ export default async function handler(req, res) {
 
   // --- Повідомлення ---
   const lines = [];
-  lines.push(`<b>🆕 Замовлення</b> <time>${created.toLocaleString("uk-UA")}</time>`);
+  lines.push(`<b>🆕 Замовлення</b> <s>${created.toLocaleString("uk-UA")}</s>`);
   if (orderId) lines.push(`<strong>#${esc(orderId)}</strong>`);
   lines.push("────────────");
   lines.push(`Ім'я: <b>${esc(name)}</b>`);
