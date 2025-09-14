@@ -17,6 +17,12 @@ export default function Header({ cartCount = 0 }) {
   const drawerRef = useRef(null);
   const firstFocusableRef = useRef(null);
 
+  const press = (e) => {
+    const el = e.currentTarget;
+    el.classList.add("pressed");
+    setTimeout(() => el.classList.remove("pressed"), 150);
+  };
+
   useEffect(() => {
     const root = document.documentElement;
     if (open) {
@@ -129,7 +135,7 @@ export default function Header({ cartCount = 0 }) {
       {/* Drawer */}
       <aside
         ref={drawerRef}
-        className={`fixed left-0 top-0 z-50 h-full w-80 max-w-[85vw] bg-white shadow-2xl border-r transition-transform duration-200
+        className={`fixed left-0 top-0 z-50 h-full w-80 max-w-[85vw] bg-white shadow-3xl border-r transition-transform duration-400
           ${open ? "translate-x-0" : "-translate-x-full"}`}
         aria-label="Мобільне меню"
       >
@@ -145,68 +151,52 @@ export default function Header({ cartCount = 0 }) {
           </button>
         </div>
 
-        <nav className="p-2 ml-4 flex flex-col items-center gap-2 text-sm font-medium w-max max-w-xs mx-auto">
-          {/* Головна */}
-          <NavLink
-            to="/"
-            onClick={() => setOpen(false)}
-            className={({ isActive }) =>
-              `w-full text-left text-black px-3 py-2 rounded-lg transition
-              focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500
-              ${isActive ? "bg-blue-50 text-blue-700 font-semibold" : "hover:bg-gray-100"}`
-            }
-          >
-            Головна
-          </NavLink>
-
-          {/* Заголовок секції */}
-          <div className="w-full px-3 py-2 text-xs uppercase tracking-wide bg-gray-100 text-black font-semibold rounded-md">
-            Каталог:
-          </div>
-
-          {/* Категорії */}
+        <nav className="p-2 space-y-2 text-[18px] font-medium w-full select-none [-webkit-tap-highlight-color:transparent]">
+          {/* Категорії (без бордерів, ефект лише на тап) */}
           {CATEGORIES.map((c) => (
             <Link
               key={c.id}
               to={`/category/${c.id}`}
               onClick={() => setOpen(false)}
-              className="w-full text-left text-black px-3 py-2 flex items-center gap-2 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition
-                        focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+              onPointerDown={press}
+              className="block w-full rounded-xl px-4 py-3 bg-white text-gray-900
+                        transition-transform duration-100 [transform]
+                        [&.pressed]:bg-gray-100 [&.pressed]:scale-95"
             >
-              <span className="text-lg">{c.icon}</span>
-              <span>{c.name}</span>
+              {c.name}
             </Link>
           ))}
 
-          {/* Роздільник */}
-          <div className="h-px w-full bg-gray-200 my-1" />
+          <hr className="my-2 border-gray-500" />
 
-          {/* Інші сторінки */}
+          {/* Про нас — постійний фон + tap-ефект */}
           <NavLink
             to="/about"
             onClick={() => setOpen(false)}
+            onPointerDown={press}
             className={({ isActive }) =>
-              `w-full text-left text-black px-3 py-2 rounded-lg transition
-              focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 bg-blue-50
-              ${isActive ? "bg-blue-50 text-blue-700 font-semibold" : "hover:bg-gray-100"}`
+              `block w-full rounded-xl px-4 py-3 bg-blue-100 text-gray-900
+              transition-transform duration-100 [transform]
+              [&.pressed]:bg-purple-100 [&.pressed]:scale-95 ${isActive ? "text-blue-700" : ""}`
             }
           >
             Про нас
           </NavLink>
 
+          {/* Контакти — постійний фон + tap-ефект */}
           <NavLink
             to="/contact"
             onClick={() => setOpen(false)}
+            onPointerDown={press}
             className={({ isActive }) =>
-              `w-full text-left text-black px-3 py-2 rounded-lg transition
-              focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 bg-blue-50
-              ${isActive ? "bg-blue-50 text-blue-700 font-semibold" : "hover:bg-gray-100"}`
+              `block w-full rounded-xl px-4 py-3 bg-blue-100 text-gray-900
+              transition-transform duration-100 [transform]
+              [&.pressed]:bg-purple-100 [&.pressed]:scale-95 ${isActive ? "text-blue-700" : ""}`
             }
           >
             Контакти
           </NavLink>
         </nav>
-
 
 
         {/* ДОДАТКОВИЙ БЛОК: Кошик + соцмережі */}
@@ -280,6 +270,3 @@ export default function Header({ cartCount = 0 }) {
 }
 
 /* SVG іконки соцмереж без зовнішніх залежностей */
-
-
-
