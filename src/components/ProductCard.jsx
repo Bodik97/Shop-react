@@ -104,7 +104,26 @@ export default function ProductCard({ product, onAddToCart, onBuy }) {
           {product.title}
         </Link>
 
-        <div className="mt-1 mb-2 text-blue-600 font-extrabold text-lg">{formatUAH(product.price)}</div>
+        <div className="mt-1 mb-4 flex items-center gap-2">
+          <div className="text-red-600 font-extrabold text-3xl sm:text-xl">
+            {formatUAH(product.price)}
+          </div>
+
+          {product.gift === true && (
+            <span
+              className="inline-flex items-center gap-1 rounded-full
+                        bg-gradient-to-r from-orange-500 via-rose-500 to-pink-500
+                        text-white shadow-lg ring-1 ring-white/20 backdrop-blur
+                        px-2.5 py-0.5 text-[12px] font-semibold select-none
+                        animate-bounce sm:animate-none"
+            >
+              + {product.badgeText || "Подарунок"}🎁
+            </span>
+          )}
+        </div>  
+
+
+
 
         <div className="mt-auto flex flex-col sm:flex-row gap-2">
           <button

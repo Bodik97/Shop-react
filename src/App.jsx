@@ -6,6 +6,7 @@ import * as Data from "./data/products";
 import Header from "./components/Header";
 import CategoryNav from "./components/CategoryNav";
 import CategoryPage from "./components/CategoryPage";
+import CatalogPage from "./components/CatalogPage";
 import PopularSlider from "./components/PopularSlider";
 import ProductCard from "./components/ProductCard";
 import ProductPage from "./components/ProductPage";
@@ -236,7 +237,10 @@ export default function App() {
             />
           }
         />
+        <Route path="/catalog" element={<CategoryPage onAddToCart={addToCart} onBuy={openBuy} />} />
+        <Route path="/category/:id" element={<CategoryPage onAddToCart={addToCart} onBuy={openBuy} />} />
 
+          
         <Route path="/category/:id" element={<CategoryPage onAddToCart={addToCart} onBuy={openBuy} />} />
         <Route path="/product/:id" element={<ProductPage onAddToCart={addToCart} onBuy={openBuy} />} />
         <Route path="/about" element={<About />} />

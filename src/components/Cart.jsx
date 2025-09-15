@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useId, useMemo, useState, useTransition } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ModalBuy from "./ModalBuy";
+import { ShieldCheck, RotateCcw, CreditCard, Truck } from "lucide-react";
 
 /* helpers */
 const fmtUAH = (n) =>
@@ -24,6 +25,13 @@ export default function Cart({
 
   const [mobileDetails, setMobileDetails] = useState(false);
   const [showForm, setShowForm] = useState(false);
+
+  const perks = [
+    { icon: ShieldCheck, text: "12 міс гарантія" },
+    { icon: RotateCcw,  text: "14 днів повернення" },
+    { icon: CreditCard, text: "Оплата при отриманні" },
+    { icon: Truck,      text: "Швидка доставка" },
+  ];
 
   /* refresh prices */
   useEffect(() => {
@@ -344,26 +352,27 @@ export default function Cart({
             </button>
 
             {/* Траст-блок */}
-            <div className="mt-4 grid grid-cols-2 gap-2 text-sm">
-              <div className="flex items-center gap-2 rounded-xl border px-3 py-2 bg-white">
-                <span className="inline-grid h-7 w-7 place-items-center rounded-lg bg-gray-100">🛡️</span>
-                12 міс гарантія
-              </div>
-              <div className="flex items-center gap-2 rounded-xl border px-3 py-2 bg-white">
-                <span className="inline-grid h-7 w-7 place-items-center rounded-lg bg-gray-100">↩️</span>
-                14 днів повернення
-              </div>
-              <div className="flex items-center gap-2 rounded-xl border px-3 py-2 bg-white">
-                <span className="inline-grid h-7 w-7 place-items-center rounded-lg bg-gray-100">💳</span>
-                Оплата при отриманні
-              </div>
-              <div className="flex items-center gap-2 rounded-xl border px-3 py-2 bg-white">
-                <span className="inline-grid h-7 w-7 place-items-center rounded-lg bg-gray-100">🚚</span>
-                Швидка доставка
+            <div className="mt-3">
+              {/* рівні колонки, адаптив: 2 у ряд */}
+              <div className="grid grid-cols-1">
+                {perks.map(({ icon: Icon, text }) => (
+                  <div
+                    key={text}
+                    className="flex h-12 w-full items-center justify-start mt-1.5 gap-2
+                              rounded-2xl bg-white/90 ring-1 ring-black/5 text-center"
+                  >
+                    <span className="grid h-8 w-8 place-items-center ml-5 rounded-xl
+                                    bg-gradient-to-r from-orange-500 via-rose-500 to-pink-500 text-white">
+                      <Icon className="h-4 w-4" />
+                    </span>
+                    <span className="text-sm font-medium text-gray-900">{text}</span>
+                  </div>
+                ))}
               </div>
             </div>
 
-            <Link to="/" className="block mt-3 text-center text-sm text-gray-600 hover:underline">
+
+            <Link to="/" className="block mt-3 text-center text-sm text-black hover:underline animate-pulse">
               ← Продовжити покупки
             </Link>
           </div>

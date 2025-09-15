@@ -6,53 +6,102 @@ import { products, categories } from "../data/products";
 
 export default function CategoryPage({ onAddToCart, onBuy }) {
   const { id } = useParams();
-  const [q, setQ] = useState("");
 
-  const isAll = id === "all";
+  // ✅ працює і на /catalog, і на /category/all
+  const isAll = !id || id === "all";
+
+  const [q, setQ] = useState("");
+  const [sort, setSort] = useState("default");
+
   const cat = categories.find((c) => String(c.id) === String(id));
   const catName = isAll ? "Всі товари" : (cat?.name ?? id);
 
+  // базовий список
   const base = useMemo(
     () => (isAll ? products : products.filter((p) => p.category === id)),
     [isAll, id]
   );
 
-  const t = q.trim().toLowerCase();
-  const items = useMemo(() => {
-    if (!t) return base;
+  // пошук
+  const term = q.trim().toLowerCase();
+  const filtered = useMemo(() => {
+    if (!term) return base;
     return base.filter(
-      (p) =>
-        p.title.toLowerCase().includes(t) ||
-        String(p.price).includes(t)
+      (p) => p.title.toLowerCase().includes(term) || String(p.price).includes(term)
     );
-  }, [base, t]);
+  }, [base, term]);
+
+  // ✅ сортування
+  const items = useMemo(() => {
+    const list = [...filtered];
+    switch (sort) {
+      case "price-asc":  return list.sort((a,b)=>(a.price||0)-(b.price||0));
+      case "price-desc": return list.sort((a,b)=>(b.price||0)-(a.price||0));
+      case "popular":    return list.sort((a,b)=>(b.popularityScore||0)-(a.popularityScore||0));
+      case "new":        return list.sort((a,b)=>(b.id||0)-(a.id||0));
+      default:           return list;
+    }
+  }, [filtered, sort]);
 
   return (
     <main className="max-w-7xl mx-auto px-4 py-6">
-  
-      <nav className="text-sm text-gray-500 mb-3">
+      {/* Хлібні крихти */}
+      <nav className="text-sm text-white mb-3">
         <Link to="/" className="hover:underline">Головна</Link>
         <span className="mx-1">/</span>
-        <span className="text-gray-700">{catName}</span>
+        <span className="text-white">{catName}</span>
       </nav>
 
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between mb-4">
-       <h1
-          className="mx-auto max-w-[92vw] px-3 text-center text-white font-extrabold mb-6
-                    text-[20px] sm:text-3xl md:text-4xl leading-snug"
-        >
-          {/* мобільно: окремий рядок */}
-          <span className="sm:hidden block text-white/70 text-sm mb-1">Категорія</span>
-          {/* ≥640px: в один рядок з двокрапкою */}
-          <span className="hidden sm:inline text-white/80">Категорія: </span>
-
+      {/* Заголовок + сортування справа */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+        <h1 className="mx-auto sm:mx-0 text-center sm:text-left text-white font-extrabold
+                       text-[20px] sm:text-3xl md:text-4xl">
+          
           <span className="hyphens-auto break-words" lang="uk">{catName}</span>
         </h1>
-        {/* Пошук */}
-        <div className="flex text-black items-center gap-2 border rounded-2xl px-3 py-2 w-full sm:w-80 bg-white">
-          <input
-          id="search-input"            // 👈 унікальний id
-          name="search"                // 👈 name, щоб працювало автозаповнення
+
+        {/* mobile: select, desktop: кнопки */}
+        <select
+          value={sort}
+          onChange={(e)=>setSort(e.target.value)}
+          className="sm:hidden w-full rounded-xl border px-3 py-2 text-sm text-white bg-white text-gray-900"
+        >
+          <option value="default">Без сортування</option>
+          <option value="price-asc">Ціна ↑</option>
+          <option value="price-desc">Ціна ↓</option>
+          <option value="popular">Популярні</option>
+          <option value="new">Нові</option>
+        </select>
+
+        <div className="hidden sm:flex flex-wrap gap-2">
+            {[
+              { id: "default", label: "🔄 Без сортування" },
+              { id: "price-asc", label: "⬆️ Ціна" },
+              { id: "price-desc", label: "⬇️ Ціна" },
+              { id: "popular", label: "⭐ Популярні" },
+              { id: "new", label: "🆕 Нові" },
+            ].map((opt) => (
+              <button
+                key={opt.id}
+                onClick={() => setSort(opt.id)}
+                className={`px-3 py-1.5 rounded-full text-sm font-semibold shadow
+                  ${sort === opt.id
+                    ? "bg-gradient-to-r from-orange-500 via-rose-500 to-pink-500"
+                    : "bg-black/30 ring-1 ring-white/20 hover:bg-black/40"}
+                  ${sort === opt.id ? "!text-white" : "text-white/80"}`}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+
+      </div>
+
+      {/* Пошук */}
+      <div className="flex text-black items-center gap-2 border rounded-2xl px-3 py-2 w-full sm:w-80 bg-white mb-4">
+        <input
+          id="search-input"
+          name="search"
           type="search"
           placeholder="Пошук…"
           value={q}
@@ -60,16 +109,14 @@ export default function CategoryPage({ onAddToCart, onBuy }) {
           className="outline-none bg-transparent text-sm flex-1"
           aria-label="Пошук у категорії"
         />
-
-          {q && (
-            <button
-              onClick={() => setQ("")}
-              className="text-xs text-white hover:text-gray-700"
-            >
-              Очистити
-            </button>
-          )}
-        </div>
+        {q && (
+          <button
+            onClick={() => setQ("")}
+            className="text-xs text-gray-600 hover:text-gray-900"
+          >
+            Очистити
+          </button>
+        )}
       </div>
 
       {/* Лічильник */}
@@ -91,9 +138,7 @@ export default function CategoryPage({ onAddToCart, onBuy }) {
         </div>
       ) : (
         <div className="rounded-2xl border bg-white p-6 text-center">
-          <p className="text-gray-600">
-            Нічого не знайдено за запитом “{q}”.
-          </p>
+          <p className="text-gray-600">Нічого не знайдено за запитом “{q}”.</p>
           <button
             onClick={() => setQ("")}
             className="mt-3 inline-flex h-10 px-4 rounded-2xl border font-semibold hover:bg-gray-50"

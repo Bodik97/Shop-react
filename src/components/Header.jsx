@@ -7,7 +7,7 @@ import { FaInstagram, FaTiktok, FaTelegram } from "react-icons/fa";
 
 const CATEGORIES = [
   { id: "pistols", name: "Пістолети" },
-  { id: "rifles", name: "Гвинтівки"},
+  { id: "rifles", name: "Пневм.Гвинт."},
   { id: "knives", name: "Ножі",},
   { id: "accessories", name: "Аксесуари",},
 ];

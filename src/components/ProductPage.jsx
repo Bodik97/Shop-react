@@ -511,7 +511,7 @@ export default function ProductPage({ onAddToCart, onBuy }) {
         )}
 
         {(Array.isArray(product.inBox) && product.inBox.length > 0) || product.warranty ? (
-          <section className="bg-white/90 rounded-2xl p-4 sm:p-5 md:p-6 shadow-sm">
+          <section className="bg-white/90 rounded-2xl p-4 sm:p-5 md:p-6 shadow-sm mb-20">
             <h3 className="text-lg md:text-xl font-semibold text-gray-900 mb-2 md:mb-3">Комплектація та гарантія</h3>
             {Array.isArray(product.inBox) && product.inBox.length > 0 && (
               <ul className="list-disc pl-5 md:pl-6 text-gray-800 space-y-1 text-sm md:text-base">
