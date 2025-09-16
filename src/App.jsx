@@ -187,9 +187,6 @@ export default function App() {
               <CategoryNav />
 
               <section className="mt-8">
-                <h2 className="relative text-left text-2xl md:text-5xl font-stencil uppercase tracking-[0.25em] text-white mb-4">
-                  Популярні товари
-                </h2>
                 {products.length ? (
                   <PopularSlider products={products.slice(0, 10)} onAddToCart={addToCart} onBuy={openBuy} />
                 ) : (

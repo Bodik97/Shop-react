@@ -355,6 +355,7 @@ export default function Cart({
             <div className="mt-3">
               {/* рівні колонки, адаптив: 2 у ряд */}
               <div className="grid grid-cols-1">
+                {/* eslint-disable-next-line no-unused-vars */}
                 {perks.map(({ icon: Icon, text }) => (
                   <div
                     key={text}

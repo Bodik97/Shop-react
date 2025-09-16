@@ -1,9 +1,10 @@
 // src/data/products.js
 // базові
-import img1 from "../img/pnevmo.png";
-import img2 from "../img/pist.png";
-import img3 from "../img/knifes.png";
-import img4 from "../img/acsesory.png";
+import pistolsImg from "../img/pist.png";
+import riflesImg from "../img/pnevmo.png";
+import knivesImg from "../img/knifes.png";
+import accessoriesImg from "../img/acsesory.png";
+
 
 // Hatsan
 import imgHatsan_1 from "../img/hvintivki/hatsan/img_1.jpg";
@@ -115,11 +116,12 @@ import snowPeak2_3 from "../img/hvintivki/snow peak-2/img_3.jpg";
 import snowPeak2_4 from "../img/hvintivki/snow peak-2/img_4.jpg";
 
 export const categories = [
-  { id: "pistols",     name: "Пістолети" },
-  { id: "rifles",      name: "Пневм.гвинт." },
-  { id: "knives",      name: "Ножі" },
-  { id: "accessories", name: "Аксесуари" },
+  { id: "pistols", name: "Пістолети", image: pistolsImg },
+  { id: "rifles", name: "Пневм. гвинт.", image: riflesImg },
+  { id: "knives", name: "Ножі", image: knivesImg },
+  { id: "accessories", name: "Аксесуари", image: accessoriesImg },
 ];
+
 
 export const products = [
   {

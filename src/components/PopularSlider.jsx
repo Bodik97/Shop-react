@@ -91,7 +91,7 @@ export default function PopularSlider({
   return (
     <section className="relative">
       <div className="mb-3 flex items-center justify-between">
-        <h2 className="text-2xl font-semibold">{title}</h2>
+        <h2 className="text-2xl font-stencil uppercase tracking-[0.25em] text-white">{title}</h2>
         <div className="hidden sm:flex gap-2">
           <button
             onClick={() => scrollByStep(-1)}
