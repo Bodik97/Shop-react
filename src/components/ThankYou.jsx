@@ -179,13 +179,47 @@ export default function ThankYou() {
 
               {/* Дії */}
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-                <a
-                  href={`tel:${phone || ""}`}
-                  className="inline-flex items-center justify-center h-11 px-5 rounded-2xl bg-black text-white font-semibold hover:bg-black/90 active:scale-[0.99] transition"
+                {/* Кнопка на сторінку контактів */}
+                <Link
+                  to="/contacts"         // <-- заміни шлях, якщо у тебе інший (наприклад /contact)
+                  aria-label="Відкрити контакти"
+                  className="group relative inline-flex items-center justify-center h-12 px-6
+                            rounded-2xl font-semibold text-white
+                            transition-transform duration-300 ease-out
+                            hover:scale-[1.02] active:scale-95 focus:outline-none"
                 >
-                  <Phone className="h-5 w-5 mr-2" />
-                  Подзвонити нам
-                </a>
+                  {/* свічення навколо */}
+                  <span
+                    aria-hidden
+                    className="absolute -inset-1 rounded-3xl
+                              bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500
+                              blur-lg opacity-70 group-hover:opacity-90 transition"
+                  />
+                  {/* фон-кнопка */}
+                  <span
+                    aria-hidden
+                    className="absolute inset-0 rounded-2xl
+                              bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600
+                              shadow-[0_12px_30px_rgba(20,184,166,.45)]"
+                  />
+                  {/* «гінт» (shine) */}
+                  <span
+                    aria-hidden
+                    className="pointer-events-none absolute -left-10 top-0 h-full w-10 rotate-12
+                              bg-white/30 opacity-0
+                              group-hover:opacity-100 group-hover:translate-x-[230%]
+                              transition-transform duration-700 ease-out"
+                  />
+                  {/* контент */}
+                  <span className="relative z-10 inline-flex items-center gap-2 tracking-tight">
+                    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor">
+                      <path d="M6.6 10.8a15.6 15.6 0 006.6 6.6l2.2-2.2a1 1 0 011.02-.24 11.1 11.1 0 003.5.56 1 1 0 011 1v3.4a1 1 0 01-1 1A16.9 16.9 0 013 5a1 1 0 011-1h3.4a1 1 0 011 1c0 1.22.2 2.41.56 3.5a1 1 0 01-.24 1.02L6.6 10.8z"/>
+                    </svg>
+                    <span className="text-white">Зв’язатися з нами</span>
+                    <span className="ml-1 text-white/90 text-xs hidden sm:inline">09:00–21:00 щодня</span>
+                  </span>
+                </Link>
+
                 <Link
                   to="/"
                   className="inline-flex items-center justify-center h-11 px-5 rounded-2xl border font-semibold hover:bg-gray-50 active:scale-[0.99] transition"
