@@ -158,13 +158,13 @@ export default function ThankYou() {
                     </div>
                   </li>
                   <li className="flex items-start justify-center gap-3">
-                    <Clock className="mt-0.5 h-4 w-4 text-emerald-600" />
+                    <Clock className="mt-0.5 h-8 w-8 text-emerald-600" />
                     <div className="text-gray-800">
                       Якщо не додзвонились — спробуємо ще раз. Ви нічого не пропустите.
                     </div>
                   </li>
                   <li className="flex items-start justify-center gap-3">
-                    <Truck className="mt-0.5 h-4 w-4 text-emerald-600" />
+                    <Truck className="mt-0.5 h-8 w-8 text-emerald-600" />
                     <div className="text-gray-800">
                       Після підтвердження відправимо посилку та надішлемо ТТН у SMS.
                     </div>
@@ -181,7 +181,7 @@ export default function ThankYou() {
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
                 {/* Кнопка на сторінку контактів */}
                 <Link
-                  to="/contacts"         // <-- заміни шлях, якщо у тебе інший (наприклад /contact)
+                  to="/contact"         // <-- заміни шлях, якщо у тебе інший (наприклад /contact)
                   aria-label="Відкрити контакти"
                   className="group relative inline-flex items-center justify-center h-12 px-6
                             rounded-2xl font-semibold text-white
