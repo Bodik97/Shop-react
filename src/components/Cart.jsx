@@ -61,8 +61,8 @@ export default function Cart({
       shippingOptions?.length
         ? shippingOptions
         : [
-            { id: "pickup", label: "Самовивіз", price: 0 },
-            { id: "post", label: "Поштомат / Відділення", price: 70 },
+            { id: "pickup", label: "Безкоштовно", price: 0 },
+            { id: "post", label: "Вантажне | Нова Пошта", price: 70 },
             { id: "courier", label: "Кур'єр", price: 100 },
           ],
     [shippingOptions]
