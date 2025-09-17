@@ -107,15 +107,15 @@ export default function ThankYou() {
                 <div className="rounded-2xl border p-5 bg-white">
                   <div className="text-sm text-gray-600">Покупець</div>
                   <div className="mt-1 inline-flex items-center justify-center gap-2 font-semibold">
-                    <User className="h-8 w-8 text-red-600" /> {name || "—"}
+                    <User className="h-6 w-6 text-red-600" /> {name || "—"}
                   </div>
-
+                  <br />
                   {phone && (
                     <a
                       href={`tel:${phone}`}
                       className="mt-1 inline-flex items-center justify-center gap-2 text-gray-800 hover:underline break-all"
                     >
-                      <Phone className="h-8 w-8 text-red-600" /> {phone}
+                      <Phone className="h-6 w-6 text-red-600" /> {phone}
                     </a>
                   )}
                 </div>
@@ -125,7 +125,7 @@ export default function ThankYou() {
               {hasDelivery && (
                 <div className="rounded-2xl border p-5 bg-white">
                   <div className="inline-flex items-center justify-center gap-2 text-sm text-gray-600">
-                    <Truck className="h-8 w-8 text-red-600" /> Доставка: <><span className="text-red-700">Нова Пошта</span></>
+                    <Truck className="h-6 w-6 text-red-600" /> Доставка: <><span className="text-red-700">Нова Пошта</span></>
                   </div>
                   <div className="mt-2 space-y-1">
                     {delivery.region && (
