@@ -3,10 +3,8 @@ import { useEffect, useMemo, useRef, useState, useId } from "react";
 import { MapPin, Landmark, Package, ChevronDown, CheckCircle2, Circle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-
-// src/components/ModalBuy.jsx
 const API_URL = "/api/telegram";
-const NP_API  = "/api/np";
+const NP_API = "/api/np";
 
 /** Формат UAH */
 const formatUAH = (n) =>
@@ -23,6 +21,8 @@ export default function ModalBuy({
   onClose,
 }) {
   const navigate = useNavigate();
+
+  // form state
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("+380");
   const [qty, setQty] = useState(1);
@@ -34,41 +34,40 @@ export default function ModalBuy({
   const [errors, setErrors] = useState({});
   const [sending, setSending] = useState(false);
 
+  // НП довідники
   const [region, setRegion] = useState("");
   const [areas, setAreas] = useState([]);
   const [areaRef, setAreaRef] = useState("");
-
   const [cities, setCities] = useState([]);
   const [cityRef, setCityRef] = useState("");
-
   const [warehouses, setWarehouses] = useState([]);
 
   const closeBtnRef = useRef(null);
 
   const isCart = Array.isArray(cart) && cart.length > 0;
   const price = Number(product?.price || 0);
+
   const singleTotal = useMemo(() => price * Math.max(1, Number(qty) || 1), [price, qty]);
   const cartComputed = useMemo(
     () => Math.max(0, (Number(subtotal) || 0) - (Number(discount) || 0) + (Number(shipping) || 0)),
     [subtotal, discount, shipping]
   );
   const displayTotal = isCart ? (Number(total) || cartComputed) : singleTotal;
+
   // простий генератор номера замовлення
-   const genOrderId = () => "ORD-" + Date.now().toString(36).toUpperCase();
+  const genOrderId = () => "ORD-" + Date.now().toString(36).toUpperCase();
+
   // ids
   const nameId = `name-${useId()}`;
   const phoneId = `phone-${useId()}`;
-  const cityId = `city-${useId()}`;
-  const branchId = `branch-${useId()}`;
   const commentId = `comment-${useId()}`;
   const qtyId = `qty-${useId()}`;
-  const deliveryNovaId = `delivery-nova-${useId()}`;
   const agreeId = `agree-${useId()}`;
   const areaFieldId = `area-${useId()}`;
   const cityFieldId = `city-${useId()}`;
   const branchFieldId = `branch-${useId()}`;
 
-  // open/reset
+  // open/reset: завжди викликається, логіка всередині з guard'ом
   useEffect(() => {
     if (!open) return;
     setName("");
@@ -81,6 +80,7 @@ export default function ModalBuy({
     setAgree(true);
     setErrors({});
     setSending(false);
+
     const t = setTimeout(() => closeBtnRef.current?.focus(), 0);
     document.documentElement.classList.add("overflow-hidden", "overscroll-none");
     return () => {
@@ -89,7 +89,7 @@ export default function ModalBuy({
     };
   }, [open, product?.id]);
 
-  // esc
+  // esc close
   useEffect(() => {
     if (!open) return;
     const onKey = (e) => e.key === "Escape" && onClose?.();
@@ -97,29 +97,40 @@ export default function ModalBuy({
     return () => window.removeEventListener("keydown", onKey);
   }, [open, onClose]);
 
-  if (!open) return null;
-
+  // завантаження НП довідників
   useEffect(() => {
     if (!open) return;
-    fetch(`${NP_API}?op=areas`).then(r=>r.json()).then(j=>setAreas(j.data||[])).catch(()=>setAreas([]));
+    fetch(`${NP_API}?op=areas`)
+      .then((r) => r.json())
+      .then((j) => setAreas(j.data || []))
+      .catch(() => setAreas([]));
   }, [open]);
-  
+
   useEffect(() => {
-    setCities([]); setCityRef(""); setCity("");
-    setWarehouses([]); setBranch("");
+    // скидаємо залежні поля
+    setCities([]);
+    setCityRef("");
+    setCity("");
+    setWarehouses([]);
+    setBranch("");
     if (!areaRef) return;
     fetch(`${NP_API}?op=cities&areaRef=${encodeURIComponent(areaRef)}`)
-    .then(r=>r.json()).then(j=>setCities(j.data||[])).catch(()=>setCities([]));
+      .then((r) => r.json())
+      .then((j) => setCities(j.data || []))
+      .catch(() => setCities([]));
   }, [areaRef]);
-  
+
   useEffect(() => {
-    setWarehouses([]); setBranch("");
+    setWarehouses([]);
+    setBranch("");
     if (!cityRef) return;
     fetch(`${NP_API}?op=warehouses&cityRef=${encodeURIComponent(cityRef)}`)
-    .then(r=>r.json()).then(j=>setWarehouses(j.data||[])).catch(()=>setWarehouses([]));
+      .then((r) => r.json())
+      .then((j) => setWarehouses(j.data || []))
+      .catch(() => setWarehouses([]));
   }, [cityRef]);
-  
 
+  // валідація
   function validateLocal() {
     const err = {};
     if (!name.trim() || name.trim().length < 2) err.name = "Вкажіть ім’я";
@@ -129,17 +140,15 @@ export default function ModalBuy({
       if (!cityRef) err.city = "Оберіть місто";
       if (!branch.trim()) err.branch = "Оберіть відділення";
     }
-    
     if (!agree) err.agree = "Потрібна згода на обробку даних";
     setErrors(err);
     return Object.keys(err).length === 0;
   }
-  
-  
 
+  // складання замовлення
   function buildOrderPayload() {
     if (isCart) {
-      const items = cart.map(i => {
+      const items = cart.map((i) => {
         const q = Math.max(1, Number(i.qty) || 1);
         const p = Number(i.price) || 0;
         return { id: i.id, title: i.title, qty: q, price: p, lineTotal: p * q };
@@ -165,13 +174,14 @@ export default function ModalBuy({
     };
   }
 
+  // submit
   const submit = async (e) => {
     e.preventDefault();
     if (sending) return;
     if (!validateLocal()) return;
     setSending(true);
 
-    const orderId = genOrderId(); // ← генеруємо ОДИН раз
+    const orderId = genOrderId();
 
     const payload = {
       orderId,
@@ -185,7 +195,6 @@ export default function ModalBuy({
       order: buildOrderPayload(),
       createdAt: new Date().toISOString(),
     };
-    
 
     try {
       const r = await fetch(API_URL, {
@@ -197,25 +206,29 @@ export default function ModalBuy({
       if (!r.ok || data?.ok !== true) {
         throw new Error(data?.error || "Помилка відправки");
       }
-      // ✨ summary для ThankYou
+
       const summary = {
-          orderId: genOrderId(),
-          orderId,
-          itemsCount: isCart ? (cart?.length || 1) : Math.max(1, Number(qty) || 1),
-          total: displayTotal,
-          name,
-          phone,
-          delivery: { region, city, branch },
-        };
-        localStorage.setItem("lastOrderSummary", JSON.stringify(summary));
-        onClose?.();
-        navigate("/thanks", { state: summary });
+        orderId,
+        itemsCount: isCart ? cart?.length || 1 : Math.max(1, Number(qty) || 1),
+        total: displayTotal,
+        name,
+        phone,
+        delivery: { region, city, branch },
+      };
+      localStorage.setItem("lastOrderSummary", JSON.stringify(summary));
+      onClose?.();
+      navigate("/thanks", { state: summary });
     } catch (err) {
-      setErrors(prev => ({ ...prev, submit: err.message || "Щось пішло не так" }));
+      setErrors((prev) => ({ ...prev, submit: err.message || "Щось пішло не так" }));
     } finally {
       setSending(false);
     }
   };
+
+  // ──────────────────────────────────────────────────────────────────────────────
+  // РЕНДЕР
+  // ──────────────────────────────────────────────────────────────────────────────
+  if (!open) return null;
 
   return (
     <div
@@ -268,7 +281,7 @@ export default function ModalBuy({
                     <div className="font-semibold text-gray-900 text-sm sm:text-base line-clamp-2">
                       {product.title}
                     </div>
-                    <div className="mt-1 text-blue-700 font-bold text-base sm:text-lg tabular-nums">
+                    <div className="mt-1 text-red-600 font-bold text-base sm:text-lg tabular-nums">
                       {formatUAH(price)}
                     </div>
                   </div>
@@ -343,118 +356,113 @@ export default function ModalBuy({
 
             {/* contacts */}
             <section aria-labelledby="contacts">
-  <h3 id="contacts" className="text-sm font-semibold text-gray-900 mb-2">
-    Контакти
-  </h3>
-  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-    {/* Ім’я: дозволяємо лише літери (укр+лат), пробіли, апостроф, дефіс */}
-    <Field
-      id={nameId}
-      name="name"
-      label="Ім’я"
-      placeholder="Ваше ім’я"
-      autoComplete="name"
-      value={name}
-      onChange={(e) => {
-        const v = e.target.value.replace(/[^a-zA-Zа-яА-ЯёЁіІїЇєЄґҐ'’ -]/g, "");
-        setName(v);
-      }}
-      error={errors.name}
-      help="Лише літери"
-      required
-      disabled={sending}
-    />
-
-    {/* Телефон: фіксований префікс +380, користувач вводить лише 9 цифр */}
-    <Field
-      id={phoneId}
-      name="phone"
-      type="tel"
-      label="Телефон"
-      placeholder="+380XXXXXXXXX"
-      value={phone}
-      onChange={(e) => {
-        const digits = e.target.value.replace(/\D/g, "");
-        // беремо хвіст після '380' і обрізаємо до 9 цифр
-        const tail = (digits.startsWith("380") ? digits.slice(3) : digits).slice(0, 9);
-        setPhone("+380" + tail);
-      }}
-      error={errors.phone}
-      help="Введіть 9 цифр"
-      inputMode="numeric"
-      autoComplete="tel"
-      required
-      pattern="^\+380\d{9}$"
-      maxLength={13}
-      disabled={sending}
-    />
-  </div>
-            </section>
-            {/* address */}
-            {delivery === "nova" && (
-              <section aria-labelledby="np">
-              <h3 id="np" className="text-sm font-semibold text-gray-900 mb-2">Нова Пошта</h3>
-            
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-                {/* Область */}
-                <NPSelect
-                  id={areaFieldId}
-                  label="Область"
-                  required
-                  icon={MapPin}
-                  value={areaRef}
+              <h3 id="contacts" className="text-sm font-semibold text-gray-900 mb-2">
+                Контакти
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <Field
+                  id={nameId}
+                  name="name"
+                  label="Ім’я"
+                  placeholder="Ваше ім’я"
+                  autoComplete="name"
+                  value={name}
                   onChange={(e) => {
-                    const ref = e.target.value;
-                    setAreaRef(ref);
-                    const a = areas.find(x => x.ref === ref);
-                    setRegion(a?.name || "");
+                    const v = e.target.value.replace(/[^a-zA-Zа-яА-ЯёЁіІїЇєЄґҐ'’ -]/g, "");
+                    setName(v);
                   }}
-                  options={areas.map(a => ({ value: a.ref, label: a.name }))}
-                  placeholder="Оберіть область"
+                  error={errors.name}
+                  help="Лише літери"
+                  required
                   disabled={sending}
-                  error={errors.region}
-                  chosenText={areas.find(a => a.ref === areaRef)?.name}
                 />
-            
-                {/* Місто */}
-                <NPSelect
-                  id={cityFieldId}
-                  label="Місто"
-                  required
-                  icon={Landmark}
-                  value={cityRef}
+
+                <Field
+                  id={phoneId}
+                  name="phone"
+                  type="tel"
+                  label="Телефон"
+                  placeholder="+380XXXXXXXXX"
+                  value={phone}
                   onChange={(e) => {
-                    const ref = e.target.value;
-                    setCityRef(ref);
-                    const c = cities.find(x => x.ref === ref);
-                    setCity(c?.name || "");
+                    const digits = e.target.value.replace(/\D/g, "");
+                    const tail = (digits.startsWith("380") ? digits.slice(3) : digits).slice(0, 9);
+                    setPhone("+380" + tail);
                   }}
-                  options={cities.map(c => ({ value: c.ref, label: c.name }))}
-                  placeholder={areaRef ? "Оберіть місто" : "Спочатку оберіть область"}
-                  disabled={!areaRef || sending}
-                  error={errors.city}
-                  chosenText={cities.find(c => c.ref === cityRef)?.name}
-                />
-            
-                {/* Відділення */}
-                <NPSelect
-                  id={branchFieldId}
-                  label="Відділення"
+                  error={errors.phone}
+                  help="Введіть 9 цифр"
+                  inputMode="numeric"
+                  autoComplete="tel"
                   required
-                  icon={Package}
-                  value={branch}
-                  onChange={(e) => setBranch(e.target.value)}
-                  options={warehouses.map(w => ({ value: w.name, label: w.name }))}
-                  placeholder={cityRef ? "Оберіть відділення" : "Спочатку оберіть місто"}
-                  disabled={!cityRef || sending}
-                  error={errors.branch}
-                  chosenText={branch || undefined}
+                  pattern="^\\+380\\d{9}$"
+                  maxLength={13}
+                  disabled={sending}
                 />
               </div>
             </section>
-            
-            )}
 
+            {/* address (НП) */}
+            {delivery === "nova" && (
+              <section aria-labelledby="np">
+                <h3 id="np" className="text-sm font-semibold text-gray-900 mb-2">
+                  Нова Пошта
+                </h3>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+                  {/* Область */}
+                  <NPSelect
+                    id={areaFieldId}
+                    label="Область"
+                    required
+                    icon={MapPin}
+                    value={areaRef}
+                    onChange={(e) => {
+                      const ref = e.target.value;
+                      setAreaRef(ref);
+                      const a = areas.find((x) => x.ref === ref);
+                      setRegion(a?.name || "");
+                    }}
+                    options={areas.map((a) => ({ value: a.ref, label: a.name }))}
+                    placeholder="Оберіть область"
+                    disabled={sending}
+                    error={errors.region}
+                  />
+
+                  {/* Місто */}
+                  <NPSelect
+                    id={cityFieldId}
+                    label="Місто"
+                    required
+                    icon={Landmark}
+                    value={cityRef}
+                    onChange={(e) => {
+                      const ref = e.target.value;
+                      setCityRef(ref);
+                      const c = cities.find((x) => x.ref === ref);
+                      setCity(c?.name || "");
+                    }}
+                    options={cities.map((c) => ({ value: c.ref, label: c.name }))}
+                    placeholder={areaRef ? "Оберіть місто" : "Спочатку оберіть область"}
+                    disabled={!areaRef || sending}
+                    error={errors.city}
+                  />
+
+                  {/* Відділення */}
+                  <NPSelect
+                    id={branchFieldId}
+                    label="Відділення"
+                    required
+                    icon={Package}
+                    value={branch}
+                    onChange={(e) => setBranch(e.target.value)}
+                    options={warehouses.map((w) => ({ value: w.name, label: w.name }))}
+                    placeholder={cityRef ? "Оберіть відділення" : "Спочатку оберіть місто"}
+                    disabled={!cityRef || sending}
+                    error={errors.branch}
+                  />
+                </div>
+              </section>
+            )}
 
             {/* comment */}
             <section aria-labelledby="comment">
@@ -512,7 +520,7 @@ export default function ModalBuy({
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div className="min-w-0 order-2 sm:order-1">
                 <div className="text-xs text-gray-600">{isCart ? "Разом" : "До сплати"}</div>
-                <div className="text-xl font-extrabold text-blue-700 tabular-nums">
+                <div className="mb-5 text-2xl font-extrabold text-red-700 tabular-nums">
                   {formatUAH(displayTotal)}
                 </div>
               </div>
@@ -556,6 +564,7 @@ function Row({ label, value, strong = false }) {
     </div>
   );
 }
+
 function NPSelect({
   id,
   name,
@@ -576,7 +585,7 @@ function NPSelect({
     <div>
       <div className="flex items-center justify-between mb-1">
         <label htmlFor={id} className="text-sm text-gray-800 flex items-center gap-1">
-          {Icon ? <Icon className="h-4 w-4 text-gray-500" /> : null}
+          {Icon ? <Icon className="h-4 w-4 text-red-500" /> : null}
           {label} {required && <span className="text-rose-600">*</span>}
         </label>
 
@@ -603,22 +612,27 @@ function NPSelect({
             ${val === "" ? "text-slate-400" : "text-slate-900"}
             focus:outline-none focus:ring-2`}
         >
-          <option value="" disabled hidden>{placeholder}</option>
-          {options.map(o => (
-            <option key={o.value} value={o.value}>{o.label}</option>
+          <option value="" disabled hidden>
+            {placeholder}
+          </option>
+          {options.map((o) => (
+            <option key={o.value} value={o.value}>
+              {o.label}
+            </option>
           ))}
         </select>
 
         <ChevronDown className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500" />
       </div>
 
-      {error && <p id={`${id}-error`} className="mt-1 text-xs text-rose-700">{error}</p>}
+      {error && (
+        <p id={`${id}-error`} className="mt-1 text-xs text-rose-700">
+          {error}
+        </p>
+      )}
     </div>
   );
 }
-
-
-
 
 function Field({
   id,
@@ -665,27 +679,5 @@ function Field({
         {error || help}
       </p>
     </div>
-  );
-}
-
-function RadioCard({ id, name, label, checked, onChange, disabled }) {
-  return (
-    <label
-      htmlFor={id}
-      className={`rounded-xl border px-3 py-2.5 flex items-center gap-2 cursor-pointer text-sm ${
-        checked ? "border-blue-600 ring-2 ring-blue-200" : "border-gray-300 hover:bg-gray-50"
-      } ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
-    >
-      <input
-        id={id}
-        type="radio"
-        name={name}
-        checked={checked}
-        onChange={onChange}
-        className="h-4 w-4 accent-blue-600"
-        disabled={disabled}
-      />
-      <span className="text-gray-900">{label}</span>
-    </label>
   );
 }

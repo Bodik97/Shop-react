@@ -16,7 +16,7 @@ export default function ThankYou() {
       try {
         const saved = localStorage.getItem("lastOrderSummary");
         if (saved) setSummary(JSON.parse(saved));
-      } catch {}
+      } catch {/* ignore: localStorage недоступний/корумповані дані */}
     }
   }, [summary]);
 
@@ -31,7 +31,7 @@ export default function ThankYou() {
       await navigator.clipboard.writeText(summary.orderId);
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
-    } catch {}
+    } catch {/* ignore: Clipboard API недоступний */}
   };
 
   if (!summary) {

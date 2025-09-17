@@ -256,7 +256,10 @@ export default function Cart({
                   )}
 
                   <div className="mt-1 flex items-center gap-2">
-                    <div className="text-blue-700 font-bold tabular-nums">{fmtUAH(price)}</div>
+                    <div className="text-red-600 font-extrabold text-2xl sm:text-3xl md:text-4xl lg:text-5xl tabular-nums">
+                      {fmtUAH(price)}
+                    </div>
+
                     {saving > 0 && oldPrice > 0 && (
                       <>
                         <div className="text-sm text-gray-500 line-through">{fmtUAH(oldPrice)}</div>
@@ -387,30 +390,43 @@ export default function Cart({
 
       {/* STICKY MOBILE FOOTER */}
       <div className="fixed inset-x-0 bottom-0 z-40 lg:hidden">
-        <div className="mx-auto max-w-6xl px-4 pb-[env(safe-area-inset-bottom)]">
-          <div className="rounded-t-2xl border bg-white shadow-2xl p-3">
-            <div className="flex items-center justify-between gap-3">
+        <div className="mx-auto max-w-6xl px-3 sm:px-4 pb-[max(env(safe-area-inset-bottom),10px)]">
+          <div className="rounded-t-xl sm:rounded-t-2xl border bg-white shadow-2xl p-2.5 sm:p-3">
+            <div className="flex items-center justify-between gap-2 max-[360px]:flex-col max-[360px]:items-stretch">
+              {/* Ціна */}
               <div className="min-w-0">
-                <div className="text-lg font-extrabold text-blue-700 tabular-nums">
-                  {fmtUAH(total)}
+                <div className="flex items-baseline gap-1 text-red-600 font-extrabold tabular-nums whitespace-nowrap overflow-hidden">
+                  {(() => {
+                    const f = fmtUAH(total); // "12 345 ₴"
+                    const amount = f.replace(/\s*₴$/, "");
+                    return (
+                      <>
+                        <span className="leading-none text-[clamp(18px,8vw,28px)]">{amount}</span>
+                        <span className="leading-none opacity-80 text-[clamp(16px,3.5vw,16px)]">₴</span>
+                      </>
+                    );
+                  })()}
                 </div>
+
                 {freeShippingFrom > 0 && (
-                  <>
-                    {leftToFree > 0 ? (
-                      <div className="text-[12px] text-gray-600">
-                        Додайте ще {fmtUAH(leftToFree)} до безкоштовної доставки
-                      </div>
-                    ) : (
-                      <div className="text-[12px] text-emerald-700">Безкоштовна доставка активна</div>
-                    )}
-                  </>
+                  leftToFree > 0 ? (
+                    <div className="text-[11px] sm:text-[12px] text-gray-600 mt-0.5">
+                      Додайте ще {fmtUAH(leftToFree)} до безкоштовної доставки
+                    </div>
+                  ) : (
+                    <div className="text-[11px] sm:text-[12px] text-emerald-700 mt-0.5">
+                      Безкоштовна доставка активна
+                    </div>
+                  )
                 )}
               </div>
-              <div className="flex items-center gap-2">
+
+              {/* Кнопки */}
+              <div className="flex items-center gap-2 max-[360px]:w-full max-[360px]:justify-between">
                 <button
                   type="button"
                   onClick={() => setMobileDetails((v) => !v)}
-                  className="inline-flex items-center justify-center h-11 px-3 rounded-2xl border hover:bg-gray-50"
+                  className="inline-flex items-center justify-center h-10 sm:h-11 px-3 rounded-xl border text-sm hover:bg-gray-50 shrink-0"
                 >
                   Деталі
                 </button>
@@ -418,7 +434,7 @@ export default function Cart({
                   type="button"
                   onClick={handleCheckout}
                   disabled={!itemsCount}
-                  className="inline-flex items-center justify-center h-11 px-5 rounded-2xl bg-black text-white font-semibold md:hover:bg-black/90 active:scale-[0.98] disabled:opacity-50 transition"
+                  className="inline-flex items-center justify-center h-10 sm:h-11 px-4 sm:px-5 rounded-xl bg-black text-white font-semibold active:scale-[0.98] disabled:opacity-50 transition shrink-0 min-w-[110px]"
                 >
                   Оформити
                 </button>
@@ -426,7 +442,7 @@ export default function Cart({
             </div>
 
             {mobileDetails && (
-              <div className="mt-3 text-sm text-gray-800 space-y-1">
+              <div className="mt-3 text-xs sm:text-sm text-gray-800 space-y-1">
                 <div className="flex justify-between">
                   <span>Доставка</span>
                   <span className="font-medium">{currentShip.label}</span>
@@ -444,6 +460,7 @@ export default function Cart({
           </div>
         </div>
       </div>
+
 
       {showForm && (
         <ModalBuy
@@ -541,43 +558,43 @@ function Qty({ id, value, onChange, min = 1, max = 99, pending = false }) {
   );
 }
 
-function Shipping({ options, value, onChange, freeShippingFrom, subtotal }) {
-  return (
-    <fieldset className="mt-4">
-      <legend className="text-sm font-medium text-gray-700 mb-2">Доставка</legend>
-      <div className="space-y-2">
-        {options.map((o) => {
-          const free = subtotal >= freeShippingFrom && freeShippingFrom > 0;
-          const price = free ? 0 : o.price;
-          const id = `ship-${o.id}`;
-          const active = value === o.id;
-          return (
-            <label
-              key={o.id}
-              htmlFor={id}
-              className={`flex items-center justify-between gap-3 rounded-2xl border p-3 cursor-pointer ${
-                active ? "border-blue-600 ring-2 ring-blue-200" : "border-slate-300 hover:bg-slate-50"
-              }`}
-            >
-              <span className="flex items-center gap-2">
-                <input
-                  id={id}
-                  name="shipping"
-                  type="radio"
-                  checked={active}
-                  onChange={() => onChange(o.id)}
-                  className="h-4 w-4 accent-blue-600"
-                />
-                <span>{o.label}</span>
-              </span>
-              <span className="tabular-nums text-gray-900">{price ? fmtUAH(price) : "0 ₴"}</span>
-            </label>
-          );
-        })}
-      </div>
-    </fieldset>
-  );
-}
+// function Shipping({ options, value, onChange, freeShippingFrom, subtotal }) {
+//   return (
+//     <fieldset className="mt-4">
+//       <legend className="text-sm font-medium text-gray-700 mb-2">Доставка</legend>
+//       <div className="space-y-2">
+//         {options.map((o) => {
+//           const free = subtotal >= freeShippingFrom && freeShippingFrom > 0;
+//           const price = free ? 0 : o.price;
+//           const id = `ship-${o.id}`;
+//           const active = value === o.id;
+//           return (
+//             <label
+//               key={o.id}
+//               htmlFor={id}
+//               className={`flex items-center justify-between gap-3 rounded-2xl border p-3 cursor-pointer ${
+//                 active ? "border-blue-600 ring-2 ring-blue-200" : "border-slate-300 hover:bg-slate-50"
+//               }`}
+//             >
+//               <span className="flex items-center gap-2">
+//                 <input
+//                   id={id}
+//                   name="shipping"
+//                   type="radio"
+//                   checked={active}
+//                   onChange={() => onChange(o.id)}
+//                   className="h-4 w-4 accent-blue-600"
+//                 />
+//                 <span>{o.label}</span>
+//               </span>
+//               <span className="tabular-nums text-gray-900">{price ? fmtUAH(price) : "0 ₴"}</span>
+//             </label>
+//           );
+//         })}
+//       </div>
+//     </fieldset>
+//   );
+// }
 
 function Breakdown({ itemsCount, subtotal, discount, shipping, total }) {
   return (
@@ -595,7 +612,7 @@ function Row({ label, value, strong = false, accent = "text-gray-700" }) {
   return (
     <div className={`flex items-center justify-between ${strong ? "font-semibold text-lg" : ""}`}>
       <span className={accent}>{label}</span>
-      <span className="tabular-nums text-gray-900">{value}</span>
+      <span className="tabular-nums text-black">{value}</span>
     </div>
   );
 }

@@ -4,7 +4,8 @@ import { useNavigate, useParams, Link } from "react-router-dom";
 import { products } from "../data/products";
 
 const formatUAH = (n) =>
-  new Intl.NumberFormat("uk-UA", { maximumFractionDigits: 0 }).format(Number(n) || 0) + " ₴";
+  new Intl.NumberFormat("uk-UA", { maximumFractionDigits: 0 })
+    .format(Number(n) || 0) + " ₴";
 
 const Badge = ({ children, variant = "blue", className = "" }) => {
   const styles =
@@ -33,7 +34,6 @@ export default function ProductPage({ onAddToCart, onBuy }) {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  // ✅ всі хуки — без умов
   const product = useMemo(() => products.find((p) => String(p.id) === String(id)), [id]);
 
   const isPopular = !!(
@@ -144,7 +144,6 @@ export default function ProductPage({ onAddToCart, onBuy }) {
   };
   const onFSPointerUp = (e) => { pointers.current.delete(e.pointerId); endDrag(); };
 
-  // дані для секцій
   const features = product?.features || [];
   const specs = product?.specs || {};
   const inBox = product?.inBox || [];
@@ -280,11 +279,82 @@ export default function ProductPage({ onAddToCart, onBuy }) {
             <aside className="lg:col-span-5">
               <div className="lg:sticky lg:top-20 space-y-4">
                 <div className="rounded-2xl border bg-white p-4 sm:p-5 shadow-sm">
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-600 text-sm md:text-base">Ціна</span>
-                    <div className="text-2xl md:text-3xl font-extrabold text-blue-700">{formatUAH(product.price)}</div>
+                  {/* Ціна */}
+                  <div className="text-gray-600 text-sm md:text-base mb-1">Ціна</div>
+                  <div className="flex items-center gap-2">
+                    <div className="text-2xl md:text-3xl font-extrabold text-red-600">
+                      {formatUAH(product.price)}
+                    </div>
                   </div>
 
+                  {/* Опис подарунка під ціною */}
+                  {product.giftText && (
+                    <div className="mt-3 sm:mt-4">
+                      {/* чорний↔білий↔чорний бордер з “згинами” з обох боків */}
+                      <div className="relative group rounded-2xl p-[2px] overflow-hidden
+                                      bg-[linear-gradient(90deg,#0a0a0a,rgba(255,255,255,0.95),#0a0a0a)]">
+                        {/* лівий згин */}
+                        <span
+                          aria-hidden
+                          className="pointer-events-none absolute -top-8 -left-10 h-28 w-28 rounded-full
+                                    bg-[conic-gradient(at_70%_55%,white,rgba(255,255,255,0.25)_35%,transparent_70%)]
+                                    mix-blend-screen opacity-80 blur-[2px]"
+                        />
+                        {/* правий згин */}
+                        <span
+                          aria-hidden
+                          className="pointer-events-none absolute -top-8 -right-10 h-28 w-28 rounded-full
+                                    bg-[conic-gradient(at_30%_55%,white,rgba(255,255,255,0.25)_35%,transparent_70%)]
+                                    mix-blend-screen opacity-80 blur-[2px]"
+                        />
+
+                        {/* внутрішній фон */}
+                        <div className="relative rounded-2xl px-4 py-3 bg-gradient-to-br from-white via-white to-neutral-100 ring-1 ring-black/5 text-center">
+                          {/* легке затемнення по діагоналі + шиммер при ховері */}
+                          <span aria-hidden className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_100%_at_100%_0%,rgba(0,0,0,0.07),transparent_60%)]" />
+                          <span aria-hidden className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_100%_at_0%_100%,rgba(0,0,0,0.06),transparent_60%)]" />
+                          <span aria-hidden className="pointer-events-none absolute -left-16 top-0 h-full w-12 rotate-12 bg-white/45 opacity-0 group-hover:opacity-100 group-hover:translate-x-[195%] transition-all duration-700 ease-out" />
+
+                          {/* верхній ряд: червона пульсуюча крапка + 2 рядки тексту по центру */}
+                          <div className="relative z-10 flex items-start justify-center gap-2">
+                            {/* маленька пульсуюча червона крапка */}
+                            <span className="relative mt-1.5 h-1.5 w-1.5 shrink-0">
+                              <span className="absolute inset-0 rounded-full bg-red-500/60 animate-ping" />
+                              <span className="relative block h-1.5 w-1.5 rounded-full bg-red-500 shadow-[0_0_6px_rgba(239,68,68,0.9)] ring-1 ring-red-500/40" />
+                            </span>
+
+                            <div className="text-neutral-900">
+                              <div className="text-[13px] sm:text-sm font-semibold leading-tight">
+                                {product.giftText.line1
+                                  ?? product.giftText.text?.split("|")[0]?.trim()
+                                  ?? product.giftText.text}
+                              </div>
+                              <div className="mt-0.5 text-[12px] sm:text-[13px] text-neutral-700">
+                                {product.giftText.line2
+                                  ?? product.giftText.text?.split("|")[1]?.trim()
+                                  ?? product.giftText.sub}
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* нижній ряд: іконка + “У подарунок” по центру */}
+                          <div className="relative z-10 mt-2 flex justify-center">
+                            <span className="inline-flex items-center gap-1.5 rounded-full border border-black/10
+                                            bg-gradient-to-br from-white to-neutral-100 px-2.5 py-1
+                                            text-[11px] sm:text-xs font-semibold text-neutral-900 shadow">
+                              <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true">
+                                <path fill="currentColor" d="M20 7h-2.6a3 3 0 1 0-5.4-2 3 3 0 1 0-5.4 2H4a1 1 0 0 0-1 1v3h9V8h2v3h9V8a1 1 0 0 0-1-1Zm-9-1a1 1 0 1 1-2 0 1 1 0 0 1 2 0Zm6 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM3 13v6a2 2 0 0 0 2 2h6v-8H3Zm10 0v8h6a2 2 0 0 0 2-2v-6h-8Z"/>
+                              </svg>
+                              У подарунок
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+
+                  {/* Кнопки */}
                   <div className="mt-4 grid grid-cols-1 gap-3">
                     <button className="w-full h-12 md:h-14 rounded-xl bg-blue-600 text-white font-semibold text-base md:text-lg hover:bg-blue-700 active:scale-[0.99] transition" onClick={() => onBuy?.(product)}>
                       Купити зараз
@@ -312,13 +382,19 @@ export default function ProductPage({ onAddToCart, onBuy }) {
             </aside>
           </div>
 
-          {/* мобільна нижня панель */}
+          {/* мобільна нижня панель (лише ціна) */}
           {!openFS && (
             <div className="fixed inset-x-0 bottom-0 z-40 lg:hidden">
-              <div className="mx-auto max-w-7xl px-4 pb-[max(env(safe-area-inset-bottom),12px)]">
+              <div className="mx-auto max-w-7xl px-4 pb-[max(env(safe-area-inset-bottom),16px)]">
                 <div className="rounded-t-2xl border bg-white shadow-2xl p-3">
                   <div className="flex items-center justify-between">
-                    <div className="text-lg font-bold text-blue-700">{formatUAH(product.price)}</div>
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-3xl md:text-6xl font-extrabold leading-none tabular-nums text-red-600">
+                        {new Intl.NumberFormat('uk-UA', { maximumFractionDigits: 0 }).format(product.price)}
+                      </span>
+                      <span className="text-lg md:text-xl text-gray-700">₴</span>
+                    </div>
+
                     <div className="flex gap-2">
                       <button
                         className="px-4 h-11 rounded-xl border font-semibold text-sm hover:bg-gray-50"

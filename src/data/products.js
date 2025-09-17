@@ -20,12 +20,12 @@ import imgGiv_3 from "../img/pistolets/giw/pist-3.jpg";
 import imgGiv_4 from "../img/pistolets/giw/pist-4.jpg";
 import imgGiv_5 from "../img/pistolets/giw/pist-5.jpg";
 
-// WinGun
-import winGun_1 from "../img/pistolets/WinGun/pist-1.jpg";
-import winGun_2 from "../img/pistolets/WinGun/pist-2.jpg";
-import winGun_3 from "../img/pistolets/WinGun/pist-3.jpg";
-import winGun_4 from "../img/pistolets/WinGun/pist-4.jpg";
-import winGun_5 from "../img/pistolets/WinGun/pist-5.jpg";
+// // WinGun
+// import winGun_1 from "../img/pistolets/WinGun/pist-1.jpg";
+// import winGun_2 from "../img/pistolets/WinGun/pist-2.jpg";
+// import winGun_3 from "../img/pistolets/WinGun/pist-3.jpg";
+// import winGun_4 from "../img/pistolets/WinGun/pist-4.jpg";
+// import winGun_5 from "../img/pistolets/WinGun/pist-5.jpg";
 
 // Glock
 import glock_1 from "../img/pistolets/Glock/pist-1.jpg";
@@ -146,7 +146,8 @@ export const products = [
       "Вага": "3 кг",
       "Гарантійний термін": "12 міс"
     },
-    gift: true,
+    giftBadge: { text: "Подарунок" },          // ⬅️ для бейджа у списках (ProductCard)
+    giftText:  { text: "+ Приціл 4x28 і 200 куль у подарунок." },
     inBox: ["Hatsan", "Шестигранні ключі", "Інструкція/гарантійний талон"],
     warranty: "Повернення/обмін — 14 днів.",
     category: "rifles",
@@ -172,62 +173,40 @@ export const products = [
       "Тип взводу": "Перелом стволу",
       "Гарантійний термін": "12 міс"
     },
-    gift: true,
+    giftBadge: { text: "Подарунок" },          // ⬅️ для бейджа у списках (ProductCard)
+    giftText:  { text: "+ Приціл 4x28 і 200 куль у подарунок." },
     inBox: ["Hatsan", "Шестигранні ключі", "Інструкція/гарантійний талон"],
     warranty: "Повернення/обмін — 14 днів.",
     category: "rifles",
   },
   { id: 3, title: "WinGun ",
-    price: 3300, image: imgGiv_1,
+    price: 2799, image: imgGiv_1,
       imgs: [imgGiv_1, imgGiv_2, imgGiv_3, imgGiv_4, imgGiv_5],
     description: "Пневматичний пістолет WinGun є досить цікавою моделлю від компанії WinGun. Дизайн пістолета повторює всесвітньо відомий пістолет Colt Defender. Пістолет не має висувного магазину, що обнадіює конструкцію пістолета і робить втрату магазину просто неможливою.",
     specs: {
-      "Виробник": "WinGun",
       "Країна виробник": "Тайвань",
       "Тип": "Зі стисненим газом СО2",
-      "Тип ствола": "95 мм",
-      "Кількість зарядів": "15",
-      "Початкова швидкість": "120 м/сек",
-      "Гарантійний термін": "12 міс"
-    },
-    warranty: "Повернення/обмін — 14 днів.",
-    category: "pistols",
-    popular: true, popularityScore: 80 },
-
-  { id: 4, title: "WinGun",
-    price: 3300,
-    image: winGun_1, 
-    imgs: [winGun_1, winGun_2, winGun_3, winGun_4, winGun_5],
-    description: "Пневматичний пістолет Win Gun.Висока потужність, хороша влучність, економічна витрата газу, низька вартість. Все це робить Win Gun одним із найпопулярніших пневматичних пістолетів у своєму класі.",
-    specs: {
-      "Тип": "Зі стисненим газом СО2",
-      "Калібр, мм": "4,5",
-      "Початкова швидкість польоту кулі, м/с": "146",
-      "Дульна енергія, Дж": "<3",
+      "Тип стовбура:": "Сталевий гладкий",
       "Тип боєприпасів": "Кульки BB",
-      "Тип стовбура": "Сталевий гладкий",
       "Довжина ствола, мм": "90",
       "Прицільні пристрої": "Нерегульована прицільна планка з мушкою",
       "Кількість зарядів": "18",
       "Запобіжник": "Ручний",
-      "Затвор": "Нерухомий",
-      "Матеріал затвора": "Полімер",
-      "Матеріал корпусу": "Полімер",
-      "Матеріал прикладу/рукоятки": "Полімер",
+      "Калібр": "4.5 мм",
+      "Початкова швидкість польоту кулі, м/с": "146",
       "Ударно-спусковий механізм": "Одиночної дії",
       "Колір": "Чорний",
       "Довжина загальна, мм": "175",
-      "Ширина, мм": "",
-      "Висота, мм": "",
-      "Вага, м": "427"
+      "Вага, м": "427",
+      "Гарантійний термін": "6 міс"
     },
-    warranty: "Гарантія — 6 місяців.",
+    giftBadge: { text: "Подарунок" },          // ⬅️ для бейджа у списках (ProductCard)
+    giftText:  { text: "+ 2 бал СО2 і 100 шаріків у подарунок." },
+    warranty: "Повернення/обмін — 14 днів.",
     category: "pistols",
-    popular: true, popularityScore: 90
-  },
-
-  { id: 5, title: "Glock 17",
-    price: 3300, 
+    popular: true, popularityScore: 80 },
+  { id: 4, title: "Glock 17",
+    price: 3877, 
     image: glock_1, 
     imgs: [glock_1, glock_2, glock_3, glock_4, glock_5, glock_6],
     description: "Borner зовні повністю повторює всесвітньо відомий австрійський напівавтоматичний пістолет Glock 17. Працює з використанням 12-грамового балона CO2 та стріляє сталевими кульками калібру 4,5 мм. Місткість магазину становить 20 куль. Запобіжник розташований на хвостовій частині спускового гачка. Ідеально підходить для розважальної стрілянини.",
@@ -246,29 +225,33 @@ export const products = [
       "Загальна довжина, мм": "185",
       "Маса, м": "430"
     },
+    giftBadge: { text: "Подарунок" },          // ⬅️ для бейджа у списках (ProductCard)
+    giftText:  { text: "+ 2 бал СО2 і 100 шаріків у подарунок." },
     warranty: "Гарантія — 6 місяців.",
     category: "pistols",
     popular: true, popularityScore: 92 },
 
 
-  { id: 6, title: "SUR",
-    price: 1800, 
+  { id: 5, title: "SUR",
+    price: 3499, 
     image: sur1_1, 
     imgs: [sur1_1, sur1_2],
     description: "SUR  - це сигнально-шумовий пістолет, комфортне використання якого не змусить вас шкодувати про покупку. Для стрільби використовується холостий патрон 9мм, а зарядність магазину становить 7 патронів. Пістолет повністю металевий, з пластиковою ручкою. Для стрільби має дросильное отвір для виходу газів. Має запобіжник і рухомий затвор. Пістолет досить якісний і добре підходить для користування.",
     specs: {
+      "Тип": "Стартовий пістолет",
       "Виробник": "SUR Arms",
       "Країна виробник": "Туреччина",
       "Вага": "690 г",
-      "Гарантійний термін": "6 міс",
-      "Тип": "Стартовий пістолет"
+      "Гарантійний термін": "6 міс"
     },
+    giftBadge: { text: "Подарунок" },         // для бейджа у списках (ProductCard)
+    giftText:  { text: "+ 10 куль у подарунок" }, // для тексту у картці товару (ProductPage)
     warranty: "Гарантія — 6 місяців.",
     category: "pistols",
     popular: true, popularityScore: 88 },
 
-  { id: 7, title: "Blow",
-    price: 1800, 
+  { id: 6, title: "Blow",
+    price: 3789, 
     image: blow_1, 
     imgs: [blow_1, blow_2, blow_3],
     description: "Blow - сигнально шумовий пістолет від турецького виробника Blow. Пістолет виконаний у полімерному корпусі з металевим затвором. Місткість магазину пістолета складає 7 патронів, а вага незарядженого примірника становить 525г. Пістолет виконаний у відмінній якості, як деталей так і збірки, тому відмінно підійде і для недосвідчених і для любителів спортивної стрільби",
@@ -279,12 +262,14 @@ export const products = [
       "Кількість зарядів": "7",
       "Вага, г": "525 гр"
     },
+    giftBadge: { text: "Подарунок" },         // для бейджа у списках (ProductCard)
+    giftText:  { text: "+ 10 куль у подарунок" }, // для тексту у картці товару (ProductPage)
     warranty: "Гарантія — 6 місяців.",
     category: "pistols",
     popular: true, popularityScore: 84 },
 
-  { id: 8, title: "SUR Arms",
-    price: 1800, 
+  { id: 7, title: "SUR Arms",
+    price: 3999, 
     image: sur_1, 
     imgs: [sur_1, sur_2, sur_3, sur_4],
     description: "SUR - це сигнально-шумовий пістолет, комфортне використання якого не змусить вас шкодувати про покупку. Для стрільби використовується холостий патрон 9мм, а зарядність магазину становить 17 патронів. Пістолет повністю металевий. Для стрільби має дросильное отвір для виходу газів. Має подвійний запобіжник і рухомий затвор. Пістолет досить якісний і добре підходить для користування.",
@@ -295,11 +280,13 @@ export const products = [
       "Місткість магазину": "17",
       "Калібр": "9.0"
     },
+    giftBadge: { text: "Подарунок" },         // для бейджа у списках (ProductCard)
+    giftText:  { text: "+ 10 куль у подарунок" }, // для тексту у картці товару (ProductPage)
     warranty: "Гарантія — 6 місяців.",
     category: "pistols",
     popular: true, popularityScore: 90 },
 
-  { id: 9, title: "SUR-TT",
+  { id: 8, title: "SUR-TT",
     price: 4899, 
     image: surTT_1, 
     imgs: [surTT_1, surTT_2, surTT_3, surTT_4, surTT_5],
@@ -308,13 +295,16 @@ export const products = [
       "Виробник": "SUR Arms",
       "Країна виробник": "Туреччина",
       "Калібр": "9 мм",
+      "Місткість магазину": "7",
       "Вага": "900 г",
-      "Гарантійний термін": "12 міс",
-      "Місткість магазину": "7"
+      "Стан": "Новий",
+      "Гарантійний термін": "12 міс"
     },
+    giftBadge: { text: "Подарунок" },         // для бейджа у списках (ProductCard)
+    giftText:  { text: "+ 10 куль у подарунок" }, // для тексту у картці товару (ProductPage)
     category: "pistols" },
 
-  { id: 10, title: "Snow Peak ",
+  { id: 9, title: "Snow Peak ",
     price: 3299, 
     image: snowPeakP_1, 
     imgs: [snowPeakP_1, snowPeakP_2, snowPeakP_3, snowPeakP_4, snowPeakP_5],
@@ -328,9 +318,11 @@ export const products = [
       "Довжина ствола": "220 мм",
       "Початкова швидкість  ": "157 м/сек"
     },
+    giftBadge: { text: "Подарунок" },         // для бейджа у списках (ProductCard)
+    giftText:  { text: "+ 10 куль у подарунок" }, // для тексту у картці товару (ProductPage)
     category: "pistols" },
 
-  { id: 11, title: "Latek",
+  { id: 10, title: "Latek",
     price: 5999, 
     image: latek_1, 
     imgs: [latek_1, latek_2, latek_3, latek_4, latek_5],
@@ -341,9 +333,11 @@ export const products = [
       "Місткість барабана": "9",  
       "Прицільні пристосування": "Регульована прицільна планка",
     },
+    giftBadge: { text: "Подарунок" },         // для бейджа у списках (ProductCard)
+    giftText:  { text: "+ 10 куль у подарунок" }, // для тексту у картці товару (ProductPage)
     category: "pistols" },
 
-  { id: 12, title: "Latek-2",
+  { id: 11, title: "Latek-2",
     price: 5999, 
     image: latek2_1, 
     imgs: [latek2_1, latek2_2, latek2_3],
@@ -354,9 +348,11 @@ export const products = [
       "Місткість барабана": "9",  
       "Прицільні пристосування": "Регульована прицільна планка",
     },
+    giftBadge: { text: "Подарунок" },        // для бейджа у списках (ProductCard)
+    giftText:  { text: "+ 10 куль у подарунок" }, // для тексту у картці товару (ProductPage)
     category: "pistols" },
 
-  { id: 13, title: "Hatsan-2",
+  { id: 12, title: "Hatsan-2",
     price: 6199, 
     image: hatsan2_1, 
     imgs: [hatsan2_1, hatsan2_2, hatsan2_3, hatsan2_4, hatsan2_5, hatsan2_6],
@@ -376,11 +372,12 @@ export const products = [
       "Вага": "2.6 кг",
       "Гарантійний термін": "12 міс"
     },
-    gift: true,
+    giftBadge: { text: "Подарунок" },         // для бейджа у списках (ProductCard)
+    giftText:  { text: "+ Приціл 4x28 і 200 куль у подарунок." }, // для тексту у картці товару (ProductPage)
     warranty: "Повернення/обмін — 14 днів.",
     category: "rifles" },
 
-  { id: 14, title: "Hatsan-3",
+  { id: 13, title: "Hatsan-3",
     price: 6199, 
     image: hatsan3_1, 
     imgs: [hatsan3_1, hatsan3_2, hatsan3_3, hatsan3_4, hatsan3_5],
@@ -400,11 +397,12 @@ export const products = [
       "Вага": "2.75 кг",
       "Гарантійний термін": "12 міс"
     },
-    gift: true,
+    giftBadge: { text: "Подарунок" },         // для бейджа у списках (ProductCard)
+    giftText:  { text: "+ Приціл 4x28 і 200 куль у подарунок." }, // для тексту у картці товару (ProductPage)
     warranty: "Повернення/обмін — 14 днів.",
     category: "rifles" },
 
-  { id: 15, title: "Beeman",
+  { id: 14, title: "Beeman",
     price: 4599, 
     image: beeman_1, 
     imgs: [beeman_1, beeman_2, beeman_3, beeman_4],
@@ -425,11 +423,12 @@ export const products = [
       "Вага": "2.72 кг",
       "Гарантійний термін": "12 міс"
     },
-    gift: true,
+    giftBadge: { text: "Подарунок" },         // для бейджа у списках (ProductCard)
+    giftText:  { text: "+ Приціл 4x28 і 200 куль у подарунок." }, // для тексту у картці товару (ProductPage)
     warranty: "Повернення/обмін — 14 днів.",
     category: "rifles" },
 
-  { id: 16, title: "B2-4P",
+  { id: 15, title: "B2-4P",
     price: 3999, 
     image: b2_4p_1, 
     imgs: [b2_4p_1, b2_4p_2, b2_4p_3, b2_4p_4],
@@ -447,12 +446,13 @@ export const products = [
       "Вага": "2.5 кг",
       "Гарантійний термін": "12 міс"
     },
-    gift: true,
+    ggiftBadge: { text: "Подарунок" },         // для бейджа у списках (ProductCard)
+    giftText:  { text: "+ Приціл 4x28 і 200 куль у подарунок." }, // для тексту у картці товару (ProductPage)
     warranty: "Повернення/обмін — 14 днів.",
     category: "rifles" },
 
 
-  { id: 17, title: "Snow Peak",
+  { id: 16, title: "Snow Peak",
     price: 3899, 
     image: snowPeak2_1, 
     imgs: [snowPeak2_1, snowPeak2_2, snowPeak2_3, snowPeak2_4],
@@ -469,7 +469,8 @@ export const products = [
       "Запобіжник": "Без запобіжника",
       "Матеріал рукоятк": "Пластик"
     },
-    gift: true,
+    giftBadge: { text: "Подарунок" },         // для бейджа у списках (ProductCard)
+    giftText:  { text: "+ Приціл 4x28 і 200 куль у подарунок." }, // для тексту у картці товару (ProductPage)
     badgeText: "Приціл 4x28 і 200 куль",
     warranty: "Повернення/обмін — 14 днів.",
     category: "rifles" },
