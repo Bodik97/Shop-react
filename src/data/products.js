@@ -147,7 +147,7 @@ export const products = [
       "Гарантійний термін": "12 міс"
     },
     giftBadge: { text: "Подарунок" },          // ⬅️ для бейджа у списках (ProductCard)
-    giftText:  { text: "+ Приціл 4x28 і 200 куль у подарунок." },
+    giftText:  { text: "+ Приціл 4x28 і 200 куль." },
     inBox: ["Hatsan", "Шестигранні ключі", "Інструкція/гарантійний талон"],
     warranty: "Повернення/обмін — 14 днів.",
     category: "rifles",
@@ -174,7 +174,7 @@ export const products = [
       "Гарантійний термін": "12 міс"
     },
     giftBadge: { text: "Подарунок" },          // ⬅️ для бейджа у списках (ProductCard)
-    giftText:  { text: "+ Приціл 4x28 і 200 куль у подарунок." },
+    giftText:  { text: "+ Приціл 4x28 і 200 куль." },
     inBox: ["Hatsan", "Шестигранні ключі", "Інструкція/гарантійний талон"],
     warranty: "Повернення/обмін — 14 днів.",
     category: "rifles",
@@ -201,7 +201,7 @@ export const products = [
       "Гарантійний термін": "6 міс"
     },
     giftBadge: { text: "Подарунок" },          // ⬅️ для бейджа у списках (ProductCard)
-    giftText:  { text: "+ 2 бал СО2 і 100 шаріків у подарунок." },
+    giftText:  { text: "+ 2 бал СО2 і 100 шаріків." },
     warranty: "Повернення/обмін — 14 днів.",
     category: "pistols",
     popular: true, popularityScore: 80 },
@@ -226,7 +226,7 @@ export const products = [
       "Маса, м": "430"
     },
     giftBadge: { text: "Подарунок" },          // ⬅️ для бейджа у списках (ProductCard)
-    giftText:  { text: "+ 2 бал СО2 і 100 шаріків у подарунок." },
+    giftText:  { text: "+ 2 бал СО2 і 100 шаріків." },
     warranty: "Гарантія — 6 місяців.",
     category: "pistols",
     popular: true, popularityScore: 92 },
@@ -245,7 +245,7 @@ export const products = [
       "Гарантійний термін": "6 міс"
     },
     giftBadge: { text: "Подарунок" },         // для бейджа у списках (ProductCard)
-    giftText:  { text: "+ 10 куль у подарунок" }, // для тексту у картці товару (ProductPage)
+    giftText:  { text: "+ 10 куль." }, // для тексту у картці товару (ProductPage)
     warranty: "Гарантія — 6 місяців.",
     category: "pistols",
     popular: true, popularityScore: 88 },
@@ -263,7 +263,7 @@ export const products = [
       "Вага, г": "525 гр"
     },
     giftBadge: { text: "Подарунок" },         // для бейджа у списках (ProductCard)
-    giftText:  { text: "+ 10 куль у подарунок" }, // для тексту у картці товару (ProductPage)
+    giftText:  { text: "+ 10 куль." }, // для тексту у картці товару (ProductPage)
     warranty: "Гарантія — 6 місяців.",
     category: "pistols",
     popular: true, popularityScore: 84 },
@@ -281,7 +281,7 @@ export const products = [
       "Калібр": "9.0"
     },
     giftBadge: { text: "Подарунок" },         // для бейджа у списках (ProductCard)
-    giftText:  { text: "+ 10 куль у подарунок" }, // для тексту у картці товару (ProductPage)
+    giftText:  { text: "+ 10 куль." }, // для тексту у картці товару (ProductPage)
     warranty: "Гарантія — 6 місяців.",
     category: "pistols",
     popular: true, popularityScore: 90 },
@@ -301,7 +301,7 @@ export const products = [
       "Гарантійний термін": "12 міс"
     },
     giftBadge: { text: "Подарунок" },         // для бейджа у списках (ProductCard)
-    giftText:  { text: "+ 10 куль у подарунок" }, // для тексту у картці товару (ProductPage)
+    giftText:  { text: "+ 10 куль." }, // для тексту у картці товару (ProductPage)
     category: "pistols" },
 
   { id: 9, title: "Snow Peak ",
@@ -319,7 +319,7 @@ export const products = [
       "Початкова швидкість  ": "157 м/сек"
     },
     giftBadge: { text: "Подарунок" },         // для бейджа у списках (ProductCard)
-    giftText:  { text: "+ 10 куль у подарунок" }, // для тексту у картці товару (ProductPage)
+    giftText:  { text: "+ 10 куль." }, // для тексту у картці товару (ProductPage)
     category: "pistols" },
 
   { id: 10, title: "Latek",
@@ -334,7 +334,7 @@ export const products = [
       "Прицільні пристосування": "Регульована прицільна планка",
     },
     giftBadge: { text: "Подарунок" },         // для бейджа у списках (ProductCard)
-    giftText:  { text: "+ 10 куль у подарунок" }, // для тексту у картці товару (ProductPage)
+    giftText:  { text: "+ 10 куль." }, // для тексту у картці товару (ProductPage)
     category: "pistols" },
 
   { id: 11, title: "Latek-2",
@@ -349,7 +349,7 @@ export const products = [
       "Прицільні пристосування": "Регульована прицільна планка",
     },
     giftBadge: { text: "Подарунок" },        // для бейджа у списках (ProductCard)
-    giftText:  { text: "+ 10 куль у подарунок" }, // для тексту у картці товару (ProductPage)
+    giftText:  { text: "+ 10 куль." }, // для тексту у картці товару (ProductPage)
     category: "pistols" },
 
   { id: 12, title: "Hatsan-2",
@@ -373,7 +373,7 @@ export const products = [
       "Гарантійний термін": "12 міс"
     },
     giftBadge: { text: "Подарунок" },         // для бейджа у списках (ProductCard)
-    giftText:  { text: "+ Приціл 4x28 і 200 куль у подарунок." }, // для тексту у картці товару (ProductPage)
+    giftText:  { text: "+ Приціл 4x28 і 200 куль." }, // для тексту у картці товару (ProductPage)
     warranty: "Повернення/обмін — 14 днів.",
     category: "rifles" },
 
@@ -398,7 +398,7 @@ export const products = [
       "Гарантійний термін": "12 міс"
     },
     giftBadge: { text: "Подарунок" },         // для бейджа у списках (ProductCard)
-    giftText:  { text: "+ Приціл 4x28 і 200 куль у подарунок." }, // для тексту у картці товару (ProductPage)
+    giftText:  { text: "+ Приціл 4x28 і 200 куль." }, // для тексту у картці товару (ProductPage)
     warranty: "Повернення/обмін — 14 днів.",
     category: "rifles" },
 
@@ -424,7 +424,7 @@ export const products = [
       "Гарантійний термін": "12 міс"
     },
     giftBadge: { text: "Подарунок" },         // для бейджа у списках (ProductCard)
-    giftText:  { text: "+ Приціл 4x28 і 200 куль у подарунок." }, // для тексту у картці товару (ProductPage)
+    giftText:  { text: "+ Приціл 4x28 і 200 куль." }, // для тексту у картці товару (ProductPage)
     warranty: "Повернення/обмін — 14 днів.",
     category: "rifles" },
 
@@ -447,7 +447,7 @@ export const products = [
       "Гарантійний термін": "12 міс"
     },
     ggiftBadge: { text: "Подарунок" },         // для бейджа у списках (ProductCard)
-    giftText:  { text: "+ Приціл 4x28 і 200 куль у подарунок." }, // для тексту у картці товару (ProductPage)
+    giftText:  { text: "+ Приціл 4x28 і 200 куль." }, // для тексту у картці товару (ProductPage)
     warranty: "Повернення/обмін — 14 днів.",
     category: "rifles" },
 
@@ -470,7 +470,7 @@ export const products = [
       "Матеріал рукоятк": "Пластик"
     },
     giftBadge: { text: "Подарунок" },         // для бейджа у списках (ProductCard)
-    giftText:  { text: "+ Приціл 4x28 і 200 куль у подарунок." }, // для тексту у картці товару (ProductPage)
+    giftText:  { text: "+ Приціл 4x28 і 200 куль." }, // для тексту у картці товару (ProductPage)
     badgeText: "Приціл 4x28 і 200 куль",
     warranty: "Повернення/обмін — 14 днів.",
     category: "rifles" },

@@ -69,7 +69,7 @@ export default function ThankYou() {
                 Ваше замовлення прийнято!
               </h1>
               <p className="mt-2 text-white/95">
-                Дякуємо! Зазвичай телефонуємо протягом <strong>5–30 хв</strong> у робочий час.
+                Дякуємо! Зазвичай телефонуємо протягом <strong>5–30 хв</strong> у робочий час. <br />
                 Якщо не додзвонимось — обов’язково передзвонимо ще.
               </p>
 
@@ -98,7 +98,7 @@ export default function ThankYou() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="rounded-2xl border p-5 bg-white">
                   <div className="text-sm text-gray-600">Сума</div>
-                  <div className="mt-1 text-3xl font-extrabold text-blue-700">
+                  <div className="mt-1 text-3xl font-extrabold text-red-700 tabular-nums">
                     {formatUAH(total)}
                   </div>
                   <div className="mt-2 text-sm text-gray-600">Товарів: {itemsCount}</div>
@@ -107,14 +107,14 @@ export default function ThankYou() {
                 <div className="rounded-2xl border p-5 bg-white">
                   <div className="text-sm text-gray-600">Покупець</div>
                   <div className="mt-1 inline-flex items-center justify-center gap-2 font-semibold">
-                    <User className="h-4 w-4" /> {name || "—"}
+                    <User className="h-4 w-4 text-2xl-red" /> {name || "—"}
                   </div>
                   {phone && (
                     <a
                       href={`tel:${phone}`}
                       className="mt-1 inline-flex items-center justify-center gap-2 text-gray-800 hover:underline break-all"
                     >
-                      <Phone className="h-4 w-4" /> {phone}
+                      <Phone className="h-4 w-4 text-2xl-red" /> {phone}
                     </a>
                   )}
                 </div>
@@ -124,7 +124,7 @@ export default function ThankYou() {
               {hasDelivery && (
                 <div className="rounded-2xl border p-5 bg-white">
                   <div className="inline-flex items-center justify-center gap-2 text-sm text-gray-600">
-                    <Truck className="h-4 w-4" /> Доставка: Нова Пошта
+                    <Truck className="h-4 w-4 text-2xl-red" /> Доставка: <><span className="text-red-700">Нова Пошта</span></>
                   </div>
                   <div className="mt-2 space-y-1">
                     {delivery.region && (
