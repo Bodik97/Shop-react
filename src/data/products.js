@@ -446,7 +446,7 @@ export const products = [
       "Вага": "2.5 кг",
       "Гарантійний термін": "12 міс"
     },
-    ggiftBadge: { text: "Подарунок" },         // для бейджа у списках (ProductCard)
+    giftBadge: { text: "Подарунок" },         // для бейджа у списках (ProductCard)
     giftText:  { text: "+ Приціл 4x28 і 200 куль." }, // для тексту у картці товару (ProductPage)
     warranty: "Повернення/обмін — 14 днів.",
     category: "rifles" },
