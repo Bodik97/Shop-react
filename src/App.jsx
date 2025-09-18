@@ -94,25 +94,27 @@ export default function App() {
 
   // кошик
   const addToCart = (product) => {
-    setCart((prev) => {
-      const i = prev.findIndex((p) => p.id === product.id);
-      if (i >= 0) {
-        const copy = [...prev];
-        copy[i] = { ...copy[i], qty: (Number(copy[i].qty) || 0) + 1 };
-        return copy;
-      }
-      return [
-        ...prev,
-        {
-          id: product.id,
-          title: product.title,
-          price: product.price,
-          image: product.image,
-          qty: 1,
-        },
-      ];
-    });
-  };
+  setCart((prev) => {
+    const i = prev.findIndex((p) => p.id === product.id);
+    if (i >= 0) {
+      const copy = [...prev];
+      copy[i] = { ...copy[i], qty: (Number(copy[i].qty) || 0) + 1 };
+      return copy;
+    }
+    return [
+      ...prev,
+      {
+        id: product.id,
+        title: product.title,
+        price: product.price,
+        image: product.image,
+        qty: 1,
+        giftText: product?.giftText?.text || product?.giftText || null, // 🎁 ДОДАНО
+      },
+    ];
+  });
+};
+
   const changeQty = (id, qty) =>
     setCart((prev) =>
       qty <= 0 ? prev.filter((p) => p.id !== id) : prev.map((p) => (p.id === id ? { ...p, qty } : p))

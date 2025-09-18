@@ -390,7 +390,12 @@ export default function ProductPage({ onAddToCart, onBuy }) {
                     <button
                       className="w-full h-12 md:h-14 rounded-xl border font-semibold text-base md:text-lg hover:bg-gray-50 active:scale-[0.99] transition"
                       onClick={() => {
-                        onAddToCart?.(product);
+                        const item = {
+                          ...product,
+                          giftText: product.giftText?.text || product.giftText || null, // 🎁 додали
+                        };
+
+                        onAddToCart?.(item);
                         setFlashCart(true);
                         if (timerRef.current) clearTimeout(timerRef.current);
                         timerRef.current = setTimeout(() => setFlashCart(false), 2200);
@@ -398,6 +403,7 @@ export default function ProductPage({ onAddToCart, onBuy }) {
                     >
                       Додати в кошик
                     </button>
+
                   </div>
 
                   <div className="mt-4 text-xs md:text-sm text-gray-600 space-y-1">

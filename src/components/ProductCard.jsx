@@ -117,7 +117,13 @@ export default function ProductCard({ product, onAddToCart, onBuy }) {
             className="relative inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-black px-4 text-white font-semibold hover:bg-black/90 active:scale-[0.99] transition"
             onClick={(e) => {
               stop(e);
-              onAddToCart?.(product);
+
+              const item = {
+                ...product,
+                giftText: product.giftText?.text || product.giftText || null, // 🎁 додаємо
+              };
+
+              onAddToCart?.(item);
               setAdded(true);
             }}
             aria-label={`Додати ${product.title} у кошик`}
@@ -125,6 +131,7 @@ export default function ProductCard({ product, onAddToCart, onBuy }) {
             В кошик
             <span className="pointer-events-none absolute inset-0 rounded-xl sm:hidden animate-[pulse_1.2s_ease-out]" />
           </button>
+
 
           <button
             type="button"
