@@ -107,6 +107,9 @@ export default async function handler(req, res) {
       const price = Math.max(0, Number(it.price) || 0);
       const title = esc(it.title || "Товар");
       lines.push(`${i + 1}. ${title} — ${qty} × ${fmt(price)} = ${fmt(price * qty)}`);
+      if (it.giftText) {
+        lines.push(`🎁 ${esc(it.giftText)}`);
+      }
     });
   }
 

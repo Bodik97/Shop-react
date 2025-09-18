@@ -281,6 +281,11 @@ export default function ModalBuy({
                     <div className="font-semibold text-gray-900 text-sm sm:text-base line-clamp-2">
                       {product.title}
                     </div>
+                    {product.giftText?.text && (
+                      <div className="mt-1 text-xs text-emerald-700 flex items-center gap-1">
+                        🎁 {product.giftText.text}
+                      </div>
+                    )}
                     <div className="mt-1 text-red-600 font-bold text-base sm:text-lg tabular-nums">
                       {formatUAH(price)}
                     </div>

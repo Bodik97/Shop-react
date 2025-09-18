@@ -269,6 +269,12 @@ export default function Cart({
                       </>
                     )}
                   </div>
+                      {item.giftText && (
+                        <div className="mt-1 text-sm text-emerald-600 font-medium flex items-center gap-1">
+                          <span className="animate-pulse">🎁</span>
+                          <span>{item.giftText}</span>
+                        </div>
+                      )}
 
                   <div className="mt-3">
                     <label htmlFor={`qty-${item.id}`} className="sr-only">

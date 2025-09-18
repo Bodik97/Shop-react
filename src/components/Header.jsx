@@ -221,7 +221,7 @@ export default function Header({ cartCount = 0 }) {
             )}
           </Link>
 
-          <div className="mt-4">
+          {/* <div className="mt-4">
             <div className="text-center mb-3">
               <h2 className="px-1 pb-2 text-xs md:text-sm uppercase tracking-widest text-gray-500 font-semibold">
                 Ми в соцмережах
@@ -262,7 +262,7 @@ export default function Header({ cartCount = 0 }) {
                 <FaTiktok className="text-black h-6 w-6" />
               </a>
             </div>
-          </div>
+          </div> */}
         </div>
       </aside>
     </header>
