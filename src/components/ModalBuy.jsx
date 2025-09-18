@@ -359,14 +359,22 @@ export default function ModalBuy({
                     const q = Math.max(1, Number(i.qty) || 1);
                     const p = Number(i.price) || 0;
                     return (
-                      <div key={i.id} className="flex justify-between gap-3 text-sm text-gray-800">
-                        <span className="truncate">
-                          {i.title} × {q}
-                        </span>
-                        <span className="tabular-nums">{formatUAH(p * q)}</span>
+                      <div key={i.id} className="space-y-0.5">
+                        <div className="flex justify-between gap-3 text-sm text-gray-800">
+                          <span className="truncate">
+                            {i.title} × {q}
+                          </span>
+                          <span className="tabular-nums">{formatUAH(p * q)}</span>
+                        </div>
+                        {i.giftText && (
+                          <div className="text-xs text-emerald-700 flex items-center gap-1 pl-2">
+                            🎁 {i.giftText}
+                          </div>
+                        )}
                       </div>
                     );
                   })}
+
                   <hr className="my-2 border-slate-200" />
                   <Row label="Сума товарів" value={formatUAH(subtotal)} />
                   {discount > 0 && <Row label="Знижка" value={`−${formatUAH(discount)}`} />}
