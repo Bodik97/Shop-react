@@ -148,30 +148,47 @@ export default function ModalBuy({
   // складання замовлення
   function buildOrderPayload() {
     if (isCart) {
-      const items = cart.map((i) => {
-        const q = Math.max(1, Number(i.qty) || 1);
-        const p = Number(i.price) || 0;
-        return { id: i.id, title: i.title, qty: q, price: p, lineTotal: p * q };
-      });
-      return {
-        items,
-        subtotal,
-        discount,
-        shipping: shipping || 0,
-        total: displayTotal,
-        mode: "cart",
+    const items = cart.map((i) => {
+      const q = Math.max(1, Number(i.qty) || 1);
+      const p = Number(i.price) || 0;
+      return { 
+        id: i.id, 
+        title: i.title, 
+        qty: q, 
+        price: p, 
+        lineTotal: p * q,
+        giftText: i.giftText?.text || i.giftText || null   // ✅ додав сюди
       };
-    }
+    });
+
+    return {
+      items,
+      subtotal,
+      discount,
+      shipping: shipping || 0,
+      total: displayTotal,
+      mode: "cart",
+    };
+  }
+
     const q = Math.max(1, Number(qty) || 1);
     const p = Number(price) || 0;
     return {
-      items: [{ id: product?.id, title: product?.title, qty: q, price: p, lineTotal: p * q }],
+      items: [{
+        id: product?.id,
+        title: product?.title,
+        qty: q,
+        price: p,
+        lineTotal: p * q,
+        giftText: product?.giftText?.text || product?.giftText || null   // 🎁 ДОДАНО СЮДИ
+      }],
       subtotal: p * q,
       discount: 0,
       shipping: shipping || 0,
       total: displayTotal,
       mode: "single",
     };
+
   }
 
   // submit
