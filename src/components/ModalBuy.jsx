@@ -348,7 +348,7 @@ export default function ModalBuy({
                   <hr className="my-2 border-slate-200" />
                   <Row label="Сума товарів" value={formatUAH(subtotal)} />
                   {discount > 0 && <Row label="Знижка" value={`−${formatUAH(discount)}`} />}
-                  <Row label="Доставка" value={shipping ? formatUAH(shipping) : "Безкоштовно"} />
+                  {/* <Row label="Доставка" value={shipping ? formatUAH(shipping) : "Безкоштовно"} /> */}
                   <Row strong label="Разом" value={formatUAH(displayTotal)} />
                 </div>
               </section>
@@ -585,7 +585,7 @@ function NPSelect({
     <div>
       <div className="flex items-center justify-between mb-1">
         <label htmlFor={id} className="text-sm text-gray-800 flex items-center gap-1">
-          {Icon ? <Icon className="h-4 w-4 text-red-500" /> : null}
+          {Icon ? <Icon className="h-4 w-4 text-red" /> : null}
           {label} {required && <span className="text-rose-600">*</span>}
         </label>
 

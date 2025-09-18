@@ -30,7 +30,7 @@ export default function Contact() {
                   className="font-extrabold text-gray-900 tracking-tight
                             text-[clamp(24px,5vw,46px)]
                             leading-[1.15] sm:leading-[1.12] md:leading-[1.08]
-                            text-balance [text-wrap:balance] [hyphens:auto]"
+                            [hyphens:auto]"
                 >
                   Ми на зв’язку — швидко допоможемо і підкажемо, що обрати
                 </h2>

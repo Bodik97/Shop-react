@@ -443,10 +443,10 @@ export default function Cart({
 
             {mobileDetails && (
               <div className="mt-3 text-xs sm:text-sm text-gray-800 space-y-1">
-                <div className="flex justify-between">
+                {/* <div className="flex justify-between">
                   <span>Доставка</span>
                   <span className="font-medium">{currentShip.label}</span>
-                </div>
+                </div> */}
                 <div className="flex justify-between">
                   <span>Товарів</span>
                   <span className="tabular-nums">{itemsCount}</span>
@@ -596,13 +596,13 @@ function Qty({ id, value, onChange, min = 1, max = 99, pending = false }) {
 //   );
 // }
 
-function Breakdown({ itemsCount, subtotal, discount, shipping, total }) {
+function Breakdown({ itemsCount, subtotal, discount,  total }) {
   return (
     <div className="mb-4 text-[15px]">
       <Row label="Товарів" value={String(itemsCount)} />
       <Row label="Сума товарів" value={fmtUAH(subtotal)} />
       {discount > 0 && <Row label="Знижка" value={`−${fmtUAH(discount)}`} accent="text-emerald-700" />}
-      <Row label="Доставка" value={fmtUAH(shipping)} />
+      {/* <Row label="Доставка" value={fmtUAH(shipping)} /> */}
       <Row strong label="Разом" value={fmtUAH(total)} />
     </div>
   );

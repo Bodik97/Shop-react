@@ -153,12 +153,12 @@ export default function ProductPage({ onAddToCart, onBuy }) {
     <main className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-6 md:py-8 overflow-x-hidden">
       {!product ? (
         <>
-          <nav className="text-xs sm:text-sm text-gray-500 mb-4">
+          <nav className="text-xs sm:text-sm text-gray-200 mb-4">
             <Link to="/" className="hover:underline">Головна</Link>
             <span className="mx-1">/</span>
-            <span className="text-gray-700">Товар</span>
+            <span className="text-gray-200">Товар</span>
           </nav>
-          <p className="text-gray-700">Товар не знайдено.</p>
+          <p className="text-black">Товар не знайдено.</p>
           <button onClick={() => navigate(-1)} className="mt-4 px-4 py-2 border rounded-lg hover:bg-gray-50">← Назад</button>
         </>
       ) : (
@@ -176,12 +176,12 @@ export default function ProductPage({ onAddToCart, onBuy }) {
           )}
 
           {/* хлібні крихти */}
-          <nav className="text-xs sm:text-sm text-gray-500 mb-4">
-            <Link to="/" className="hover:underline">Головна</Link>
+          <nav className="text-xs sm:text-sm text-gray-200 mb-4">
+            <Link to="/" className=" text-gray-200 hover:underline">Головна</Link>
             <span className="mx-1">/</span>
-            <Link to={`/category/${product.category}`} className="hover:underline">Категорія</Link>
+            <Link to={`/category/${product.category}`} className="text-gray-200 hover:underline ">Категорія</Link>
             <span className="mx-1">/</span>
-            <span className="text-gray-700 line-clamp-1">{product.title}</span>
+            <span className="text-gray-200 line-clamp-1">{product.title}</span>
           </nav>
 
           {/* заголовок */}
@@ -231,26 +231,54 @@ export default function ProductPage({ onAddToCart, onBuy }) {
 
                 {imgs.length > 1 && (
                   <>
+                  {/* Кнопка попереднього зображення */}
                     <button
                       type="button"
                       onClick={prev}
                       aria-label="Попереднє фото"
-                      className="absolute left-4 top-1/2 -translate-y-1/2 h-14 w-14 flex items-center justify-center rounded-full bg-black/50 text-white shadow-xl ring-1 ring-black/30 hover:bg-black/60 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 transition"
+                      className="absolute left-3 bottom-2
+                                h-12 w-12 flex items-center justify-center
+                                rounded-full bg-black/60 shadow-lg
+                                ring-1 ring-black/30 hover:bg-black/70 hover:scale-105
+                                focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 transition"
                     >
-                      <svg viewBox="0 0 24 24" className="h-8 w-8" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M15.5 4.5 8 12l7.5 7.5" />
+                      <svg
+                        viewBox="0 0 18 18"
+                        className="h-6 w-6 text-white"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="3.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <polyline points="12 4 6 9 12 14" />
                       </svg>
                     </button>
+
+                    {/* Кнопка наступного зображення */}
                     <button
                       type="button"
                       onClick={next}
                       aria-label="Наступне фото"
-                      className="absolute right-4 top-1/2 -translate-y-1/2 h-14 w-14 flex items-center justify-center rounded-full bg-black/50 text-white shadow-xl ring-1 ring-black/30 hover:bg-black/60 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 transition"
+                      className="absolute right-3 bottom-2
+                                h-12 w-12 flex items-center justify-center
+                                rounded-full bg-black/60 shadow-lg
+                                ring-1 ring-black/30 hover:bg-black/70 hover:scale-105
+                                focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 transition"
                     >
-                      <svg viewBox="0 0 24 24" className="h-8 w-8" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M8.5 4.5 16 12l-7.5 7.5" />
+                      <svg
+                        viewBox="0 0 18 18"
+                        className="h-6 w-6 text-white"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="3.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <polyline points="6 4 12 9 6 14" />
                       </svg>
                     </button>
+
                   </>
                 )}
               </div>
@@ -385,32 +413,28 @@ export default function ProductPage({ onAddToCart, onBuy }) {
           {/* мобільна нижня панель (лише ціна) */}
           {!openFS && (
             <div className="fixed inset-x-0 bottom-0 z-40 lg:hidden">
-              <div className="mx-auto max-w-7xl px-4 pb-[max(env(safe-area-inset-bottom),16px)]">
-                <div className="rounded-t-2xl border bg-white shadow-2xl p-3">
-                  <div className="flex items-center justify-between">
+              <div className="mx-auto max-w-7xl px-3 sm:px-4 pb-[max(env(safe-area-inset-bottom), 6px)]">
+                <div className="rounded-t-2xl border bg-white shadow-2xl p-3 sm:p-4">
+                  
+                  {/* ціна + кнопка*/}
+                  <div className="flex justify-between items-center">
                     <div className="flex items-baseline gap-1">
-                      <span className="text-3xl md:text-6xl font-extrabold leading-none tabular-nums text-red-600">
-                        {new Intl.NumberFormat('uk-UA', { maximumFractionDigits: 0 }).format(product.price)}
+                      <span className="text-2xl sm:text-3xl md:text-4xl font-extrabold leading-none tabular-nums text-red-600">
+                        {new Intl.NumberFormat("uk-UA", { maximumFractionDigits: 0 }).format(product.price)}
                       </span>
-                      <span className="text-lg md:text-xl text-gray-700">₴</span>
+                      <span className="text-lg sm:text-2xl text-red-600">₴</span>
                     </div>
 
-                    <div className="flex gap-2">
-                      <button
-                        className="px-4 h-11 rounded-xl border font-semibold text-sm hover:bg-gray-50"
-                        onClick={() => {
-                          onAddToCart?.(product);
-                          setFlashCart(true);
-                          if (timerRef.current) clearTimeout(timerRef.current);
-                          timerRef.current = setTimeout(() => setFlashCart(false), 2200);
-                        }}
-                      >
-                        В кошик
-                      </button>
-                      <button className="px-4 h-11 rounded-xl bg-blue-600 text-white font-semibold text-sm hover:bg-blue-700" onClick={() => onBuy?.(product)}>
-                        Купити
-                      </button>
-                    </div>
+                    <button
+                      type="button"
+                      onClick={() => onBuy?.(product)}
+                      className="w-32 h-10 flex items-center justify-center 
+                    rounded-xl border font-semibold text-sm text-white 
+                    hover:bg-gray-50 active:scale-[0.98] transition"
+
+                    >
+                      Оформити
+                    </button>
                   </div>
                 </div>
               </div>
@@ -478,14 +502,14 @@ export default function ProductPage({ onAddToCart, onBuy }) {
           {/* контентні блоки */}
           <div className="mt-6 md:mt-8 space-y-6 md:space-y-8">
             {product.description && (
-              <section className="bg-white/90 rounded-2xl p-4 sm:p-5 md:p-6 shadow-sm">
+              <section className="bg-white/90 border-zinc-900 border-4 rounded-2xl p-4 sm:p-5 md:p-6 shadow-sm">
                 <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-2 md:mb-3">Опис</h2>
                 <p className="text-gray-700 text-sm md:text-base leading-relaxed whitespace-pre-line">{product.description}</p>
               </section>
             )}
 
             {features.length > 0 && (
-              <section className="bg-white/90 rounded-2xl p-4 sm:p-5 md:p-6 shadow-sm">
+              <section className="bg-white/90 border-zinc-900 border-4 rounded-2xl p-4 sm:p-5 md:p-6 shadow-sm">
                 <h3 className="text-lg md:text-xl font-semibold text-gray-900 mb-2 md:mb-3">Переваги</h3>
                 <ul className="space-y-2 text-sm md:text-base">
                   {features.map((f, i) => (
@@ -499,7 +523,7 @@ export default function ProductPage({ onAddToCart, onBuy }) {
             )}
 
             {!!Object.keys(specs).length && (
-              <section className="bg-white/90 rounded-2xl p-4 sm:p-5 md:p-6 shadow-sm">
+              <section className="bg-white/90 border-zinc-900 border-4 rounded-2xl p-4 sm:p-5 md:p-6 shadow-sm">
                 <h3 className="text-lg md:text-xl font-semibold text-gray-900 mb-2 md:mb-3">Характеристики</h3>
                 <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 md:gap-y-3 text-sm md:text-base">
                   {Object.entries(specs).map(([k, v]) => (
@@ -513,7 +537,7 @@ export default function ProductPage({ onAddToCart, onBuy }) {
             )}
 
             {(inBox.length > 0 || warranty) && (
-              <section className="bg-white/90 rounded-2xl p-4 sm:p-5 md:p-6 shadow-sm mb-20">
+              <section className="bg-white/90 border-zinc-900 border-4 rounded-2xl p-4 sm:p-5 md:p-6 shadow-sm mb-20">
                 <h3 className="text-lg md:text-xl font-semibold text-gray-900 mb-2 md:mb-3">Комплектація та гарантія</h3>
                 {inBox.length > 0 && (
                   <ul className="list-disc pl-5 md:pl-6 text-gray-800 space-y-1 text-sm md:text-base">
