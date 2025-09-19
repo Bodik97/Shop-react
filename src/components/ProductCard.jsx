@@ -27,6 +27,9 @@ export default function ProductCard({ product, onAddToCart, onBuy }) {
     product.tags?.includes?.("popular") ||
     product.badges?.includes?.("popular");
 
+  // 🔑 ім’я картинки без розширення
+  const baseImage = product.image?.replace(/\.[^/.]+$/, "");
+
   return (
     <article
       role="button"
@@ -38,16 +41,35 @@ export default function ProductCard({ product, onAddToCart, onBuy }) {
     >
       {/* Фото */}
       <div className="relative bg-white overflow-hidden rounded-t-xl aspect-[4/3] pt-[10px]">
-        <img
-          src={product.image}
-          alt={product.title}
-          loading="lazy"
-          className="absolute left-0 right-0 bottom-0 top-[20px] w-full h-full object-contain transition group-hover:scale-[1.03]"
-          onClick={(e) => {
-            e.stopPropagation();
-            go();
-          }}
-        />
+        <picture>
+          {/* AVIF */}
+          <source
+            srcSet={`/img/${baseImage}-400.avif 400w,
+                     /img/${baseImage}-800.avif 800w,
+                     /img/${baseImage}-1200.avif 1200w`}
+            type="image/avif"
+          />
+          {/* WebP */}
+          <source
+            srcSet={`/img/${baseImage}-400.webp 400w,
+                     /img/${baseImage}-800.webp 800w,
+                     /img/${baseImage}-1200.webp 1200w`}
+            type="image/webp"
+          />
+          {/* fallback */}
+          <img
+            src={`/img/${baseImage}-800.webp`}
+            alt={product.title}
+            loading="lazy"
+            width="400"
+            height="300"
+            className="absolute left-0 right-0 bottom-0 top-[20px] w-full h-full object-contain transition group-hover:scale-[1.03]"
+            onClick={(e) => {
+              e.stopPropagation();
+              go();
+            }}
+          />
+        </picture>
 
         {isPopular && (
           <span
@@ -67,10 +89,7 @@ export default function ProductCard({ product, onAddToCart, onBuy }) {
                        bg-gradient-to-r from-emerald-600 to-emerald-500 text-white text-xs
                        font-semibold px-3 py-1.5 shadow-lg ring-1 ring-emerald-700/30 animate-slideUpFade"
           >
-            <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true">
-              <path fill="currentColor" d="M9 16.17l-3.88-3.88-1.42 1.41L9 19 20.3 7.71l-1.41-1.41z" />
-            </svg>
-            Додано в кошик
+            ✅ Додано в кошик
           </span>
         )}
       </div>
@@ -89,26 +108,10 @@ export default function ProductCard({ product, onAddToCart, onBuy }) {
           {product.title}
         </Link>
 
-        {/* Ціна + бейдж подарунка */}
         <div className="mt-1 mb-4 flex items-center gap-2">
           <div className="text-red-600 font-extrabold text-3xl sm:text-xl">
             {new Intl.NumberFormat("uk-UA", { maximumFractionDigits: 0 }).format(Number(product.price) || 0)} ₴
           </div>
-
-          {product.giftBadge?.text && (
-            <span
-              className="relative overflow-hidden inline-flex items-center gap-1 rounded-full
-                        bg-gradient-to-r from-gray-900 via-gray-800 to-black
-                        text-white shadow-[0_6px_16px_rgba(0,0,0,0.25)]
-                        ring-1 ring-white/10 backdrop-blur
-                        px-2.5 py-0.5 text-[12px] font-semibold select-none
-                        animate-bounce sm:animate-none group"
-            >
-              + {(product.giftBadge?.text || "Подарунок")} 🎁
-              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-white/10 rotate-12 group-hover:translate-x-full transition-transform duration-700" />
-            </span>
-
-          )}
         </div>
 
         <div className="mt-auto flex flex-col sm:flex-row gap-2">
@@ -117,21 +120,12 @@ export default function ProductCard({ product, onAddToCart, onBuy }) {
             className="relative inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-black px-4 text-white font-semibold hover:bg-black/90 active:scale-[0.99] transition"
             onClick={(e) => {
               stop(e);
-
-              const item = {
-                ...product,
-                giftText: product.giftText?.text || product.giftText || null, // 🎁 додаємо
-              };
-
-              onAddToCart?.(item);
+              onAddToCart?.(product);
               setAdded(true);
             }}
-            aria-label={`Додати ${product.title} у кошик`}
           >
             В кошик
-            <span className="pointer-events-none absolute inset-0 rounded-xl sm:hidden animate-[pulse_1.2s_ease-out]" />
           </button>
-
 
           <button
             type="button"
@@ -141,7 +135,6 @@ export default function ProductCard({ product, onAddToCart, onBuy }) {
               e.stopPropagation();
               onBuy?.(product);
             }}
-            aria-label={`Купити ${product.title}`}
           >
             Купити
           </button>
