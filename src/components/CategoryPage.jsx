@@ -64,7 +64,7 @@ export default function CategoryPage({ onAddToCart, onBuy }) {
         <select
           value={sort}
           onChange={(e)=>setSort(e.target.value)}
-          className="sm:hidden w-full rounded-xl border px-3 py-2 text-sm text-white bg-white "
+          className="sm:hidden w-full rounded-xl border px-3 py-2 text-sm text-gray-700 bg-white "
         >
           <option value="default">Без сортування</option>
           <option value="price-asc">Ціна ↑</option>

@@ -74,7 +74,7 @@ export default function About() {
       if (navigator.share) {
         await navigator.share({
           title: "AIRSOFT — спорядження та сервіс",
-          text: "Рекомендую цей магазин для страйкболу",
+          text: "Рекомендую цей магазин з спорядженням для активного відпочинку.",
           url,
         });
         setShareMsg("Посилання надіслано.");
@@ -97,7 +97,7 @@ export default function About() {
             Про нас
           </h1>
           <p className="mt-3 text-slate-200 text-[15px] sm:text-base lg:text-lg">
-            Профі зі спорядження для страйкболу. Тестуємо, налаштовуємо, пояснюємо простими словами.
+            Профі зі спорядження. Тестуємо, налаштовуємо, пояснюємо простими словами.
           </p>
 
           {/* buttons */}
@@ -153,29 +153,28 @@ export default function About() {
           Пояснюємо, консультуємо, не зникаємо після покупки.
         </VP>
         <VP icon="💳" title="Оплата як зручно">
-          Картка, післяплата, безготівка для ФОП/ТОВ.
+          Картка, готівка при отриманні.
         </VP>
       </section>
 
       {/* STATS + CTA */}
       <section className="mt-8 grid gap-4 sm:gap-6 md:grid-cols-3">
-  {/* Років на ринку */}
-  <div className="relative overflow-hidden rounded-2xl border bg-white p-5 group">
-    <div className="absolute -top-6 -right-6 h-24 w-24 rounded-full bg-blue-500/10 blur-2xl" aria-hidden />
-    <div className="flex flex-col items-center text-center">
-      <div className="text-transparent bg-clip-text 
-                bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600
-                text-3xl sm:text-4xl font-extrabold tracking-tight drop-shadow">
-        7+
-      </div>
 
-
-      <div className="mt-1 text-sm text-black">Років на ринку</div>
-      <div className="mt-3 h-1.5 w-24 rounded-full bg-gray-100 overflow-hidden">
-        <div className="h-full w-5/6 rounded-full bg-blue-600 group-hover:w-full transition-[width] duration-500" />
-      </div>
-    </div>
-  </div>
+        {/* Років на ринку */}
+        <div className="relative overflow-hidden rounded-2xl border bg-white p-5 group">
+          <div className="absolute -top-6 -right-6 h-24 w-24 rounded-full bg-blue-500/10 blur-2xl" aria-hidden />
+          <div className="flex flex-col items-center text-center">
+            <div className="text-transparent bg-clip-text 
+                      bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600
+                      text-3xl sm:text-4xl font-extrabold tracking-tight drop-shadow">
+              7+
+            </div>
+            <div className="mt-1 text-sm text-black">Років на ринку</div>
+            <div className="mt-3 h-1.5 w-24 rounded-full bg-gray-100 overflow-hidden">
+              <div className="h-full w-5/6 rounded-full bg-blue-600 group-hover:w-full transition-[width] duration-500" />
+            </div>
+          </div>
+        </div>
 
   {/* Товарів на складі */}
   <div className="relative overflow-hidden rounded-2xl border bg-white p-5 group">
@@ -183,7 +182,7 @@ export default function About() {
     <div className="flex flex-col items-center text-center">
       <div className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 
                 text-3xl sm:text-4xl font-extrabold tracking-tight drop-shadow">
-        3&nbsp;500+
+        250+
       </div>
 
       <div className="mt-1 text-sm text-gray-600">Товарів на складі</div>
@@ -330,16 +329,16 @@ function Stat({ label, value }) {
   );
 }
 
-function Shot({ title }) {
-  return (
-    <figure className="relative overflow-hidden rounded-2xl border bg-white">
-      <div className="aspect-[16/9] bg-gradient-to-br from-slate-100 to-slate-200" />
-      <figcaption className="absolute left-2 bottom-2 rounded-lg bg-black/60 px-2.5 py-1 text-white text-xs sm:text-sm">
-        {title}
-      </figcaption>
-    </figure>
-  );
-}
+// function Shot({ title }) {
+//   return (
+//     <figure className="relative overflow-hidden rounded-2xl border bg-white">
+//       <div className="aspect-[16/9] bg-gradient-to-br from-slate-100 to-slate-200" />
+//       <figcaption className="absolute left-2 bottom-2 rounded-lg bg-black/60 px-2.5 py-1 text-white text-xs sm:text-sm">
+//         {title}
+//       </figcaption>
+//     </figure>
+//   );
+// }
 
 /** ——— Reviews ——— */
 function ReviewsBlock({ reviews, setReviews, sent, setSent }) {

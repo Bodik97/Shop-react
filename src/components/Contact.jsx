@@ -2,14 +2,14 @@
 import { Phone, Mail, Clock, MapPin, Headphones } from "lucide-react";
 
 export default function Contact() {
-  const PHONE = "+38 (096) 000-00-00";
+  const PHONE_DISPLAY = "+38 (096) 000-00-00";
+  const PHONE_TEL = "+380960000000";
   const EMAIL = "support@airsoft.shop";
   const HOURS = "Пн–Пт 10:00–19:00, Сб 11:00–16:00";
-  const ADDRESS = [
-  "Київ, вул. Бориспільська, 9 (Дарницький р-н, індустріальна зона)",<br />,<br />,
-  "Київ, вул. Новокостянтинівська, 2А (Подільський р-н, промзона)",
-];
-
+  const ADDRESS_LINES = [
+    "Київ, вул. Бориспільська, 9 (Дарницький р-н, індустріальна зона)",
+    "Київ, вул. Новокостянтинівська, 2А (Подільський р-н, промзона)",
+  ];
 
   return (
     <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
@@ -25,34 +25,41 @@ export default function Contact() {
             </span>
 
             <div className="mx-auto text-center max-w-[28ch] sm:max-w-[40ch] md:max-w-[56ch]">
-                <h2
-                  lang="uk"
-                  className="font-extrabold text-gray-900 tracking-tight
-                            text-[clamp(24px,5vw,46px)]
-                            leading-[1.15] sm:leading-[1.12] md:leading-[1.08]
-                            [hyphens:auto]"
-                >
-                  Ми на зв’язку — швидко допоможемо і підкажемо, що обрати
-                </h2>
-              </div>
-
+              <h2
+                lang="uk"
+                className="font-extrabold text-gray-900 tracking-tight
+                           text-[clamp(24px,5vw,46px)]
+                           leading-[1.15] sm:leading-[1.12] md:leading-[1.08]
+                           [hyphens:auto]"
+              >
+                Ми на зв’язку — швидко допоможемо і підкажемо, що обрати
+              </h2>
+            </div>
 
             <p className="max-w-2xl text-gray-600 text-sm sm:text-base">
               Зазвичай відповідаємо протягом 5–15 хв у робочий час. Пишіть, коли зручно — ми поруч.
             </p>
           </div>
 
-          {/* картки контактів */}
+          {/* Картки контактів */}
           <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             <InfoCard
               icon={<Phone className="h-5 w-5 text-gray-900" />}
               label="Телефон"
-              value={PHONE}
+              value={
+                <a className="hover:underline" href={`tel:${PHONE_TEL}`}>
+                  {PHONE_DISPLAY}
+                </a>
+              }
             />
             <InfoCard
               icon={<Mail className="h-5 w-5 text-gray-900" />}
               label="Email"
-              value={EMAIL}
+              value={
+                <a className="hover:underline" href={`mailto:${EMAIL}`}>
+                  {EMAIL}
+                </a>
+              }
             />
             <InfoCard
               icon={<Clock className="h-5 w-5 text-gray-900" />}
@@ -62,7 +69,7 @@ export default function Contact() {
             <InfoCard
               icon={<MapPin className="h-5 w-5 text-gray-900" />}
               label="Адреса"
-              value={ADDRESS}
+              value={ADDRESS_LINES}
             />
           </div>
         </div>
@@ -80,7 +87,7 @@ export default function Contact() {
         </div>
       </section>
 
-      {/* Переваги / спокій клієнта */}
+      {/* Переваги */}
       <section className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
         {[
           { t: "Швидка відповідь", d: "5–15 хв у робочий час" },
@@ -104,15 +111,26 @@ export default function Contact() {
 
 /* ——— Subcomponent ——— */
 function InfoCard({ icon, label, value }) {
+  const isArray = Array.isArray(value);
   return (
     <div className="rounded-2xl border bg-white p-4 sm:p-5 text-center shadow-sm">
       <div className="mx-auto grid place-items-center h-10 w-10 rounded-xl bg-gray-100">
         {icon}
       </div>
       <div className="mt-2 text-[12px] sm:text-sm text-gray-500">{label}</div>
-      <div className="mt-1 font-semibold text-gray-900 text-sm sm:text-base break-words">
-        {value}
-      </div>
+
+      {/* Якщо масив — рендеримо списком із ключами */}
+      {isArray ? (
+        <ul className="mt-1 space-y-1 font-semibold text-gray-900 text-sm sm:text-base">
+          {value.map((line, idx) => (
+            <li key={`${label}-${idx}`}>{line}</li>
+          ))}
+        </ul>
+      ) : (
+        <div className="mt-1 font-semibold text-gray-900 text-sm sm:text-base break-words">
+          {value}
+        </div>
+      )}
     </div>
   );
 }

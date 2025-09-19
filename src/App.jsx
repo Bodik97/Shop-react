@@ -15,6 +15,7 @@ import Contact from "./components/Contact";
 import ModalBuy from "./components/ModalBuy";
 import Cart from "./components/Cart";
 import ThankYou from "./components/ThankYou";
+import ScrollToTop from "./components/ScrollToTop";
 
 // === налаштування API
 const API_URL = "/api/telegram";
@@ -167,6 +168,8 @@ export default function App() {
 
   return (
     <>
+      <ScrollToTop smooth />
+      {/* Шапка */}
       <Header cartCount={cartCount} />
 
       <Routes>
