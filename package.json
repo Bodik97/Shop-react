@@ -12,8 +12,8 @@
     "tailwind:init": "tailwindcss init -p",
     "predeploy": "vite build && cp dist/index.html dist/404.html",
     "deploy": "gh-pages -d dist",
-    "img:opt": "node scripts/optimize-images.mjs"
-
+    "img:opt": "node scripts/optimize-images.mjs",
+    "img:convert": "node scripts/convert-images.mjs" 
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",

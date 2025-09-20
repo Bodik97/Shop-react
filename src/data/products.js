@@ -1,119 +1,118 @@
 // src/data/products.js
 // базові
-import pistolsImg from "../img/pist.png";
-import riflesImg from "../img/pnevmo.png";
-import knivesImg from "../img/knifes.png";
-import accessoriesImg from "../img/acsesory.png";
+const pistolsImg =  "https://res.cloudinary.com/da27wfewm/image/upload/v1758359735/pist_sd1hkh.webp";
+const riflesImg =  "https://res.cloudinary.com/da27wfewm/image/upload/v1758359738/pnevmo_r0esvk.webp";
+const knivesImg =  "https://res.cloudinary.com/da27wfewm/image/upload/v1758359724/knifes_rsdeyq.webp";
+const accessoriesImg =  "https://res.cloudinary.com/da27wfewm/image/upload/v1758359717/acsesory_p08mzi.webp";
 
 
 // Hatsan
-import imgHatsan_1 from "../img/hvintivki/hatsan/img_1.jpg";
-import imgHatsan_2 from "../img/hvintivki/hatsan/img_2.jpg";
-import imgHatsan_3 from "../img/hvintivki/hatsan/img_3.jpg";
-import imgHatsan_4 from "../img/hvintivki/hatsan/img_4.jpg";
+const imgHatsan_1 =  "https://res.cloudinary.com/da27wfewm/image/upload/v1758398902/img_3_ze6iff.png";
+const imgHatsan_2  = "https://res.cloudinary.com/da27wfewm/image/upload/v1758398912/img_4_as99o8.png";
+const imgHatsan_3 =  "https://res.cloudinary.com/da27wfewm/image/upload/v1758398892/img_2_jgvehw.png";
+const imgHatsan_4 =  "https://res.cloudinary.com/da27wfewm/image/upload/v1758398883/img_1_wplkjh.png";
 
 
 // Giv
-import imgGiv_1 from "../img/pistolets/giw/pist-1.jpg";
-import imgGiv_2 from "../img/pistolets/giw/pist-2.jpg";
-import imgGiv_3 from "../img/pistolets/giw/pist-3.jpg";
-import imgGiv_4 from "../img/pistolets/giw/pist-4.jpg";
-import imgGiv_5 from "../img/pistolets/giw/pist-5.jpg";
+ const imgGiv_1 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399436/pist-4_cfvjip.png";
+ const imgGiv_2 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399425/pist-3_nvmhdh.png";
+ const imgGiv_3 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399447/pist-5_duzhpg.png";
+ const imgGiv_4 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399415/pist-2_ommmir.png";
+ const imgGiv_5 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399403/pist-1_qncytu.png";
 
 // // WinGun
-// import winGun_1 from "../img/pistolets/WinGun/pist-1.jpg";
-// import winGun_2 from "../img/pistolets/WinGun/pist-2.jpg";
-// import winGun_3 from "../img/pistolets/WinGun/pist-3.jpg";
-// import winGun_4 from "../img/pistolets/WinGun/pist-4.jpg";
-// import winGun_5 from "../img/pistolets/WinGun/pist-5.jpg";
+// import winGun_1 from "../img/pistolets/WinGun/pist-1.webp";
+// import winGun_2 from "../img/pistolets/WinGun/pist-2.webp";
+// import winGun_3 from "../img/pistolets/WinGun/pist-3.webp";
+// import winGun_4 from "../img/pistolets/WinGun/pist-4.webp";
+// import winGun_5 from "../img/pistolets/WinGun/pist-5.webp";
 
 // Glock
-import glock_1 from "../img/pistolets/Glock/pist-1.jpg";
-import glock_2 from "../img/pistolets/Glock/pist-2.jpg";
-import glock_3 from "../img/pistolets/Glock/pist-3.jpg";
-import glock_4 from "../img/pistolets/Glock/pist-4.jpg";
-import glock_5 from "../img/pistolets/Glock/pist-5.jpg";
-import glock_6 from "../img/pistolets/Glock/pist-6.jpg";
+ const  glock_1 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399457/pist-1_paje0r.png";
+ const  glock_2 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399494/pist-3_vwxo9u.png";
+ const  glock_3 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399483/pist-2_p60uja.png";
+ const  glock_4 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399514/pist-4_hoeyee.png";
+ const  glock_5 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399543/pist-5_bmcamh.png";
+ const  glock_6 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399543/pist-5_bmcamh.png";
 
 // Sur
-import sur_1 from "../img/pistolets/Sur/pist-1.jpg";
-import sur_2 from "../img/pistolets/Sur/pist-2.jpg";
-import sur_3 from "../img/pistolets/Sur/pist-3.jpg";
-import sur_4 from "../img/pistolets/Sur/pist-4.jpg";
+const sur_1 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399714/pist-1_bvrrxh.png";
+const sur_2 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399736/pist-2_m3wlls.png";
+const sur_3 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399749/pist-3_ltktwd.png";
+const sur_4 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399774/pist-4_mzifaz.png";
 
 // Blow
-import blow_1 from "../img/pistolets/Blow/pist-1.jpg";
-import blow_2 from "../img/pistolets/Blow/pist-2.jpg";
-import blow_3 from "../img/pistolets/Blow/pist-3.jpg";
-
+const blow_1 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399361/pist-1_ryfgff.png";
+const blow_2 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399371/pist-2_wn53im.png";
+const blow_3 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399382/pist-3_fwq8e5.png";
 // Sur-1
-import sur1_1 from "../img/pistolets/Sur-1/pist-1.jpg";
-import sur1_2 from "../img/pistolets/Sur-1/pist-2.jpg";
+const sur1_1 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399790/pist-1_mkunoc.png";
+const sur1_2 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399808/pist-2_c3o9wq.png";
 
 // Latek
-import latek_1 from "../img/pistolets/latek/img_1.jpg";
-import latek_2 from "../img/pistolets/latek/img_2.jpg";
-import latek_3 from "../img/pistolets/latek/img_3.jpg";
-import latek_4 from "../img/pistolets/latek/img_4.jpg";
-import latek_5 from "../img/pistolets/latek/img_5.jpg";
+const latek_1 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399570/img_1_lftztd.png";
+const latek_2 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399594/img_2_tpqipx.png";
+const latek_3 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399645/img_5_dadev3.png";
+const latek_4 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399628/img_4_rywr3c.png";
+
 
 // Latek-2
-import latek2_1 from "../img/pistolets/latek-2/img_1.jpg";
-import latek2_2 from "../img/pistolets/latek-2/img_2.jpg";
-import latek2_3 from "../img/pistolets/latek-2/img_3.jpg";
+const latek2_1 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399697/img_3_gmzq2y.png";
+const latek2_2 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399656/img_1_tuv1df.png";
+const latek2_3 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399677/img_2_cmewc0.png";
 
 // Snow Peak (пістолети)
-import snowPeakP_1 from "../img/pistolets/Snow Peak/img_1.png";
-import snowPeakP_2 from "../img/pistolets/Snow Peak/img_2.png";
-import snowPeakP_3 from "../img/pistolets/Snow Peak/img_3.png";
-import snowPeakP_4 from "../img/pistolets/Snow Peak/img_4.png";
-import snowPeakP_5 from "../img/pistolets/Snow Peak/img_5.png";
+const snowPeakP_1 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758359410/img_1_q69cnd.webp";
+const snowPeakP_2 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758359416/img_3_j3l4qq.webp";
+const snowPeakP_3 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758359422/img_5_j1hkut.webp";
+const snowPeakP_4 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758359413/img_2_mk1dsa.webp";
+const snowPeakP_5 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758359419/img_4_bpqt41.webp";
 
 // Sur-TT
-import surTT_1 from "../img/pistolets/sur-tt/img_1.jpg";
-import surTT_2 from "../img/pistolets/sur-tt/img_2.jpg";
-import surTT_3 from "../img/pistolets/sur-tt/img_3.jpg";
-import surTT_4 from "../img/pistolets/sur-tt/img_4.jpg";
-import surTT_5 from "../img/pistolets/sur-tt/img_5.jpg";
+const surTT_1 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399828/img_1_q4mdnd.png";
+const surTT_2 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399889/img_4_sddf7r.png";
+const surTT_3 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399851/img_2_fddofs.png";
+const surTT_4 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399873/img_3_mjoi4m.png";
+const surTT_5 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399912/img_5_x2yuec.png";
 
 // B2-4p
-import b2_4p_1 from "../img/hvintivki/b2-4p/img_1.jpg";
-import b2_4p_2 from "../img/hvintivki/b2-4p/img_2.jpg";
-import b2_4p_3 from "../img/hvintivki/b2-4p/img_3.jpg";
-import b2_4p_4 from "../img/hvintivki/b2-4p/img_4.jpg";
+const b2_4p_1 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758398788/img_1_m1zmks.png";
+const b2_4p_2 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758398805/img_3_e6iemz.png";
+const b2_4p_3 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758398796/img_2_eptwly.png";
+const b2_4p_4 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758398814/img_4_ey9nj7.png";
 
 // Beeman
-import beeman_1 from "../img/hvintivki/Beeman/img_1.jpg";
-import beeman_2 from "../img/hvintivki/Beeman/img_2.jpg";
-import beeman_3 from "../img/hvintivki/Beeman/img_3.jpg";
-import beeman_4 from "../img/hvintivki/Beeman/img_4.jpg";
+const beeman_1 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758398837/img_1_k17jju.png";
+const beeman_2 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758398847/img_2_yp7hbt.png";
+const beeman_3 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758398856/img_3_nwjfzu.png";
+const beeman_4 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758398865/img_4_xppk0t.png";
 
 // Hatsan-2
-import hatsan2_1 from "../img/hvintivki/hatsan-2/img_1.jpg";
-import hatsan2_2 from "../img/hvintivki/hatsan-2/img_2.jpg";
-import hatsan2_3 from "../img/hvintivki/hatsan-2/img_3.jpg";
-import hatsan2_4 from "../img/hvintivki/hatsan-2/img_4.jpg";
-import hatsan2_5 from "../img/hvintivki/hatsan-2/img_5.jpg";
-import hatsan2_6 from "../img/hvintivki/hatsan-2/img_6.jpg";
+const hatsan2_1 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758398921/img_1_ycuzfe.png";
+const hatsan2_2 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758398930/img_2_zzatjt.png";
+const hatsan2_3 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758398948/img_4_tljajf.png";
+const hatsan2_4 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758398957/img_5_ccl8k0.png";
+const hatsan2_5 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758398965/img_6_nhdjnh.png";
+const hatsan2_6 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758398957/img_5_ccl8k0.png";
 
 // Hatsan-3
-import hatsan3_1 from "../img/hvintivki/hatsan-3/img_1.jpg";
-import hatsan3_2 from "../img/hvintivki/hatsan-3/img_2.jpg";
-import hatsan3_3 from "../img/hvintivki/hatsan-3/img_3.jpg";
-import hatsan3_4 from "../img/hvintivki/hatsan-3/img_4.jpg";
-import hatsan3_5 from "../img/hvintivki/hatsan-3/img_5.jpg";
+const hatsan3_1 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399118/img_2_ng9fxf.png";
+const hatsan3_2 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399147/img_5_mmlfd8.png";
+const hatsan3_3 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399137/img_4_wgk7hy.png";
+const hatsan3_4 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399127/img_3_krkjw1.png";
+const hatsan3_5 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399127/img_3_krkjw1.png";
 
 // Snow Peak (гвинтівки)
-import snowPeakR_1 from "../img/hvintivki/snow peak/img_1.jpg";
-import snowPeakR_2 from "../img/hvintivki/snow peak/img_2.jpg";
-import snowPeakR_3 from "../img/hvintivki/snow peak/img_3.jpg";
-import snowPeakR_4 from "../img/hvintivki/snow peak/img_4.jpg";
+const snowPeakR_1 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399198/img_1_u7vnls.png";
+const snowPeakR_2 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399217/img_3_gupj68.png";
+const snowPeakR_3 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399207/img_2_ftkx3g.png";
+const snowPeakR_4 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399227/img_4_l12xw4.png";
 
 // Snow Peak-2
-import snowPeak2_1 from "../img/hvintivki/snow peak-2/img_1.jpg";
-import snowPeak2_2 from "../img/hvintivki/snow peak-2/img_2.jpg";
-import snowPeak2_3 from "../img/hvintivki/snow peak-2/img_3.jpg";
-import snowPeak2_4 from "../img/hvintivki/snow peak-2/img_4.jpg";
+const snowPeak2_1 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399237/img_1_bm3mgk.png";
+const snowPeak2_2 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399271/img_2_wiqy3j.png";
+const snowPeak2_3 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399281/img_3_n9e0ll.png";
+const snowPeak2_4 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399291/img_4_qa9crv.png";
 
 export const categories = [
   { id: "pistols", name: "Пістолети", image: pistolsImg },
@@ -325,7 +324,7 @@ export const products = [
   { id: 10, title: "Latek",
     price: 5999, 
     image: latek_1, 
-    imgs: [latek_1, latek_2, latek_3, latek_4, latek_5],
+    imgs: [latek_1, latek_2, latek_3, latek_4],
     description: "Новинка 2015 року! Перший український револьвер під 4мм патрон Флобера Safari, повністю вироблений у Харкові, на заводі <b>ТОВ ЛАТЕК</b>.",
     specs: {
       "Принцип перезарядки револьвера":  "Відкидається в сторону барабан",

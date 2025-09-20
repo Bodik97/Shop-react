@@ -1,7 +1,7 @@
-// src/components/ProductCard.jsx
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Flame } from "lucide-react";
+import ImageWithPlaceholder from "./ImageWithPlaceholder";
 
 export default function ProductCard({ product, onAddToCart, onBuy }) {
   const navigate = useNavigate();
@@ -27,49 +27,22 @@ export default function ProductCard({ product, onAddToCart, onBuy }) {
     product.tags?.includes?.("popular") ||
     product.badges?.includes?.("popular");
 
-  // 🔑 ім’я картинки без розширення
-  const baseImage = product.image?.replace(/\.[^/.]+$/, "");
-
   return (
     <article
       role="button"
       tabIndex={0}
       onClick={go}
       onKeyDown={(e) => ((e.key === "Enter" || e.key === " ") && go())}
-      className="group border rounded-xl overflow-hidden bg-white hover:shadow-lg transition cursor-pointer h-full flex flex-col"
+      className="group border rounded-xl overflow-hidden bg-gray-100 hover:shadow-lg transition cursor-pointer h-full flex flex-col"
       aria-label={product.title}
     >
       {/* Фото */}
-      <div className="relative bg-white overflow-hidden rounded-t-xl aspect-[4/3] pt-[10px]">
-        <picture>
-          {/* AVIF */}
-          <source
-            srcSet={`/img/${baseImage}-400.avif 400w,
-                     /img/${baseImage}-800.avif 800w,
-                     /img/${baseImage}-1200.avif 1200w`}
-            type="image/avif"
-          />
-          {/* WebP */}
-          <source
-            srcSet={`/img/${baseImage}-400.webp 400w,
-                     /img/${baseImage}-800.webp 800w,
-                     /img/${baseImage}-1200.webp 1200w`}
-            type="image/webp"
-          />
-          {/* fallback */}
-          <img
-            src={`/img/${baseImage}-800.webp`}
-            alt={product.title}
-            loading="lazy"
-            width="400"
-            height="300"
-            className="absolute left-0 right-0 bottom-0 top-[20px] w-full h-full object-contain transition group-hover:scale-[1.03]"
-            onClick={(e) => {
-              e.stopPropagation();
-              go();
-            }}
-          />
-        </picture>
+      <div className="relative bg-gray-100 overflow-hidden rounded-t-xl aspect-[4/3] pt-[10px]">
+        <ImageWithPlaceholder
+          src={product.image}
+          alt={product.title}
+          className="absolute inset-0 w-full h-full object-contain transition group-hover:scale-[1.03]"
+        />
 
         {isPopular && (
           <span

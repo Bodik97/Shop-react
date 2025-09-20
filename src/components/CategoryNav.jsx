@@ -7,7 +7,7 @@ import useEmblaCarousel from "embla-carousel-react";
 import AutoScroll from "embla-carousel-auto-scroll";
 import { categories } from "../data/products";
 
-import bgImage from "../img/background-img.png";
+const bgImage = "https://res.cloudinary.com/da27wfewm/image/upload/v1758359721/background-img_beohna.webp";
 
 const FALLBACK_IMG =
   "data:image/svg+xml;utf8," +
