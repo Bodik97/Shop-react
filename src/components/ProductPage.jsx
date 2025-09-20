@@ -450,7 +450,7 @@ export default function ProductPage({ onAddToCart, onBuy }) {
           {/* фулскрін */}
           {openFS && (
             <div
-              className="fixed inset-0 z-50 bg-black/95"
+              className="fixed inset-0 z-50 bg-white"
               style={{ touchAction: "none" }}
               onWheel={onWheelFS}
               onDoubleClick={onDoubleClickFS}
@@ -459,34 +459,52 @@ export default function ProductPage({ onAddToCart, onBuy }) {
               onPointerUp={onFSPointerUp}
               onPointerCancel={onFSPointerUp}
             >
-              <div className="absolute top-0 inset-x-0 p-3 flex items-center justify-between text-white">
-                <div className="flex items-center gap-2">
-                  <button onClick={prev} className="h-10 min-w-10 px-3 rounded bg-white/10 hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400" aria-label="Попереднє фото">‹</button>
-                  <button onClick={next} className="h-10 min-w-10 px-3 rounded bg-white/10 hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400" aria-label="Наступне фото">›</button>
+              {/* верхня панель */}
+              <div className="absolute top-0 inset-x-0 p-6 flex items-center justify-between text-white bg-white/80 backdrop-blur-sm shadow text-center">
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={prev}
+                    className="h-8 w-8 flex items-center justify-center rounded hover:bg-gray-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
+                    aria-label="Попереднє фото"
+                  >
+                    ‹
+                  </button>
+                  <button
+                    onClick={next}
+                    className="h-8 w-8 flex items-center justify-center rounded hover:bg-gray-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
+                    aria-label="Наступне фото"
+                  >
+                    ›
+                  </button>
                 </div>
-                <div className="flex items-center gap-2">
-                  <button onClick={() => zoomAt(1, innerWidth / 2, innerHeight / 2)} className="h-10 min-w-10 px-3 rounded bg-white/10 hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400" aria-label="Масштаб 1:1">1:1</button>
-                  <button onClick={() => zoomAt(scale + 0.5, innerWidth / 2, innerHeight / 2)} className="h-10 min-w-10 px-3 rounded bg-white/10 hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400" aria-label="Збільшити">+</button>
-                  <button onClick={() => zoomAt(scale - 0.5, innerWidth / 2, innerHeight / 2)} className="h-10 min-w-10 px-3 rounded bg-white/10 hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400" aria-label="Зменшити">−</button>
-                  <button onClick={() => { setScale(1); setOffset({ x: 0, y: 0 }); setOpenFS(false); }} className="h-10 min-w-10 px-3 rounded bg-white/20 hover:bg-white/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400" aria-label="Закрити">✕</button>
+
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => zoomAt(scale + 0.5, innerWidth / 2, innerHeight / 2)}
+                    className="flex items-center justify-center h-10 w-10 rounded-md bg-black text-white text-xl"
+                    >
+                    +
+                  </button>
+                  <button
+                    onClick={() => zoomAt(scale - 0.5, innerWidth / 2, innerHeight / 2)}
+                    className="flex items-center justify-center h-10 w-10 rounded-md bg-black text-white text-xl"
+                    >
+                    −
+                  </button>
+                  <button
+                    onClick={() => {
+                      setScale(1);
+                      setOffset({ x: 0, y: 0 });
+                      setOpenFS(false);
+                    }}
+                    className="flex items-center justify-center h-10 w-10 rounded-md bg-black text-white text-xl"
+                    >
+                    ✕
+                  </button>
                 </div>
               </div>
 
-              {imgs.length > 1 && (
-                <>
-                  <button onClick={prev} aria-label="Попереднє фото" className="absolute left-3 top-1/2 -translate-y-1/2 h-16 w-16 rounded-full bg-black/55 text-white shadow-xl ring-1 ring-black/40 hover:bg-black/70 hover:scale-105 transition">
-                    <svg viewBox="0 0 24 24" className="h-9 w-9 mx-auto" aria-hidden="true">
-                      <path d="M15.5 4.5 8 12l7.5 7.5" stroke="currentColor" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </button>
-                  <button onClick={next} aria-label="Наступне фото" className="absolute right-3 top-1/2 -translate-y-1/2 h-16 w-16 rounded-full bg-black/55 text-white shadow-xl ring-1 ring-black/40 hover:bg-black/70 hover:scale-105 transition">
-                    <svg viewBox="0 0 24 24" className="h-9 w-9 mx-auto" aria-hidden="true">
-                      <path d="M8.5 4.5 16 12l-7.5 7.5" stroke="currentColor" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </button>
-                </>
-              )}
-
+              {/* картинка */}
               <img
                 src={imgs[idx]}
                 alt={product.title}
@@ -497,13 +515,19 @@ export default function ProductPage({ onAddToCart, onBuy }) {
                 style={{
                   transform: `translate(-50%, -50%) translate(${offset.x}px, ${offset.y}px) scale(${scale})`,
                   transformOrigin: "center center",
-                  maxWidth: "92%",
-                  maxHeight: "92%",
+                  maxWidth: "95%",
+                  maxHeight: "85%", // залишаємо місце під текст
                   cursor: scale > 1 ? "grab" : "zoom-in",
                 }}
               />
+
+              {/* підпис */}
+              <div className="absolute bottom-0 inset-x-0 bg-black/50 text-white text-center text-lg font-semibold py-3">
+                {product.title}
+              </div>
             </div>
           )}
+
 
           {/* контентні блоки */}
           <div className="mt-6 md:mt-8 space-y-6 md:space-y-8">
