@@ -45,6 +45,18 @@ export default function CategoryPage({ onAddToCart, onBuy }) {
 
   return (
     <main className="max-w-7xl mx-auto px-4 py-6">
+      <Helmet>
+        <script type="application/ld+json">{`
+          {
+            "@context": "https://schema.org",
+            "@type": "CollectionPage",
+            "name": "Категорія пневматики",
+            "description": "Пневматичні товари для спорту та дозвілля.",
+            "url": "https://myshop.com/catalog"
+          }
+        `}</script>
+      </Helmet>
+
       {/* Хлібні крихти */}
       <nav className="text-sm text-white mb-3">
         <Link to="/" className="hover:underline">Головна</Link>

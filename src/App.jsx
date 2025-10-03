@@ -1,6 +1,7 @@
 // src/App.jsx
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Routes, Route } from "react-router-dom";
+import { Helmet } from "react-helmet";
 import * as Data from "./data/products";
 
 import Header from "./components/Header";
@@ -16,6 +17,7 @@ import ModalBuy from "./components/ModalBuy";
 import Cart from "./components/Cart";
 import ThankYou from "./components/ThankYou";
 import ScrollToTop from "./components/ScrollToTop";
+
 
 // === налаштування API
 const API_URL = "/api/telegram";
@@ -169,9 +171,22 @@ export default function App() {
   return (
     <>
       <ScrollToTop smooth />
+
       {/* Шапка */}
       <Header cartCount={cartCount} />
-
+    
+      {/* SEO мета-теги */}
+      <Helmet>
+        <script type="application/ld+json">{`
+          {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "AirSoft",
+            "url": "https://myshop.com",
+            "description": "Магазин пневматичних товарів для спорту та дозвілля."
+          }
+        `}</script>
+      </Helmet>
       <Routes>
         <Route
           path="/"

@@ -1,6 +1,7 @@
 // src/components/ProductPage.jsx
 import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
+import { Helmet } from "react-helmet";
 import { products } from "../data/products";
 
 const formatUAH = (n) =>
@@ -150,6 +151,7 @@ export default function ProductPage({ onAddToCart, onBuy }) {
   const warranty = product?.warranty;
 
   return (
+    
     <main className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-6 md:py-8 overflow-x-hidden">
       {!product ? (
         <>
@@ -163,6 +165,25 @@ export default function ProductPage({ onAddToCart, onBuy }) {
         </>
       ) : (
         <>
+        <Helmet>
+            <script type="application/ld+json">{`
+              {
+                "@context": "https://schema.org",
+                "@type": "Product",
+                "name": "${product.title}",
+                "image": "${product.image}",
+                "description": "Пневматичний товар для спорту та дозвілля.",
+                "brand": { "@type": "Brand", "name": "${product.brand}" },
+                "offers": {
+                  "@type": "Offer",
+                  "url": "https://myshop.com/product/${product.id}",
+                  "priceCurrency": "UAH",
+                  "price": "${product.price}",
+                  "availability": "https://schema.org/InStock"
+                }
+              }
+            `}</script>
+          </Helmet>
           {/* toast */}
           {flashCart && (
             <div role="status" aria-live="polite" className="fixed left-1/2 -translate-x-1/2 bottom-24 z-[60] select-none animate-slideUpFade">
