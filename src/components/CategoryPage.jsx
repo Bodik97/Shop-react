@@ -1,6 +1,7 @@
 // src/components/CategoryPage.jsx
 import { useMemo, useState } from "react";
 import { useParams, Link } from "react-router-dom";
+import { Helmet } from "react-helmet";
 import ProductCard from "./ProductCard";
 import { products, categories } from "../data/products";
 

@@ -442,6 +442,7 @@ export default function ModalBuy({
                   {/* Область */}
                   <NPSelect
                     id={areaFieldId}
+                    name="region"
                     label="Область"
                     required
                     icon={MapPin}
@@ -461,6 +462,7 @@ export default function ModalBuy({
                   {/* Місто */}
                   <NPSelect
                     id={cityFieldId}
+                    name="city"
                     label="Місто"
                     required
                     icon={Landmark}
@@ -480,6 +482,7 @@ export default function ModalBuy({
                   {/* Відділення */}
                   <NPSelect
                     id={branchFieldId}
+                    name="branch"
                     label="Відділення"
                     required
                     icon={Package}
