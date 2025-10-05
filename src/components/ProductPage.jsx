@@ -176,7 +176,7 @@ export default function ProductPage({ onAddToCart, onBuy }) {
                 "brand": { "@type": "Brand", "name": "${product.brand}" },
                 "offers": {
                   "@type": "Offer",
-                  "url": "https://myshop.com/product/${product.id}",
+                  "url": "https://airsoft-ua.com/accessories/${product.id}",
                   "priceCurrency": "UAH",
                   "price": "${product.price}",
                   "availability": "https://schema.org/InStock"
@@ -470,108 +470,108 @@ export default function ProductPage({ onAddToCart, onBuy }) {
 
           {/* фулскрін */}
           {openFS && (
-  <div
-    className="fixed inset-0 z-50 bg-white"
-    style={{ touchAction: "none" }}
-    onWheel={onWheelFS}
-    onDoubleClick={onDoubleClickFS}
-    onPointerDown={onFSPointerDown}
-    onPointerMove={onFSPointerMove}
-    onPointerUp={onFSPointerUp}
-    onPointerCancel={onFSPointerUp}
-  >
-    {/* верхня панель */}
-    <div
-      className="absolute top-0 inset-x-0 p-6 flex items-center justify-between text-white bg-white/80 backdrop-blur-sm shadow text-center z-20 pointer-events-auto"
-      onPointerDown={(e) => e.stopPropagation()} // не даємо батьківському drag зловити подію
-    >
-      <div className="flex items-center gap-1">
-        <button
-          onPointerDown={(e) => e.stopPropagation()}
-          onClick={(e) => { e.stopPropagation(); prev(); }}
-          className="h-8 w-8 flex items-center justify-center rounded hover:bg-gray-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
-          aria-label="Попереднє фото"
-          type="button"
-        >
-          ‹
-        </button>
-        <button
-          onPointerDown={(e) => e.stopPropagation()}
-          onClick={(e) => { e.stopPropagation(); next(); }}
-          className="h-8 w-8 flex items-center justify-center rounded hover:bg-gray-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
-          aria-label="Наступне фото"
-          type="button"
-        >
-          ›
-        </button>
-      </div>
+          <div
+            className="fixed inset-0 z-50 bg-white"
+            style={{ touchAction: "none" }}
+            onWheel={onWheelFS}
+            onDoubleClick={onDoubleClickFS}
+            onPointerDown={onFSPointerDown}
+            onPointerMove={onFSPointerMove}
+            onPointerUp={onFSPointerUp}
+            onPointerCancel={onFSPointerUp}
+          >
+            {/* верхня панель */}
+            <div
+              className="absolute top-0 inset-x-0 p-6 flex items-center justify-between text-white bg-white/80 backdrop-blur-sm shadow text-center z-20 pointer-events-auto"
+              onPointerDown={(e) => e.stopPropagation()} // не даємо батьківському drag зловити подію
+            >
+              <div className="flex items-center gap-1">
+                <button
+                  onPointerDown={(e) => e.stopPropagation()}
+                  onClick={(e) => { e.stopPropagation(); prev(); }}
+                  className="h-8 w-8 flex items-center justify-center rounded hover:bg-gray-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
+                  aria-label="Попереднє фото"
+                  type="button"
+                >
+                  ‹
+                </button>
+                <button
+                  onPointerDown={(e) => e.stopPropagation()}
+                  onClick={(e) => { e.stopPropagation(); next(); }}
+                  className="h-8 w-8 flex items-center justify-center rounded hover:bg-gray-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
+                  aria-label="Наступне фото"
+                  type="button"
+                >
+                  ›
+                </button>
+              </div>
 
-      <div className="flex items-center gap-1">
-        <button
-          onPointerDown={(e) => e.stopPropagation()}
-          onClick={(e) => {
-            e.stopPropagation();
-            const cx = window.innerWidth / 2;
-            const cy = window.innerHeight / 2;
-            zoomAt(Math.min(scale + 0.5, 5), cx, cy); // кламп до max 5
-          }}
-          className="flex items-center justify-center h-10 w-10 rounded-md bg-black text-white text-xl"
-          type="button"
-        >
-          +
-        </button>
-        <button
-          onPointerDown={(e) => e.stopPropagation()}
-          onClick={(e) => {
-            e.stopPropagation();
-            const cx = window.innerWidth / 2;
-            const cy = window.innerHeight / 2;
-            zoomAt(Math.max(scale - 0.5, 1), cx, cy); // кламп до min 1
-          }}
-          className="flex items-center justify-center h-10 w-10 rounded-md bg-black text-white text-xl"
-          type="button"
-        >
-          −
-        </button>
-        <button
-          onPointerDown={(e) => e.stopPropagation()}
-          onClick={(e) => {
-            e.stopPropagation();
-            setScale(1);
-            setOffset({ x: 0, y: 0 });
-            setOpenFS(false);
-          }}
-          className="flex items-center justify-center h-10 w-10 rounded-md bg-black text-white text-xl"
-          type="button"
-          aria-label="Закрити перегляд"
-        >
-          ✕
-        </button>
-      </div>
-    </div>
+              <div className="flex items-center gap-1">
+                <button
+                  onPointerDown={(e) => e.stopPropagation()}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const cx = window.innerWidth / 2;
+                    const cy = window.innerHeight / 2;
+                    zoomAt(Math.min(scale + 0.5, 5), cx, cy); // кламп до max 5
+                  }}
+                  className="flex items-center justify-center h-10 w-10 rounded-md bg-black text-white text-xl"
+                  type="button"
+                >
+                  +
+                </button>
+                <button
+                  onPointerDown={(e) => e.stopPropagation()}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const cx = window.innerWidth / 2;
+                    const cy = window.innerHeight / 2;
+                    zoomAt(Math.max(scale - 0.5, 1), cx, cy); // кламп до min 1
+                  }}
+                  className="flex items-center justify-center h-10 w-10 rounded-md bg-black text-white text-xl"
+                  type="button"
+                >
+                  −
+                </button>
+                <button
+                  onPointerDown={(e) => e.stopPropagation()}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setScale(1);
+                    setOffset({ x: 0, y: 0 });
+                    setOpenFS(false);
+                  }}
+                  className="flex items-center justify-center h-10 w-10 rounded-md bg-black text-white text-xl"
+                  type="button"
+                  aria-label="Закрити перегляд"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
 
-    {/* картинка */}
-    <img
-      src={imgs[idx]}
-      alt={product.title}
-      draggable={false}
-      onMouseDown={(e) => startDrag(e.clientX, e.clientY)}
-      onTouchStart={(e) => startDrag(e.touches[0].clientX, e.touches[0].clientY)}
-      className="absolute top-1/2 left-1/2 select-none will-change-transform z-10"
-      style={{
-        transform: `translate(-50%, -50%) translate(${offset.x}px, ${offset.y}px) scale(${scale})`,
-        transformOrigin: "center center",
-        maxWidth: "80%",
-        maxHeight: "80%",
-        cursor: scale > 1 ? "grab" : "zoom-in",
-      }}
-    />
+            {/* картинка */}
+            <img
+              src={imgs[idx]}
+              alt={product.title}
+              draggable={false}
+              onMouseDown={(e) => startDrag(e.clientX, e.clientY)}
+              onTouchStart={(e) => startDrag(e.touches[0].clientX, e.touches[0].clientY)}
+              className="absolute top-1/2 left-1/2 select-none will-change-transform z-10"
+              style={{
+                transform: `translate(-50%, -50%) translate(${offset.x}px, ${offset.y}px) scale(${scale})`,
+                transformOrigin: "center center",
+                maxWidth: "80%",
+                maxHeight: "80%",
+                cursor: scale > 1 ? "grab" : "zoom-in",
+              }}
+            />
 
-    {/* підпис */}
-    <div className="absolute bottom-0 inset-x-0 bg-black/50 text-white text-center text-lg font-semibold py-3 z-20 pointer-events-none">
-      {product.title}
-    </div>
-  </div>
+            {/* підпис */}
+            <div className="absolute bottom-0 inset-x-0 bg-black/50 text-white text-center text-lg font-semibold py-3 z-20 pointer-events-none">
+              {product.title}
+            </div>
+          </div>
 )}
 
 

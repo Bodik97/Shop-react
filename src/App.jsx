@@ -182,7 +182,7 @@ export default function App() {
             "@context": "https://schema.org",
             "@type": "WebSite",
             "name": "AirSoft",
-            "url": "https://myshop.com",
+            "url": "https://airsoft-ua.com/",
             "description": "Магазин пневматичних товарів для спорту та дозвілля."
           }
         `}</script>

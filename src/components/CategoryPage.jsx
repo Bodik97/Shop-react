@@ -53,7 +53,7 @@ export default function CategoryPage({ onAddToCart, onBuy }) {
             "@type": "CollectionPage",
             "name": "Категорія пневматики",
             "description": "Пневматичні товари для спорту та дозвілля.",
-            "url": "https://myshop.com/catalog"
+            "url": "https://airsoft-ua.com/catalog"
           }
         `}</script>
       </Helmet>
