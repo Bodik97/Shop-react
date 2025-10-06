@@ -183,7 +183,7 @@ export default function App() {
             "@type": "WebSite",
             "name": "AirSoft",
             "url": "https://airsoft-ua.com/",
-            "description": "Магазин пневматичних товарів для спорту та дозвілля."
+            "description": "Магазин пневматичних товарів для спорту та дозвілля ."
           }
         `}</script>
       </Helmet>
@@ -193,7 +193,7 @@ export default function App() {
           element={
             <main className="max-w-7xl mx-auto px-4 py-6">
               <h1 className="relative text-center text-4xl md:text-6xl font-stencil uppercase tracking-[0.2em] text-white mb-10 drop-shadow-[0_0_6px_rgba(255,255,255,0.7)]">
-                AIRSOFT
+                  AIRSOFT
                 <span
                   aria-hidden
                   className="hidden md:block absolute -bottom-3 left-1/2 -translate-x-1/2 h-[3px] w-40 rounded-full bg-white/60 blur-[4px]"
@@ -210,7 +210,7 @@ export default function App() {
                 {products.length ? (
                   <PopularSlider products={products.slice(0, 10)} onAddToCart={addToCart} onBuy={openBuy} />
                 ) : (
-                  <div className="rounded-2xl border bg-white/60 p-4 text-sm text-gray-700">Каталог оновлюється.</div>
+                  <div className="rounded-2xl border bg-white/60 p-4 text-sm text-gray-700">Каталог  оновлюється.</div>
                 )}
               </section>
 
