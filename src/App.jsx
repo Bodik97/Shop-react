@@ -17,6 +17,9 @@ import ModalBuy from "./components/ModalBuy";
 import Cart from "./components/Cart";
 import ThankYou from "./components/ThankYou";
 import ScrollToTop from "./components/ScrollToTop";
+import PrivacyPolicy from "./components/PrivacyPolicy";
+import TermsOfService from "./components/TermsOfService";
+import Footer from "./components/Footer";
 
 
 // === налаштування API
@@ -263,7 +266,10 @@ export default function App() {
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/thanks" element={<ThankYou />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/terms-of-service" element={<TermsOfService />} />
       </Routes>
+      <Footer />
 
       {/* Модалку монтуємо лише коли потрібно */}
       {buyOpen && (
