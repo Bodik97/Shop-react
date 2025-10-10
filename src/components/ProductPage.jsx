@@ -197,10 +197,10 @@ export default function ProductPage({ onAddToCart, onBuy }) {
           )}
 
           {/* хлібні крихти */}
-          <nav className="text-xs sm:text-sm text-gray-200 mb-4">
-            <Link to="/" className=" text-gray-200 hover:underline">Головна</Link>
+          <nav className="text-xs sm:text-sm text-gray-100 mb-4">
+            <Link to="/" className=" text-gray-100 hover:underline">Головна</Link>
             <span className="mx-1">/</span>
-            <Link to={`/category/${product.category}`} className="text-gray-200 hover:underline ">Категорія</Link>
+            <Link to={`/category/${product.category}`} className="text-gray-100 hover:underline ">Категорія</Link>
             <span className="mx-1">/</span>
             <span className="text-gray-200 line-clamp-1">{product.title}</span>
           </nav>
@@ -577,7 +577,7 @@ export default function ProductPage({ onAddToCart, onBuy }) {
 
 
           {/* контентні блоки */}
-          <div className="mt-6 md:mt-8 space-y-6 md:space-y-8">
+          <div className="mt-10 md:mt-8 space-y-6 md:space-y-8">
             {product.description && (
               <section className="bg-white/90 border-zinc-900 border-4 rounded-2xl p-4 sm:p-5 md:p-6 shadow-sm">
                 <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-2 md:mb-3">Опис</h2>
@@ -586,7 +586,7 @@ export default function ProductPage({ onAddToCart, onBuy }) {
             )}
 
             {features.length > 0 && (
-              <section className="bg-white/90 border-zinc-900 border-4 rounded-2xl p-4 sm:p-5 md:p-6 shadow-sm">
+              <section className="bg-white/90 border-zinc-100 border-4 rounded-2xl p-4 sm:p-5 md:p-6 shadow-sm">
                 <h3 className="text-lg md:text-xl font-semibold text-gray-900 mb-2 md:mb-3">Переваги</h3>
                 <ul className="space-y-2 text-sm md:text-base">
                   {features.map((f, i) => (
@@ -614,7 +614,7 @@ export default function ProductPage({ onAddToCart, onBuy }) {
             )}
 
             {(inBox.length > 0 || warranty) && (
-              <section className="bg-white/90 border-zinc-900 border-4 rounded-2xl p-4 sm:p-5 md:p-6 shadow-sm mb-20">
+              <section className="bg-white/90 border-zinc-900 border-4 rounded-2xl p-4 sm:p-5 md:p-6 shadow-sm ">
                 <h3 className="text-lg md:text-xl font-semibold text-gray-900 mb-2 md:mb-3">Комплектація та гарантія</h3>
                 {inBox.length > 0 && (
                   <ul className="list-disc pl-5 md:pl-6 text-gray-800 space-y-1 text-sm md:text-base">
