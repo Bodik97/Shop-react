@@ -127,3 +127,29 @@ button:focus {
   }
 }
 */
+/* адаптив заголовку для маленьких екранів */
+.heading-title {
+  font-size: 3.7rem; /* базово ~text-3xl */
+}
+.policy-title {
+  font-size: 2.95rem; /* базово ~text-3xl */
+}
+
+@media (max-width: 375px) {   
+  .heading-title {
+    font-size: 3.2rem; /* приблизно text-2xl */
+  }
+  .policy-title {
+    font-size: 2.499rem; /* приблизно text-2xl */
+  }
+}
+
+@media (max-width: 340px) {
+  .heading-title {
+    font-size: 2.7rem; /* приблизно text-xl */
+  }
+  .policy-title {
+    font-size: 2.1rem; /* приблизно text-xl */
+  } 
+}
+ 

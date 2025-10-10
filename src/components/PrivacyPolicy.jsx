@@ -14,9 +14,10 @@ export default function PrivacyPolicy() {
       {/* Hero-заголовок */}
       <section className="border-b border-gray-800 bg-transparent">
         <div className="max-w-5xl mx-auto px-4 py-16 text-center">
-          <h1 className="text-4xl font-bold mb-3 text-white">
+          <h1 className="policy-title font-bold mb-3 text-white">
             Політика конфіденційності
-          </h1>
+            </h1>
+
           <p className="text-white max-w-2xl mx-auto">
             Ми цінуємо вашу довіру та дбаємо про захист особистих даних усіх користувачів
             нашого сайту AirSoft.
