@@ -2,32 +2,26 @@
 <html lang="uk">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"
-    />
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
     <meta name="theme-color" content="#000000" />
+    <meta name="robots" content="index,follow" />
+    <meta name="format-detection" content="telephone=no" />
+    <!-- Meta Domain Verification (Meta Business) -->
+    <meta name="facebook-domain-verification" content="tb0f0whrk4ypeec9jb8u6q0qkq0xd3" />
 
     <!-- Primary Meta -->
     <title>AirSoft-UA</title>
-    <meta
-      name="description"
-      content="Пневматичні товари та аксесуари для спорту й активного відпочинку. Купуйте онлайн з доставкою по Україні."
-    />
+    <meta name="description" content="Пневматичні товари та аксесуари для спорту й активного відпочинку. Купуйте онлайн з доставкою по Україні." />
+    <link rel="canonical" href="https://airsoft-ua.com/" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="uk_UA" />
     <meta property="og:site_name" content="AirSoft-UA" />
     <meta property="og:title" content="Пневматичні товари | AirSoft-UA" />
-    <meta
-      property="og:description"
-      content="Вибір пневматики для спорту та відпочинку. Доставка по Україні."
-    />
-    <meta
-      property="og:image"
-      content="https://airsoft-ua.com/img/optika.jpg"
-    />
+    <meta property="og:description" content="Вибір пневматики для спорту та відпочинку. Доставка по Україні." />
+    <meta property="og:image" content="https://airsoft-ua.com/img/optika.jpg" />
+    <meta property="og:image:alt" content="Пневматичні товари для спорту та дозвілля" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:url" content="https://airsoft-ua.com/" />
@@ -35,35 +29,24 @@
     <!-- Twitter / Telegram Preview -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="AirSoft-UA" />
-    <meta
-      name="twitter:description"
-      content="Вибір пневматики для спорту та відпочинку. Доставка по Україні."
-    />
-    <meta
-      name="twitter:image"
-      content="https://airsoft-ua.com/img/optika.jpg"
-    />
+    <meta name="twitter:description" content="Вибір пневматики для спорту та відпочинку. Доставка по Україні." />
+    <meta name="twitter:image" content="https://airsoft-ua.com/img/optika.jpg" />
 
     <!-- Favicon -->
     <link rel="icon" href="/img/Logo.svg" type="image/svg+xml" />
-    <link rel="canonical" href="https://airsoft-ua.com/" />
 
-    <!-- Fonts -->
+    <!-- Fonts (preconnect + preload + stylesheet) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Stardos+Stencil:wght@700&display=swap"
-      rel="stylesheet"
-    />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Stardos+Stencil:wght@700&display=swap" />
+    <link href="https://fonts.googleapis.com/css2?family=Stardos+Stencil:wght@700&display=swap" rel="stylesheet" />
 
-    <!-- ✅ Facebook Pixel Code -->
+    <!-- Meta Pixel -->
     <script>
       !(function (f, b, e, v, n, t, s) {
         if (f.fbq) return;
         n = f.fbq = function () {
-          n.callMethod
-            ? n.callMethod.apply(n, arguments)
-            : n.queue.push(arguments);
+          n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
         };
         if (!f._fbq) f._fbq = n;
         n.push = n;
@@ -75,30 +58,27 @@
         t.src = v;
         s = b.getElementsByTagName(e)[0];
         s.parentNode.insertBefore(t, s);
-      })(
-        window,
-        document,
-        "script",
-        "https://connect.facebook.net/en_US/fbevents.js"
-      );
-      fbq("init", "2876416769413376");
+      })(window, document, "script", "https://connect.facebook.net/en_US/fbevents.js");
+      fbq("init", "2876416769413376"); // заміни за потреби
       fbq("track", "PageView");
     </script>
-    
-    
   </head>
 
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+
+    <!-- Pixel noscript -->
     <noscript>
       <img
         height="1"
         width="1"
-        style="display: none"
+        style="display:none"
         src="https://www.facebook.com/tr?id=2876416769413376&ev=PageView&noscript=1"
+        alt=""
       />
     </noscript>
+
     <!-- Schema.org -->
     <script type="application/ld+json">
       {
