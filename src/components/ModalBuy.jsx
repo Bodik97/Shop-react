@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState, useId } from "react";
 import { MapPin, Landmark, Package, ChevronDown, CheckCircle2, Circle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-const API_URL = "/api/telegram";
+const API_URL = "/api/order";
 const NP_API = "/api/np";
 
 /** Формат UAH */
