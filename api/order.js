@@ -1,26 +1,23 @@
 /* /api/order.js */
 /* eslint-env node */
 
-// Повний endpoint під Node 20/Vercel з: CORS, ліміт тіла, валідація,
+// Повний endpoint під Node 20/Vercel: CORS, ліміт тіла, валідація,
 // X-Request-ID, таймаут+ретрай Telegram, обрізання 4096, антиспам,
-// єдиний JSON-відповідь і гарантія мінімального ліда.
+// уніфікована JSON-відповідь, мін-лід у будь-якому випадку.
 
 export default async function handler(req, res) {
   // ---------- util ----------
   const PROD = process.env.NODE_ENV === "production";
   const nowIso = () => new Date().toISOString();
-  const uuid = () => {
-    // простий uuid v4 без імпортів (достатньо для кореляції логів)
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+  const uuid = () =>
+    "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
       const r = (Math.random() * 16) | 0;
       const v = c === "x" ? r : (r & 0x3) | 0x8;
       return v.toString(16);
     });
-  };
 
   const reqId = String(req.headers["x-request-id"] || uuid()).slice(0, 36);
   const started = Date.now();
-
   const log = (level, msg, extra = {}) =>
     console[level](`[order] ${msg}`, { reqId, t: nowIso(), ...extra });
 
@@ -43,7 +40,6 @@ export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, X-Request-ID");
   if (req.method === "OPTIONS") return res.status(204).end();
   if (req.method === "GET") return sendJson(200, { ok: true });
-
   if (req.method !== "POST") return sendJson(405, { ok: false, code: "ONLY_POST" });
 
   // ---------- env ----------
@@ -60,7 +56,6 @@ export default async function handler(req, res) {
 
   if (!TOKEN || !CHAT) {
     log("error", "env-missing");
-    // все одно не губимо ліда на фронті
     return sendJson(200, {
       ok: false,
       code: "ENV_MISSING",
@@ -75,7 +70,7 @@ export default async function handler(req, res) {
   const ua = safeStr(req.headers["user-agent"], 300);
 
   // ---------- body size limit + parse ----------
-  const MAX = 128 * 1024; // 128kb
+  const MAX = 128 * 1024; // 128KB
   const contentLength = Number(req.headers["content-length"] || "0");
   if (contentLength > MAX) log("warn", "body-too-large", { contentLength });
 
@@ -98,9 +93,9 @@ export default async function handler(req, res) {
       log("error", "invalid-json", { e: safeStr(e?.message, 200) });
       await sendLeadMinimal({
         reason: "INVALID_JSON",
-        name: "",
-        phone: "",
-        city: "",
+        n: "",
+        p: "",
+        c: "",
       });
       return sendJson(200, { ok: false, code: "INVALID_JSON", warnings: ["Minimal lead sent"] });
     }
@@ -144,7 +139,7 @@ export default async function handler(req, res) {
   const honey = safeStr(b.website || b.url || b.link || "", 60);
   if (honey) warnings.push("Honeypot filled");
 
-  // rate limit in-memory (на інстанс)
+  // rate limit (per-instance)
   const RL_WINDOW_MS = 60_000;
   const RL_MAX = 12;
   globalThis.__rl = globalThis.__rl || new Map();
@@ -168,6 +163,7 @@ export default async function handler(req, res) {
 
   const lines = [];
   lines.push(`<b>🆕 Замовлення</b> | ${created.toLocaleString("uk-UA")}`);
+  lines.push(`ID: <code>${esc(reqId)}</code>`);
   if (orderId) lines.push(`<b>#${esc(orderId)}</b>`);
   lines.push("────────────");
   lines.push(`👤 Ім’я: <b>${esc(name || "—")}</b>`);
@@ -214,7 +210,7 @@ export default async function handler(req, res) {
   const cut4096 = (s) => (s.length <= 4096 ? s : s.slice(0, 4090) + " …");
 
   // ---------- telegram ----------
-  const tgSend = async (text, chatId) => {
+  async function tgSend(text, chatId) {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), 8000);
     try {
@@ -236,11 +232,12 @@ export default async function handler(req, res) {
       clearTimeout(timer);
       return false;
     }
-  };
+  }
 
   const backoff = (ms) => new Promise((r) => setTimeout(r, ms));
 
-  const sendLeadMinimal = async ({ reason, name: n = name, phone: p = phone || phoneRaw, city: c = city }) => {
+  // ВАЖЛИВО: оголошено як function, без залежності від зовнішніх змінних
+  async function sendLeadMinimal({ reason, n = "", p = "", c = "" }) {
     const minimal =
       `🧩 Lead(min)\n` +
       `ID: ${reqId}\n` +
@@ -254,12 +251,11 @@ export default async function handler(req, res) {
     const ok1 = await tgSend(minimal, CHAT);
     const ok2 = CHAT_BACKUP ? await tgSend(minimal, CHAT_BACKUP) : true;
     return ok1 && ok2;
-  };
+  }
 
   // ---------- send flow ----------
   let delivered = false;
   let phase = "main";
-
   if (warnings.length || !name || !phone) phase = "degraded";
 
   try {
@@ -274,19 +270,25 @@ export default async function handler(req, res) {
     if (!delivered || phase === "degraded") {
       const okMin = await sendLeadMinimal({
         reason: phase === "degraded" ? "DEGRADED" : "SEND_FAIL",
+        n: name,
+        p: phone || phoneRaw,
+        c: city,
       });
       delivered = okMin || delivered;
     }
+    if (delivered && ALWAYS_LEAD) {
+      // дубль мін-ліда для страховки/аналітики
+      await sendLeadMinimal({ reason: "ALSO_MIN", n: name, p: phone || phoneRaw, c: city });
+    }
   } catch (e) {
     log("error", "send-exception", { e: safeStr(e?.message, 200) });
-    const okMin = await sendLeadMinimal({ reason: "EXCEPTION" });
+    const okMin = await sendLeadMinimal({ reason: "EXCEPTION", n: name, p: phone || phoneRaw, c: city });
     delivered = okMin || delivered;
   }
 
   log("log", "done", { delivered, phase, ip: clientIp, ms: Date.now() - started });
 
   // ---------- unified response ----------
-  // Завжди 200, щоб фронт не губив ліда.
   return sendJson(200, {
     ok: true,
     delivered,
