@@ -2,7 +2,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { ShoppingCartIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import logo from "../img/Logo.svg";
+import logo from "/img/Logo.svg";
 import { FaInstagram, FaTiktok, FaTelegram } from "react-icons/fa";
 
 const CATEGORIES = [

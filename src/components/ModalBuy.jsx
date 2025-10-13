@@ -413,6 +413,7 @@ export default function ModalBuy({
                   type="tel"
                   label="Телефон"
                   placeholder="+380XXXXXXXXX"
+                  autoComplete="tel"
                   value={phone}
                   onChange={(e) => {
                     const digits = e.target.value.replace(/\D/g, "");
@@ -422,7 +423,6 @@ export default function ModalBuy({
                   error={errors.phone}
                   help="Введіть 9 цифр"
                   inputMode="numeric"
-                  autoComplete="tel"
                   required
                   pattern="^\\+380\\d{9}$"
                   maxLength={13}
@@ -454,6 +454,7 @@ export default function ModalBuy({
                       setRegion(a?.name || "");
                     }}
                     options={areas.map((a) => ({ value: a.ref, label: a.name }))}
+                    autoComplete="address-level1"
                     placeholder="Оберіть область"
                     disabled={sending}
                     error={errors.region}
@@ -474,6 +475,7 @@ export default function ModalBuy({
                       setCity(c?.name || "");
                     }}
                     options={cities.map((c) => ({ value: c.ref, label: c.name }))}
+                    autoComplete="address-level2"
                     placeholder={areaRef ? "Оберіть місто" : "Спочатку оберіть область"}
                     disabled={!areaRef || sending}
                     error={errors.city}
@@ -489,6 +491,7 @@ export default function ModalBuy({
                     value={branch}
                     onChange={(e) => setBranch(e.target.value)}
                     options={warehouses.map((w) => ({ value: w.name, label: w.name }))}
+                    autoComplete="shipping street-address"
                     placeholder={cityRef ? "Оберіть відділення" : "Спочатку оберіть місто"}
                     disabled={!cityRef || sending}
                     error={errors.branch}
@@ -610,6 +613,7 @@ function NPSelect({
   error,
   required,
   icon: Icon,
+  autoComplete,
 }) {
   const val = value || "";
   const selected = !!val;
@@ -640,6 +644,7 @@ function NPSelect({
           disabled={disabled}
           aria-invalid={!!error}
           aria-describedby={error ? `${id}-error` : undefined}
+          autoComplete={autoComplete}
           className={`appearance-none w-full rounded-2xl border-2 bg-white px-3 py-2.5 pr-10 text-[15px] transition
             ${error ? "border-rose-300 focus:ring-rose-500" : "border-slate-300 focus:ring-blue-600"}
             ${val === "" ? "text-slate-400" : "text-slate-900"}
