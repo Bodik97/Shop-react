@@ -276,10 +276,6 @@ export default async function handler(req, res) {
       });
       delivered = okMin || delivered;
     }
-    if (delivered && ALWAYS_LEAD) {
-      // дубль мін-ліда для страховки/аналітики
-      await sendLeadMinimal({ reason: "ALSO_MIN", n: name, p: phone || phoneRaw, c: city });
-    }
   } catch (e) {
     log("error", "send-exception", { e: safeStr(e?.message, 200) });
     const okMin = await sendLeadMinimal({ reason: "EXCEPTION", n: name, p: phone || phoneRaw, c: city });
