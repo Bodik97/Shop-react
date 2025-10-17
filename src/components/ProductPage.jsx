@@ -206,20 +206,20 @@ export default function ProductPage({ onAddToCart, onBuy }) {
           </nav>
 
           {/* заголовок */}
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-4">
+          <div className="header-flex">
             <button onClick={() => navigate(-1)} className="w-full h-11 rounded-xl border hover:bg-gray-50 sm:w-auto sm:px-4">← Назад</button>
-            <h1 className="text-center sm:text-left font-stencil uppercase font-extrabold tracking-[0.15em] text-gray-900 leading-snug drop-shadow-sm text-[clamp(16px,2.5vw,22px)] sm:text-[clamp(18px,2.2vw,26px)] md:text-[clamp(20px,2vw,28px)]">
+            <h1 className="header-title">
               {product.title}
             </h1>
-            <div className="flex gap-2 justify-center sm:justify-end">
-              {isPopular && <Badge variant="popular" />}
-              <Badge variant="green">В наявності</Badge>
-            </div>
           </div>
 
           {/* контент */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8">
-            {/* галерея */}
+            <div className="lg:col-span-12 flex flex-wrap items-center justify-center sm:justify-end gap-2 px-2 sm:px-0 mb-2">
+              {isPopular && <Badge variant="popular" />}
+              <Badge variant="green">В наявності</Badge>
+            </div>
+          {/* --- Галерея --- */}
             <section
               className="lg:col-span-7"
               role="region"
@@ -232,7 +232,7 @@ export default function ProductPage({ onAddToCart, onBuy }) {
                 if (e.key === "ArrowRight") next();
               }}
             >
-              <div className="relative rounded-2xl overflow-hidden bg-white shadow-lg">
+              <div className="relative rounded-2xl overflow-hidden bg-white shadow-lg min-w-0">
                 <img
                   src={imgs[idx]}
                   alt={product.title}
@@ -250,60 +250,39 @@ export default function ProductPage({ onAddToCart, onBuy }) {
                   draggable={false}
                 />
 
+                {/* кнопки навігації */}
                 {imgs.length > 1 && (
                   <>
-                  {/* Кнопка попереднього зображення */}
                     <button
                       type="button"
                       onClick={prev}
                       aria-label="Попереднє фото"
-                      className="absolute left-3 bottom-2
-                                h-12 w-12 flex items-center justify-center
-                                rounded-full bg-black/60 shadow-lg
-                                ring-1 ring-black/30 hover:bg-black/70 hover:scale-105
+                      className="absolute left-3 bottom-2 h-12 w-12 flex items-center justify-center
+                                rounded-full bg-black/60 shadow-lg ring-1 ring-black/30 hover:bg-black/70 hover:scale-105
                                 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 transition"
                     >
-                      <svg
-                        viewBox="0 0 18 18"
-                        className="h-6 w-6 text-white"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="3.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
+                      <svg viewBox="0 0 18 18" className="h-6 w-6 text-white" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
                         <polyline points="12 4 6 9 12 14" />
                       </svg>
                     </button>
 
-                    {/* Кнопка наступного зображення */}
                     <button
                       type="button"
                       onClick={next}
                       aria-label="Наступне фото"
-                      className="absolute right-3 bottom-2
-                                h-12 w-12 flex items-center justify-center
-                                rounded-full bg-black/60 shadow-lg
-                                ring-1 ring-black/30 hover:bg-black/70 hover:scale-105
+                      className="absolute right-3 bottom-2 h-12 w-12 flex items-center justify-center
+                                rounded-full bg-black/60 shadow-lg ring-1 ring-black/30 hover:bg-black/70 hover:scale-105
                                 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 transition"
                     >
-                      <svg
-                        viewBox="0 0 18 18"
-                        className="h-6 w-6 text-white"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="3.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
+                      <svg viewBox="0 0 18 18" className="h-6 w-6 text-white" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
                         <polyline points="6 4 12 9 6 14" />
                       </svg>
                     </button>
-
                   </>
                 )}
               </div>
 
+              {/* індикатори */}
               {imgs.length > 1 && (
                 <div className="mt-4 flex items-center justify-center gap-2" role="tablist" aria-label="Слайди">
                   {imgs.map((_, i) => {
@@ -324,9 +303,10 @@ export default function ProductPage({ onAddToCart, onBuy }) {
               )}
             </section>
 
+
             {/* сайдбар */}
             <aside className="lg:col-span-5">
-              <div className="lg:sticky lg:top-20 space-y-4">
+              <div className="lg:sticky lg:top-20 space-y-4 min-w-0">
                 <div className="rounded-2xl border bg-white p-4 sm:p-5 shadow-sm">
                   {/* Ціна */}
                   <div className="text-gray-600 text-sm md:text-base mb-1">Ціна</div>
@@ -404,27 +384,31 @@ export default function ProductPage({ onAddToCart, onBuy }) {
 
 
                   {/* Кнопки */}
-                  <div className="mt-4 grid grid-cols-1 gap-3">
-                    <button className="w-full h-12 md:h-14 rounded-xl bg-blue-600 text-white font-semibold text-base md:text-lg hover:bg-blue-700 active:scale-[0.99] transition" onClick={() => onBuy?.(product)}>
+                  <div className="mt-4 grid grid-cols-1 gap-3 min-w-0">
+                    <button
+                      className="w-full h-12 md:h-14 rounded-xl bg-blue-600 text-white font-semibold
+                                text-base md:text-lg hover:bg-blue-700 active:scale-[0.99] transition
+                                whitespace-nowrap"
+                      onClick={() => onBuy?.(product)}
+                      aria-label="Купити зараз"
+                    >
                       Купити зараз
                     </button>
-                    <button
-                      className="w-full h-12 md:h-14 rounded-xl border font-semibold text-base md:text-lg hover:bg-gray-50 active:scale-[0.99] transition"
-                      onClick={() => {
-                        const item = {
-                          ...product,
-                          giftText: product.giftText?.text || product.giftText || null, // 🎁 додали
-                        };
 
+                    <button
+                      className="w-full h-12 md:h-14 rounded-xl border font-semibold text-base md:text-lg
+                                hover:bg-gray-50 active:scale-[0.99] transition whitespace-nowrap"
+                      onClick={() => {
+                        const item = { ...product, giftText: product.giftText?.text || product.giftText || null };
                         onAddToCart?.(item);
                         setFlashCart(true);
                         if (timerRef.current) clearTimeout(timerRef.current);
                         timerRef.current = setTimeout(() => setFlashCart(false), 2200);
                       }}
+                      aria-label="Додати в кошик"
                     >
                       Додати в кошик
                     </button>
-
                   </div>
 
                   <div className="mt-4 text-xs md:text-sm text-gray-600 space-y-1">
@@ -455,9 +439,9 @@ export default function ProductPage({ onAddToCart, onBuy }) {
                     <button
                       type="button"
                       onClick={() => onBuy?.(product)}
-                      className="w-32 h-10 flex items-center justify-center 
-                    rounded-xl border font-semibold text-sm text-white 
-                    hover:bg-gray-50 active:scale-[0.98] transition"
+                      className="w-32 h-10 flex items-center justify-center
+                                  rounded-xl bg-blue-600 text-white font-semibold text-sm
+                                  hover:bg-blue-700 active:scale-[0.98] transition whitespace-nowrap"
 
                     >
                       Оформити

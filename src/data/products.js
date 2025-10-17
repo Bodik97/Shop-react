@@ -116,12 +116,12 @@ const snowPeakR_4 = "https://res.cloudinary.com/da27wfewm/image/upload/v17583992
 // const snowPeak2_4 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399291/img_4_qa9crv.png";
 
 //Berretta
-const berretta_1 = "https://res.cloudinary.com/da27wfewm/image/upload/v1760734883/photo_2025-10-18_00-00-17_nvg5gm.png";
-const berretta_2 = "https://res.cloudinary.com/da27wfewm/image/upload/v1760734883/photo_2025-10-18_00-00-22_su0mlp.png";
-const berretta_3 = "https://res.cloudinary.com/da27wfewm/image/upload/v1760734883/photo_2025-10-18_00-00-30_fkz2xe.png";
-const berretta_4 = "https://res.cloudinary.com/da27wfewm/image/upload/v1760734883/photo_2025-10-18_00-00-27_hvnmj7.png";
-const berretta_5 = "https://res.cloudinary.com/da27wfewm/image/upload/v1760734883/photo_2025-10-18_00-00-05_quzufa.png";
-const berretta_6 = "https://res.cloudinary.com/da27wfewm/image/upload/v1760734883/photo_2025-10-18_00-00-25_jd1npz.png";
+const berretta_1 = "https://res.cloudinary.com/da27wfewm/image/upload/e_background_removal/f_png/v1760736806/photo_2025-10-18_00-00-17_nvg5gm_yjfx5f.png";
+const berretta_2 = "https://res.cloudinary.com/da27wfewm/image/upload/e_background_removal/f_png/v1760736807/photo_2025-10-18_00-00-22_su0mlp_odghrk.png";
+const berretta_3 = "https://res.cloudinary.com/da27wfewm/image/upload/e_background_removal/f_png/v1760736805/photo_2025-10-18_00-00-05_quzufa_dfwh35.png";
+const berretta_4 = "https://res.cloudinary.com/da27wfewm/image/upload/e_background_removal/f_png/v1760736804/photo_2025-10-18_00-00-30_fkz2xe_batvlw.png";
+const berretta_5 = "https://res.cloudinary.com/da27wfewm/image/upload/e_background_removal/f_png/v1760736808/photo_2025-10-18_00-00-25_jd1npz_edp0xb.png";
+const berretta_6 = "https://res.cloudinary.com/da27wfewm/image/upload/e_background_removal/f_png/v1760736809/photo_2025-10-18_00-00-27_hvnmj7_bidbk2.png";
 
 export const categories = [
   { id: "pistols", name: "Пістолети", image: pistolsImg },
