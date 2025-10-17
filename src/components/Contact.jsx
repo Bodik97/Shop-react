@@ -1,10 +1,10 @@
-// src/pages/Contact.jsx
-import React, { useMemo, useState, useCallback, useRef, useEffect } from "react";
+// src/components/Contact.jsx
+import { useState, useRef } from "react";
 import { Phone, Mail, Clock, MapPin, Send, ShieldCheck, MessageSquare, Headphones } from "lucide-react";
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
 
-/* ——— helpers ——— */
+/** Допоміжні */
 const digits = (s) => String(s || "").replace(/\D+/g, "");
 const asE164UA = (s) => {
   let d = digits(s);
@@ -15,80 +15,26 @@ const asE164UA = (s) => {
   const pretty = d.replace(/(\d{2})(\d{3})(\d{2})(\d{2})?/, (_, a, b, c, d4) => [a, b, c, d4].filter(Boolean).join(" "));
   return "+380 " + pretty.trimEnd();
 };
-function useOnScreen(ref, rootMargin = "0px") {
-  const [visible, setVisible] = useState(false);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const io = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting) {
-        setVisible(true);
-        io.disconnect();
-      }
-    }, { rootMargin });
-    io.observe(el);
-    return () => io.disconnect();
-  }, [ref, rootMargin]);
-  return visible;
-}
 
-/* ——— memo subcomponents ——— */
-const InfoCard = React.memo(function InfoCard({ icon, label, value }) {
-  const isArray = Array.isArray(value);
-  return (
-    <motion.div whileHover={{ scale: 1.02 }} className="rounded-2xl border bg-white p-4 sm:p-5 text-center shadow-sm hover:shadow-md transition">
-      <div className="mx-auto grid place-items-center h-10 w-10 rounded-xl bg-gray-100">{icon}</div>
-      <div className="mt-2 text-[12px] sm:text-sm text-gray-500">{label}</div>
-      {isArray ? (
-        <ul className="mt-1 space-y-1 font-semibold text-gray-900 text-sm sm:text-base">
-          {value.map((line, idx) => (<li key={`${label}-${idx}`}>{line}</li>))}
-        </ul>
-      ) : (
-        <div className="mt-1 font-semibold text-gray-900 text-sm sm:text-base break-words">{value}</div>
-      )}
-    </motion.div>
-  );
-});
-
-const Banner = React.memo(function Banner({ type = "info", children }) {
-  const color =
-    type === "success"
-      ? "bg-green-50 text-green-800 border-green-200"
-      : type === "error"
-      ? "bg-red-50 text-red-800 border-red-200"
-      : "bg-slate-50 text-slate-800 border-slate-200";
-  return <div role="status" aria-live="polite" className={`rounded-xl border px-3 py-2 text-sm ${color}`}>{children}</div>;
-});
-
-/* ——— page ——— */
 export default function Contact() {
   const PHONE_DISPLAY = "+38 (096) 000-00-00";
   const PHONE_TEL = "+380960000000";
   const EMAIL = "support@airsoft.shop";
   const HOURS = "Пн–Пт 10:00–19:00, Сб 11:00–16:00";
-  const cards = useMemo(() => {
   const ADDRESS_LINES = [
     "Київ, вул. Бориспільська, 9 (Дарницький р-н)",
     "Київ, вул. Новокостянтинівська, 2А (Подільський р-н)",
   ];
-  return [
-    { icon: <Phone className="h-5 w-5 text-slate-900" />, label: "Телефон", value: <a className="hover:text-blue-600" href={`tel:${PHONE_TEL}`}>{PHONE_DISPLAY}</a> },
-    { icon: <Mail className="h-5 w-5 text-slate-900" />,  label: "Email",   value: <a className="hover:text-blue-600" href={`mailto:${EMAIL}`}>{EMAIL}</a> },
-    { icon: <Clock className="h-5 w-5 text-slate-900" />, label: "Графік",  value: HOURS },
-    { icon: <MapPin className="h-5 w-5 text-slate-900" />, label: "Адреса", value: ADDRESS_LINES },
-  ];
-}, [PHONE_TEL, PHONE_DISPLAY, EMAIL, HOURS]);
 
-  /* state */
-  const [okBadge, setOkBadge] = useState(false);
+  /** Стан форми */
   const [form, setForm] = useState({ name: "", phone: "+380 ", message: "", website: "" });
   const [err, setErr] = useState({ name: "", phone: "", message: "" });
   const [notice, setNotice] = useState({ type: "", text: "" });
   const [loading, setLoading] = useState(false);
+  const hideTimer = useRef(null);
 
-
-  /* validation */
-  const validate = useCallback(() => {
+  /** Валідація */
+  const validate = () => {
     const e = { name: "", phone: "", message: "" };
     if (form.name.trim().length < 2) e.name = "Вкажіть ім’я від 2 символів.";
     const d = digits(form.phone);
@@ -99,28 +45,22 @@ export default function Contact() {
     if (bad) setNotice({ type: "error", text: "Перевірте виділені поля і спробуйте ще раз." });
     else setNotice({ type: "", text: "" });
     return !bad;
-  }, [form]);
+  };
 
-  /* handlers */
-  const onName = useCallback((e) => setForm((s) => ({ ...s, name: e.target.value })), []);
-  const onPhone = useCallback((e) => setForm((s) => ({ ...s, phone: asE164UA(e.target.value) })), []);
-  const onMsg = useCallback((e) => setForm((s) => ({ ...s, message: e.target.value })), []);
-  const onFocusPhone = useCallback(() => {
-    setForm((s) => (!s.phone.trim() ? { ...s, phone: "+380 " } : s));
-  }, []);
-
-  const submitConsult = useCallback(async (ev) => {
+  /** Сабміт */
+  const submitConsult = async (ev) => {
     ev.preventDefault();
     if (!validate()) return;
     setLoading(true);
     setNotice({ type: "", text: "" });
+    if (hideTimer.current) clearTimeout(hideTimer.current);
 
     const payload = {
       type: "consult",
       name: form.name.trim(),
       phone: "+380" + digits(form.phone).slice(-9),
       comment: form.message.trim(),
-      website: form.website,
+      website: form.website, // honeypot
     };
 
     try {
@@ -128,15 +68,13 @@ export default function Contact() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
-        keepalive: true,
       });
       const j = await r.json().catch(() => null);
       if (j?.ok) {
         setForm({ name: "", phone: "+380 ", message: "", website: "" });
         setErr({ name: "", phone: "", message: "" });
         setNotice({ type: "success", text: "Форму прийнято. Очікуйте дзвінка від менеджера." });
-        setOkBadge(true);
-        setTimeout(() => setOkBadge(false), 3000);
+        hideTimer.current = setTimeout(() => setNotice({ type: "", text: "" }), 3000);
       } else {
         setNotice({ type: "error", text: "Не вдалося надіслати. Спробуйте пізніше." });
       }
@@ -145,11 +83,7 @@ export default function Contact() {
     } finally {
       setLoading(false);
     }
-  }, [form, validate]);
-
-  /* lazy map */
-  const mapRef = useRef(null);
-  const showMap = useOnScreen(mapRef, "200px");
+  };
 
   return (
     <main className="relative overflow-hidden bg-gradient-to-b from-gray-50 via-white to-slate-100">
@@ -164,8 +98,7 @@ export default function Contact() {
 
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             className="mt-6 font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-900 via-blue-800 to-slate-900
                        text-[clamp(26px,5vw,46px)] leading-[1.15]"
@@ -182,16 +115,24 @@ export default function Contact() {
 
       {/* CONTACT CARDS */}
       <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-        {cards.map((c) => (
-          <InfoCard key={c.label} icon={c.icon} label={c.label} value={c.value} />
-        ))}
+        <InfoCard
+          icon={<Phone className="h-5 w-5 text-slate-900" />}
+          label="Телефон"
+          value={<a className="hover:text-blue-600" href={`tel:${PHONE_TEL}`}>{PHONE_DISPLAY}</a>}
+        />
+        <InfoCard
+          icon={<Mail className="h-5 w-5 text-slate-900" />}
+          label="Email"
+          value={<a className="hover:text-blue-600" href={`mailto:${EMAIL}`}>{EMAIL}</a>}
+        />
+        <InfoCard icon={<Clock className="h-5 w-5 text-slate-900" />} label="Графік" value={HOURS} />
+        <InfoCard icon={<MapPin className="h-5 w-5 text-slate-900" />} label="Адреса" value={ADDRESS_LINES} />
       </section>
 
       {/* FORM */}
       <motion.section
         initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
         transition={{ duration: 0.6 }}
         className="max-w-4xl mx-auto mt-12 mb-8 px-4 sm:px-6"
       >
@@ -204,15 +145,7 @@ export default function Contact() {
               </p>
             </div>
 
-            {okBadge && (
-              <div role="status" aria-live="polite" className="rounded-xl border border-green-200 bg-green-50 text-green-800 text-sm px-4 py-3">
-                Форму прийнято. Очікуйте дзвінка від менеджера.
-              </div>
-            )}
-
             <form onSubmit={submitConsult} className="flex-1 w-full max-w-md space-y-4">
-              {notice.text ? <Banner type={notice.type}>{notice.text}</Banner> : null}
-
               {/* honeypot */}
               <input
                 type="text"
@@ -230,7 +163,7 @@ export default function Contact() {
                 <input
                   type="text"
                   value={form.name}
-                  onChange={onName}
+                  onChange={(e) => setForm((s) => ({ ...s, name: e.target.value }))}
                   className={`w-full rounded-xl border p-3 text-[15px] text-slate-900 placeholder-slate-400 bg-white
                               focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30 outline-none
                               ${err.name ? "border-red-400" : "border-gray-300"}`}
@@ -249,8 +182,10 @@ export default function Contact() {
                   type="tel"
                   inputMode="numeric"
                   value={form.phone}
-                  onFocus={onFocusPhone}
-                  onChange={onPhone}
+                  onFocus={() => {
+                    if (!form.phone.trim()) setForm((s) => ({ ...s, phone: "+380 " }));
+                  }}
+                  onChange={(e) => setForm((s) => ({ ...s, phone: asE164UA(e.target.value) }))}
                   className={`w-full rounded-xl border p-3 text-[15px] text-slate-900 placeholder-slate-400 bg-white
                               focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30 outline-none
                               ${err.phone ? "border-red-400" : "border-gray-300"}`}
@@ -269,7 +204,7 @@ export default function Contact() {
                 <textarea
                   rows={4}
                   value={form.message}
-                  onChange={onMsg}
+                  onChange={(e) => setForm((s) => ({ ...s, message: e.target.value }))}
                   className={`w-full rounded-xl border p-3 text-[15px] text-slate-900 placeholder-slate-400 bg-white
                               focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30 outline-none resize-y
                               ${err.message ? "border-red-400" : "border-gray-300"}`}
@@ -288,6 +223,13 @@ export default function Contact() {
               >
                 {loading ? "Надсилаємо…" : "Відправити"}
               </button>
+
+              {/* бейдж під формою */}
+              {notice.text ? (
+                <div className="pt-3">
+                  <Banner type={notice.type}>{notice.text}</Banner>
+                </div>
+              ) : null}
             </form>
           </div>
         </div>
@@ -297,7 +239,6 @@ export default function Contact() {
       <motion.section
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
         transition={{ duration: 0.6 }}
         className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6"
       >
@@ -306,7 +247,11 @@ export default function Contact() {
           { icon: <Send className="h-6 w-6 text-blue-600" />, title: "Відправка день у день", desc: "Замовлення до 15:00 відправляємо цього ж дня." },
           { icon: <MessageSquare className="h-6 w-6 text-blue-600" />, title: "Живий контакт", desc: "Реальні менеджери, швидкий зв’язок без ботів." },
         ].map((f) => (
-          <motion.div key={f.title} whileHover={{ y: -3 }} className="rounded-2xl border bg-white p-5 sm:p-6 text-center shadow-sm hover:shadow-md transition">
+          <motion.div
+            key={f.title}
+            whileHover={{ y: -3 }}
+            className="rounded-2xl border bg-white p-5 sm:p-6 text-center shadow-sm hover:shadow-md transition"
+          >
             <div className="flex justify-center">{f.icon}</div>
             <h4 className="mt-3 font-semibold text-slate-900 text-sm sm:text-base">{f.title}</h4>
             <p className="mt-1 text-gray-500 text-[13px] sm:text-sm">{f.desc}</p>
@@ -314,24 +259,20 @@ export default function Contact() {
         ))}
       </motion.section>
 
-      {/* MAP (lazy) */}
+      {/* MAP */}
       <motion.section
         initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
         transition={{ duration: 0.7 }}
         className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 mb-16"
       >
-        <div ref={mapRef} className="relative overflow-hidden rounded-3xl border shadow-md min-h-[280px] sm:min-h-[340px] md:min-h-[420px]">
-          {showMap && (
-            <iframe
-              title="Мапа"
-              src="https://maps.google.com/maps?q=Kyiv&t=&z=12&ie=UTF8&iwloc=&output=embed"
-              className="w-full h-[280px] sm:h-[340px] md:h-[420px]"
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            />
-          )}
+        <div className="relative overflow-hidden rounded-3xl border shadow-md">
+          <iframe
+            title="Мапа"
+            src="https://maps.google.com/maps?q=Kyiv&t=&z=12&ie=UTF8&iwloc=&output=embed"
+            className="w-full h-[280px] sm:h-[340px] md:h-[420px]"
+            loading="lazy"
+          />
           <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-md rounded-xl shadow px-4 py-3">
             <p className="text-[13px] sm:text-sm font-semibold text-slate-900">Ми поруч 👋</p>
             <p className="text-[12px] text-gray-600">Зручно дістатись Новою Поштою або авто</p>
@@ -339,5 +280,42 @@ export default function Contact() {
         </div>
       </motion.section>
     </main>
+  );
+}
+
+/** Підкомпоненти */
+function InfoCard({ icon, label, value }) {
+  const isArray = Array.isArray(value);
+  return (
+    <motion.div
+      whileHover={{ scale: 1.02 }}
+      className="rounded-2xl border bg-white p-4 sm:p-5 text-center shadow-sm hover:shadow-md transition"
+    >
+      <div className="mx-auto grid place-items-center h-10 w-10 rounded-xl bg-gray-100">{icon}</div>
+      <div className="mt-2 text-[12px] sm:text-sm text-gray-500">{label}</div>
+      {isArray ? (
+        <ul className="mt-1 space-y-1 font-semibold text-gray-900 text-sm sm:text-base">
+          {value.map((line, idx) => (
+            <li key={`${label}-${idx}`}>{line}</li>
+          ))}
+        </ul>
+      ) : (
+        <div className="mt-1 font-semibold text-gray-900 text-sm sm:text-base break-words">{value}</div>
+      )}
+    </motion.div>
+  );
+}
+
+function Banner({ type = "info", children }) {
+  const color =
+    type === "success"
+      ? "bg-green-50 text-green-800 border-green-200"
+      : type === "error"
+      ? "bg-red-50 text-red-800 border-red-200"
+      : "bg-slate-50 text-slate-800 border-slate-200";
+  return (
+    <div role="status" aria-live="polite" className={`rounded-xl border px-3 py-2 text-sm ${color}`}>
+      {children}
+    </div>
   );
 }
