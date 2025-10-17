@@ -1,12 +1,8 @@
 /* /api/order.js */
 /* eslint-env node */
 
-// Повний endpoint під Node 20/Vercel: CORS, ліміт тіла, валідація,
-// X-Request-ID, таймаут+ретрай Telegram, обрізання 4096, антиспам,
-// уніфікована JSON-відповідь, мін-лід у будь-якому випадку.
-
 export default async function handler(req, res) {
-  // ---------- util ----------
+  // ---------- utils ----------
   const PROD = process.env.NODE_ENV === "production";
   const nowIso = () => new Date().toISOString();
   const uuid = () =>
@@ -52,7 +48,6 @@ export default async function handler(req, res) {
     process.env.VITE_CHAT_ID ||
     "";
   const CHAT_BACKUP = process.env.TELEGRAM_CHAT_ID_BACKUP || "";
-  const ALWAYS_LEAD = (process.env.ALWAYS_LEAD || "1") === "1";
 
   if (!TOKEN || !CHAT) {
     log("error", "env-missing");
@@ -71,9 +66,6 @@ export default async function handler(req, res) {
 
   // ---------- body size limit + parse ----------
   const MAX = 128 * 1024; // 128KB
-  const contentLength = Number(req.headers["content-length"] || "0");
-  if (contentLength > MAX) log("warn", "body-too-large", { contentLength });
-
   let b = {};
   if (req.body && typeof req.body === "object") {
     b = req.body;
@@ -89,23 +81,27 @@ export default async function handler(req, res) {
         req.on("error", reject);
       });
       b = raw ? JSON.parse(raw) : {};
-    } catch (e) {
-      log("error", "invalid-json", { e: safeStr(e?.message, 200) });
+    } catch (err) {
+      log("error", "invalid-json", { err: safeStr(err?.message, 200) });
       await sendLeadMinimal({
         reason: "INVALID_JSON",
         n: "",
         p: "",
         c: "",
+        err: safeStr(err?.message, 200),
       });
-      return sendJson(200, { ok: false, code: "INVALID_JSON", warnings: ["Minimal lead sent"] });
+      return sendJson(200, { ok: false, code: "INVALID_JSON", warnings: ["Minimal lead sent"], error: "invalid_json" });
     }
   }
 
   // ---------- extract ----------
+  const type = (safeStr(b.type || b.form || "", 40) || "").toLowerCase(); // "consult" => Консультація
+  const isConsult = type === "consult" || type === "консультація";
+
   const name = safeStr(b.name || b.customer?.name, 120);
   const phoneRaw = safeStr(b.phone || b.customer?.phone, 40);
   const email = safeStr(b.email || b.customer?.email, 120);
-  const comment = safeStr(b.comment, 1000);
+  const comment = safeStr(b.comment || b.message, 1000);
   const orderId = safeStr(b.orderId || b.id, 80);
 
   const deliveryRaw = safeStr(b.delivery, 40).toLowerCase();
@@ -135,11 +131,9 @@ export default async function handler(req, res) {
   const validStr = (s, max) => !!s && s.length <= max;
   const warnings = [];
 
-  // honeypot
   const honey = safeStr(b.website || b.url || b.link || "", 60);
   if (honey) warnings.push("Honeypot filled");
 
-  // rate limit (per-instance)
   const RL_WINDOW_MS = 60_000;
   const RL_MAX = 12;
   globalThis.__rl = globalThis.__rl || new Map();
@@ -156,47 +150,53 @@ export default async function handler(req, res) {
   if (!validStr(phone, 18) || phone.length < 10) warnings.push("Invalid phone");
   if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) warnings.push("Invalid email");
 
-  // ---------- message ----------
+  // ---------- message builder ----------
   const fmtUAH = (n) =>
     new Intl.NumberFormat("uk-UA", { maximumFractionDigits: 0 }).format(Number(n) || 0) + " ₴";
   const created = new Date();
 
   const lines = [];
-  lines.push(`<b>🆕 Замовлення</b> | ${created.toLocaleString("uk-UA")}`);
+  if (isConsult) {
+    lines.push(`<b>🆕 Консультація</b> | ${created.toLocaleString("uk-UA")}`);
+  } else {
+    lines.push(`<b>🆕 Замовлення</b> | ${created.toLocaleString("uk-UA")}`);
+  }
   lines.push(`ID: <code>${esc(reqId)}</code>`);
-  if (orderId) lines.push(`<b>#${esc(orderId)}</b>`);
+  if (!isConsult && orderId) lines.push(`<b>#${esc(orderId)}</b>`);
   lines.push("────────────");
   lines.push(`👤 Ім’я: <b>${esc(name || "—")}</b>`);
   lines.push(`📞 Телефон: <b>${esc(phone || phoneRaw || "—")}</b>`);
   if (email) lines.push(`✉️ Email: <b>${esc(email)}</b>`);
 
-  lines.push("────────────");
-  lines.push("<b>🚚 Доставка</b>");
-  lines.push(`Служба: <b>${esc(delivery)}</b>`);
-  if (region) lines.push(`Область: <b>${esc(region)}</b>`);
-  if (city) lines.push(`Місто: <b>${esc(city)}</b>`);
-  if (branch) lines.push(`Відділення: <b>${esc(branch)}</b>`);
-
-  if (Array.isArray(items) && items.length) {
+  if (!isConsult) {
     lines.push("────────────");
-    lines.push("<b>🧾 Товари</b>");
-    items.forEach((it, i) => {
-      const qty = Math.max(1, Number(it?.qty) || 1);
-      const price = Math.max(0, Number(it?.price) || 0);
-      const title = esc(safeStr(it?.title || "Товар", 140));
-      lines.push(`${i + 1}. ${title} — ${qty} × ${fmtUAH(price)} = ${fmtUAH(price * qty)}`);
-      if (it?.giftText) lines.push(`🎁 ${esc(safeStr(it.giftText, 200))}`);
-    });
-  }
+    lines.push("<b>🚚 Доставка</b>");
+    lines.push(`Служба: <b>${esc(delivery)}</b>`);
+    if (region) lines.push(`Область: <b>${esc(region)}</b>`);
+    if (city) lines.push(`Місто: <b>${esc(city)}</b>`);
+    if (branch) lines.push(`Відділення: <b>${esc(branch)}</b>`);
 
-  lines.push("────────────");
-  if (discount) lines.push(`Знижка: <b>−${fmtUAH(discount)}</b>`);
-  lines.push(`Доставка: <b>${shipping ? fmtUAH(shipping) : "Безкоштовно"}</b>`);
-  if (total) lines.push(`💰 Разом: <b>${fmtUAH(total)}</b>`);
+    if (Array.isArray(items) && items.length) {
+      lines.push("────────────");
+      lines.push("<b>🧾 Товари</b>");
+      items.forEach((it, i) => {
+        const qty = Math.max(1, Number(it?.qty) || 1);
+        const price = Math.max(0, Number(it?.price) || 0);
+        const title = esc(safeStr(it?.title || "Товар", 140));
+        lines.push(`${i + 1}. ${title} — ${qty} × ${fmtUAH(price)} = ${fmtUAH(price * qty)}`);
+        if (it?.giftText) lines.push(`🎁 ${esc(safeStr(it.giftText, 200))}`);
+      });
+    }
+
+    lines.push("────────────");
+    if (discount) lines.push(`Знижка: <b>−${fmtUAH(discount)}</b>`);
+    lines.push(`Доставка: <b>${shipping ? fmtUAH(shipping) : "Безкоштовно"}</b>`);
+    if (total) lines.push(`💰 Разом: <b>${fmtUAH(total)}</b>`);
+  }
 
   if (comment) {
     lines.push("────────────");
-    lines.push("<b>📝 Коментар</b>");
+    lines.push(isConsult ? "<b>📝 Запит</b>" : "<b>📝 Коментар</b>");
     lines.push(esc(comment));
   }
 
@@ -228,16 +228,16 @@ export default async function handler(req, res) {
       clearTimeout(timer);
       const data = await r.json().catch(() => null);
       return r.ok && data?.ok;
-    } catch {
+    } catch (err) {
       clearTimeout(timer);
+      log("error", "tg-send-ex", { err: safeStr(err?.message, 200) });
       return false;
     }
   }
 
   const backoff = (ms) => new Promise((r) => setTimeout(r, ms));
 
-  // ВАЖЛИВО: оголошено як function, без залежності від зовнішніх змінних
-  async function sendLeadMinimal({ reason, n = "", p = "", c = "" }) {
+  async function sendLeadMinimal({ reason, n = "", p = "", c = "", err = "" }) {
     const minimal =
       `🧩 Lead(min)\n` +
       `ID: ${reqId}\n` +
@@ -247,7 +247,8 @@ export default async function handler(req, res) {
       `Reason: ${reason}\n` +
       `Name: ${n || "—"}\n` +
       `Phone: ${p || "—"}\n` +
-      (c ? `City: ${c}\n` : "");
+      (c ? `City: ${c}\n` : "") +
+      (err ? `Error: ${esc(err)}\n` : "");
     const ok1 = await tgSend(minimal, CHAT);
     const ok2 = CHAT_BACKUP ? await tgSend(minimal, CHAT_BACKUP) : true;
     return ok1 && ok2;
@@ -276,9 +277,15 @@ export default async function handler(req, res) {
       });
       delivered = okMin || delivered;
     }
-  } catch (e) {
-    log("error", "send-exception", { e: safeStr(e?.message, 200) });
-    const okMin = await sendLeadMinimal({ reason: "EXCEPTION", n: name, p: phone || phoneRaw, c: city });
+  } catch (err) {
+    log("error", "send-exception", { err: safeStr(err?.message, 200) });
+    const okMin = await sendLeadMinimal({
+      reason: "EXCEPTION",
+      n: name,
+      p: phone || phoneRaw,
+      c: city,
+      err: safeStr(err?.message, 200),
+    });
     delivered = okMin || delivered;
   }
 
