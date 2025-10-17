@@ -14,11 +14,11 @@ const imgHatsan_4 =  "https://res.cloudinary.com/da27wfewm/image/upload/v1758398
 
 
 // Giv
- const imgGiv_1 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399436/pist-4_cfvjip.png";
- const imgGiv_2 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399425/pist-3_nvmhdh.png";
- const imgGiv_3 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399447/pist-5_duzhpg.png";
- const imgGiv_4 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399415/pist-2_ommmir.png";
- const imgGiv_5 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399403/pist-1_qncytu.png";
+//  const imgGiv_1 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399436/pist-4_cfvjip.png";
+//  const imgGiv_2 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399425/pist-3_nvmhdh.png";
+//  const imgGiv_3 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399447/pist-5_duzhpg.png";
+//  const imgGiv_4 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399415/pist-2_ommmir.png";
+//  const imgGiv_5 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399403/pist-1_qncytu.png";
 
 // // WinGun
 // import winGun_1 from "../img/pistolets/WinGun/pist-1.webp";
@@ -185,31 +185,31 @@ export const products = [
     warranty: "Повернення/обмін — 14 днів.",
     category: "rifles",
   },
-  { id: 3, title: "WinGun ",
-    price: 2799, image: imgGiv_1,
-      imgs: [imgGiv_1, imgGiv_2, imgGiv_3, imgGiv_4, imgGiv_5],
-    description: "Пневматичний пістолет WinGun є досить цікавою моделлю від компанії WinGun. Дизайн пістолета повторює всесвітньо відомий пістолет Colt Defender. Пістолет не має висувного магазину, що обнадіює конструкцію пістолета і робить втрату магазину просто неможливою.",
-    specs: {
-      "Країна виробник": "Тайвань",
-      "Тип": "Зі стисненим газом СО2",
-      "Тип стовбура:": "Сталевий гладкий",
-      "Тип боєприпасів": "Кульки BB",
-      "Довжина ствола, мм": "90",
-      "Прицільні пристрої": "Нерегульована прицільна планка з мушкою",
-      "Кількість зарядів": "18",
-      "Запобіжник": "Ручний",
-      "Калібр": "4.5 мм",
-      "Ударно-спусковий механізм": "Одиночної дії",
-      "Колір": "Чорний",
-      "Довжина загальна, мм": "175",
-      "Вага, м": "427",
-      "Гарантійний термін": "6 міс"
-    },
-    giftBadge: { text: "Подарунок" },          // ⬅️ для бейджа у списках (ProductCard)
-    giftText:  { text: "+ 2 бал СО2 і 100 шаріків." },
-    warranty: "Повернення/обмін — 14 днів.",
-    category: "pistols",
-    popular: true, popularityScore: 80 },
+  // { id: 3, title: "WinGun ",
+  //   price: 2799, image: imgGiv_1,
+  //     imgs: [imgGiv_1, imgGiv_2, imgGiv_3, imgGiv_4, imgGiv_5],
+  //   description: "Пневматичний пістолет WinGun є досить цікавою моделлю від компанії WinGun. Дизайн пістолета повторює всесвітньо відомий пістолет Colt Defender. Пістолет не має висувного магазину, що обнадіює конструкцію пістолета і робить втрату магазину просто неможливою.",
+  //   specs: {
+  //     "Країна виробник": "Тайвань",
+  //     "Тип": "Зі стисненим газом СО2",
+  //     "Тип стовбура:": "Сталевий гладкий",
+  //     "Тип боєприпасів": "Кульки BB",
+  //     "Довжина ствола, мм": "90",
+  //     "Прицільні пристрої": "Нерегульована прицільна планка з мушкою",
+  //     "Кількість зарядів": "18",
+  //     "Запобіжник": "Ручний",
+  //     "Калібр": "4.5 мм",
+  //     "Ударно-спусковий механізм": "Одиночної дії",
+  //     "Колір": "Чорний",
+  //     "Довжина загальна, мм": "175",
+  //     "Вага, м": "427",
+  //     "Гарантійний термін": "6 міс"
+  //   },
+  //   giftBadge: { text: "Подарунок" },          // ⬅️ для бейджа у списках (ProductCard)
+  //   giftText:  { text: "+ 2 бал СО2 і 100 шаріків." },
+  //   warranty: "Повернення/обмін — 14 днів.",
+  //   category: "pistols",
+  //   popular: true, popularityScore: 80 },
 
   { id: 4, title: "Пневматичний пістолет Glock 17",
     price: 3877, 
