@@ -96,11 +96,11 @@ const hatsan2_5 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758398965
 const hatsan2_6 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758398957/img_5_ccl8k0.png";
 
 // Hatsan-3
-const hatsan3_1 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399118/img_2_ng9fxf.png";
-const hatsan3_2 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399147/img_5_mmlfd8.png";
-const hatsan3_3 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399137/img_4_wgk7hy.png";
-const hatsan3_4 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399127/img_3_krkjw1.png";
-const hatsan3_5 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399127/img_3_krkjw1.png";
+// const hatsan3_1 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399118/img_2_ng9fxf.png";
+// const hatsan3_2 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399147/img_5_mmlfd8.png";
+// const hatsan3_3 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399137/img_4_wgk7hy.png";
+// const hatsan3_4 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399127/img_3_krkjw1.png";
+// const hatsan3_5 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399127/img_3_krkjw1.png";
 
 // Snow Peak (гвинтівки)
 const snowPeakR_1 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399198/img_1_u7vnls.png";
@@ -108,11 +108,20 @@ const snowPeakR_2 = "https://res.cloudinary.com/da27wfewm/image/upload/v17583992
 const snowPeakR_3 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399207/img_2_ftkx3g.png";
 const snowPeakR_4 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399227/img_4_l12xw4.png";
 
+
 // Snow Peak-2
-const snowPeak2_1 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399237/img_1_bm3mgk.png";
-const snowPeak2_2 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399271/img_2_wiqy3j.png";
-const snowPeak2_3 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399281/img_3_n9e0ll.png";
-const snowPeak2_4 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399291/img_4_qa9crv.png";
+// const snowPeak2_1 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399237/img_1_bm3mgk.png";
+// const snowPeak2_2 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399271/img_2_wiqy3j.png";
+// const snowPeak2_3 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399281/img_3_n9e0ll.png";
+// const snowPeak2_4 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399291/img_4_qa9crv.png";
+
+//Berretta
+const berretta_1 = "https://res.cloudinary.com/da27wfewm/image/upload/v1760734883/photo_2025-10-18_00-00-17_nvg5gm.png";
+const berretta_2 = "https://res.cloudinary.com/da27wfewm/image/upload/v1760734883/photo_2025-10-18_00-00-22_su0mlp.png";
+const berretta_3 = "https://res.cloudinary.com/da27wfewm/image/upload/v1760734883/photo_2025-10-18_00-00-30_fkz2xe.png";
+const berretta_4 = "https://res.cloudinary.com/da27wfewm/image/upload/v1760734883/photo_2025-10-18_00-00-27_hvnmj7.png";
+const berretta_5 = "https://res.cloudinary.com/da27wfewm/image/upload/v1760734883/photo_2025-10-18_00-00-05_quzufa.png";
+const berretta_6 = "https://res.cloudinary.com/da27wfewm/image/upload/v1760734883/photo_2025-10-18_00-00-25_jd1npz.png";
 
 export const categories = [
   { id: "pistols", name: "Пістолети", image: pistolsImg },
@@ -125,7 +134,7 @@ export const categories = [
 export const products = [
   {
     id: 1,
-    title: "Hatsan",
+    title: "Пневматична гвинтівка Hatsan Striker ",
     price: 7199,
     image: imgHatsan_1,
     imgs: [imgHatsan_1, imgHatsan_3, imgHatsan_2, imgHatsan_4],
@@ -152,11 +161,11 @@ export const products = [
     popular: true,
     popularityScore: 95,
   },
-  { id: 2, title: "Snow Peak",
+  { id: 2, title: "Пневматична гвинтівка Snow Peak GR ",
     price: 4999, 
     image: snowPeakR_1, 
     imgs: [snowPeakR_1, snowPeakR_2, snowPeakR_3, snowPeakR_4],
-    description: "Пневматична гвинт Snow Peak  – це класична газо-пружинна гвинт. Має нарізний ствол із високоякісної сталі. У гвинт встановлена газова пружина, що в порівнянні з крученою дротяною пружиною значно знижує вібрацію при пострілі, внаслідок чого підвищується точність і купність пострілу. Зведення здійснюється переламуванням ствола, стандартна однозарядна система. Пневматична гвинт має механічний запобіжник. Прицільна планка та мушка з фібер-оптичними нитками. Приклад і ложа  виготовлені з полімеру. Як заряди для гвинтівки використовуються свинцеві кул калібру 4.5 мм.",
+    description: "Пневматична гвинтівка Snow Peak GR – це класична газо-пружинна гвинт. Має нарізний ствол із високоякісної сталі. У гвинт встановлена газова пружина, що в порівнянні з крученою дротяною пружиною значно знижує вібрацію при пострілі, внаслідок чого підвищується точність і купність пострілу. Зведення здійснюється переламуванням ствола, стандартна однозарядна система. Пневматична гвинт має механічний запобіжник. Прицільна планка та мушка з фібер-оптичними нитками. Приклад і ложа  виготовлені з полімеру. Як заряди для гвинтівки використовуються свинцеві кул калібру 4.5 мм.",
     features: [
     ],
     specs: {
@@ -201,7 +210,8 @@ export const products = [
     warranty: "Повернення/обмін — 14 днів.",
     category: "pistols",
     popular: true, popularityScore: 80 },
-  { id: 4, title: "Glock 17",
+
+  { id: 4, title: "Пневматичний пістолет Glock 17",
     price: 3877, 
     image: glock_1, 
     imgs: [glock_1, glock_2, glock_3, glock_4, glock_5, glock_6],
@@ -227,8 +237,8 @@ export const products = [
     popular: true, popularityScore: 92 },
 
 
-  { id: 5, title: "SUR",
-    price: 3499, 
+  { id: 5, title: "Стартовий пістолет SUR Beretta Storm ",
+    price: 3699, 
     image: sur1_1, 
     imgs: [sur1_1, sur1_2],
     description: "SUR  - це сигнально-шумовий пістолет, комфортне використання якого не змусить вас шкодувати про покупку. Для стрільби використовується холостий патрон 9мм, а зарядність магазину становить 7 патронів. Пістолет повністю металевий, з пластиковою ручкою. Для стрільби має дросильное отвір для виходу газів. Має запобіжник і рухомий затвор. Пістолет досить якісний і добре підходить для користування.",
@@ -245,7 +255,7 @@ export const products = [
     category: "pistols",
     popular: true, popularityScore: 88 },
 
-  { id: 6, title: "Blow",
+  { id: 6, title: "Стартовий пістолет BLOW Walter ",
     price: 3789, 
     image: blow_1, 
     imgs: [blow_1, blow_2, blow_3],
@@ -263,7 +273,7 @@ export const products = [
     category: "pistols",
     popular: true, popularityScore: 84 },
 
-  { id: 7, title: "SUR Arms",
+  { id: 7, title: "Стартовий пістолет SUR Walter PP",
     price: 3999, 
     image: sur_1, 
     imgs: [sur_1, sur_2, sur_3, sur_4],
@@ -281,7 +291,7 @@ export const products = [
     category: "pistols",
     popular: true, popularityScore: 90 },
 
-  { id: 8, title: "SUR-TT",
+  { id: 8, title: "Стартовий пістолет SUR TT",
     price: 4899, 
     image: surTT_1, 
     imgs: [surTT_1, surTT_2, surTT_3, surTT_4, surTT_5],
@@ -299,7 +309,7 @@ export const products = [
     giftText:  { text: "+ 10 куль." }, // для тексту у картці товару (ProductPage)
     category: "pistols" },
 
-  { id: 9, title: "Snow Peak ",
+  { id: 9, title: "Пневматичний пістолет Snow Peak",
     price: 3299, 
     image: snowPeakP_1, 
     imgs: [snowPeakP_1, snowPeakP_2, snowPeakP_3, snowPeakP_4, snowPeakP_5],
@@ -346,7 +356,7 @@ export const products = [
     giftText:  { text: "+ 10 куль." }, // для тексту у картці товару (ProductPage)
     category: "pistols" },
 
-  { id: 12, title: "Hatsan-2",
+  { id: 12, title: "Пневматична гвинтівка Hatsan ED ",
     price: 6199, 
     image: hatsan2_1, 
     imgs: [hatsan2_1, hatsan2_2, hatsan2_3, hatsan2_4, hatsan2_5, hatsan2_6],
@@ -370,35 +380,35 @@ export const products = [
     warranty: "Повернення/обмін — 14 днів.",
     category: "rifles" },
 
-  { id: 13, title: "Hatsan-3",
-    price: 6199, 
-    image: hatsan3_1, 
-    imgs: [hatsan3_1, hatsan3_2, hatsan3_3, hatsan3_4, hatsan3_5],
-    description: "Бюджетна пропозиція в полку пневматичних гвинт. від турецького бренду Hatsan з прицілом на розважальну та спортивну стрільбу. Модель належить до гвардії легких пружинно-поршневих «воздушок».",
-    features: [
-    ],
-    specs: {
-      "Виробник": "Hatsan-2",
-      "Країна виробник": "Туреччина",
-      "Тип ствола": "Сталевий з нарізами",
-      "Довжина ствола": "370 мм",
-      "Калібр": "4.5 мм",
-      "Кількість зарядів": "1",
-      "Тип взводу": "Перелом стволу",
-      "Довжина": "1135 мм",
-      "Вага": "2.75 кг",
-      "Гарантійний термін": "12 міс"
-    },
-    giftBadge: { text: "Подарунок" },         // для бейджа у списках (ProductCard)
-    giftText:  { text: "+ Приціл 4x28 і 200 куль." }, // для тексту у картці товару (ProductPage)
-    warranty: "Повернення/обмін — 14 днів.",
-    category: "rifles" },
+  // { id: 13, title: "Hatsan-3",
+  //   price: 6199, 
+  //   image: hatsan3_1, 
+  //   imgs: [hatsan3_1, hatsan3_2, hatsan3_3, hatsan3_4, hatsan3_5],
+  //   description: "Бюджетна пропозиція в полку пневматичних гвинт. від турецького бренду Hatsan з прицілом на розважальну та спортивну стрільбу. Модель належить до гвардії легких пружинно-поршневих «воздушок».",
+  //   features: [
+  //   ],
+  //   specs: {
+  //     "Виробник": "Hatsan-2",
+  //     "Країна виробник": "Туреччина",
+  //     "Тип ствола": "Сталевий з нарізами",
+  //     "Довжина ствола": "370 мм",
+  //     "Калібр": "4.5 мм",
+  //     "Кількість зарядів": "1",
+  //     "Тип взводу": "Перелом стволу",
+  //     "Довжина": "1135 мм",
+  //     "Вага": "2.75 кг",
+  //     "Гарантійний термін": "12 міс"
+  //   },
+  //   giftBadge: { text: "Подарунок" },         // для бейджа у списках (ProductCard)
+  //   giftText:  { text: "+ Приціл 4x28 і 200 куль." }, // для тексту у картці товару (ProductPage)
+  //   warranty: "Повернення/обмін — 14 днів.",
+  //   category: "rifles" },
 
-  { id: 14, title: "Beeman",
+  { id: 14, title: "Пневматична гвинтівка Beeman Cat ",
     price: 4599, 
     image: beeman_1, 
     imgs: [beeman_1, beeman_2, beeman_3, beeman_4],
-    description: "Beeman BayCat  – легка пневматична гвинт. для розважальної стрільби. Бойовий взвод гвинт. відбувається шляхом перелому стовбура. Ложа з ударостійкого пластику має спеціальні насічки для надійного утримання гвинт. стрільцем під час прицілювання і стрільби.",
+    description: "Пневматична гвинтівка Beeman Cat  – легка пневматична гвинт. для розважальної стрільби. Бойовий взвод гвинт. відбувається шляхом перелому стовбура. Ложа з ударостійкого пластику має спеціальні насічки для надійного утримання гвинт. стрільцем під час прицілювання і стрільби.",
     features: [
     ],
     specs: {
@@ -419,11 +429,11 @@ export const products = [
     warranty: "Повернення/обмін — 14 днів.",
     category: "rifles" },
 
-  { id: 15, title: "Snow Peak-2",
+  { id: 15, title: "Пневматична гвинтівка Snow Peak LB ",
     price: 3999, 
     image: b2_4p_1, 
     imgs: [b2_4p_1, b2_4p_2, b2_4p_3, b2_4p_4],
-    description: "Snow Peak-2 - це бюджетна недорога пневматична гвинтівка хорошої якості від виробника Snow Peak. Відмінно підійде для початківців або просто для любителів постріляти по різних мішенях на близьких-середніх дистанціях. - Дана гвинтівка має приклад класичного типу, виконаний з міцного пластика.",
+    description: "Пневматична гвинтівка Snow Peak LB - це бюджетна недорога пневматична гвинтівка хорошої якості від виробника Snow Peak. Відмінно підійде для початківців або просто для любителів постріляти по різних мішенях на близьких-середніх дистанціях. - Дана гвинтівка має приклад класичного типу, виконаний з міцного пластика.",
     features: [
     ],
     specs: {
@@ -442,21 +452,45 @@ export const products = [
     category: "rifles" },
 
 
-  { id: 16, title: "Snow Peak",
+  // { id: 16, title: "Snow Peak",
+  //   price: 3899, 
+  //   image: snowPeak2_1, 
+  //   imgs: [snowPeak2_1, snowPeak2_2, snowPeak2_3, snowPeak2_4],
+  //   description: "Пневматична гвинтівка Snow Peak. Бюджетна пневматична гвинтівка із відмінними характеристиками. Система взводу – перелом ствола. Дана модель має регулювальний шептал у спусковому механізмі, за рахунок чого конструкція проста і надійна. Прицільні пристрої з фібероптичними нитками. Матеріал прикладу – полімер.",
+  //   features: [
+  //   ],
+  //   specs: {
+  //     "Початкова швидкість кулі": "160 м/с",
+  //     "Калібр": "4.5 мм",
+  //     "Довжина ствола": "390 мм",
+  //     "Тип взводу": "Перелом стволу",
+  //     "Довжина": "990 мм",
+  //     "Запобіжник": "Без запобіжника",
+  //     "Матеріал рукоятк": "Пластик"
+  //   },
+  //   giftBadge: { text: "Подарунок" },         // для бейджа у списках (ProductCard)
+  //   giftText:  { text: "+ Приціл 4x28 і 200 куль." }, // для тексту у картці товару (ProductPage)
+  //   badgeText: "Приціл 4x28 і 200 куль",
+  //   warranty: "Повернення/обмін — 14 днів.",
+  //   category: "rifles" },
+
+    { id: 17, title: "Пневматичний пістолет Beretta M92",
     price: 3899, 
-    image: snowPeak2_1, 
-    imgs: [snowPeak2_1, snowPeak2_2, snowPeak2_3, snowPeak2_4],
-    description: "Пневматична гвинтівка Snow Peak. Бюджетна пневматична гвинтівка із відмінними характеристиками. Система взводу – перелом ствола. Дана модель має регулювальний шептал у спусковому механізмі, за рахунок чого конструкція проста і надійна. Прицільні пристрої з фібероптичними нитками. Матеріал прикладу – полімер.",
+    image: berretta_1, 
+    imgs: [berretta_1, berretta_2, berretta_3, berretta_4, berretta_5, berretta_6],
+    description: "Пневматичний пістолет Beretta M92 - це надійний та точний пістолет, який підходить для спортивної стрільби та тренувань. Він має ергономічний дизайн та зручну рукоятку, що забезпечує комфорт при використанні.",
     features: [
     ],
     specs: {
-      "Початкова швидкість кулі": "160 м/с",
+      "Виробник": "WinGun",
+      "Країна виробник": "Тайвань",
+      "Тип": "Зі стисненим газом СО2",
+      "Тип ствола": "Сталевий гладкий",
       "Калібр": "4.5 мм",
-      "Довжина ствола": "390 мм",
-      "Тип взводу": "Перелом стволу",
-      "Довжина": "990 мм",
-      "Запобіжник": "Без запобіжника",
-      "Матеріал рукоятк": "Пластик"
+      "Прицільні пристосування": "Нерегульована прицільна планка з мушкою",
+      "Запобіжник": "Ручний",
+      "Ластівчиний хвіст для кріплення оптики": "Так",
+      "Гарантійний термін": "12 міс"
     },
     giftBadge: { text: "Подарунок" },         // для бейджа у списках (ProductCard)
     giftText:  { text: "+ Приціл 4x28 і 200 куль." }, // для тексту у картці товару (ProductPage)
