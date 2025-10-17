@@ -144,6 +144,12 @@ export default function Contact() {
                 Напишіть, що вас цікавить — і наш менеджер зв’яжеться з вами найближчим часом.
               </p>
             </div>
+                          {/* бейдж під формою */}
+              {notice.text ? (
+                <div className="pt-3">
+                  <Banner type={notice.type}>{notice.text}</Banner>
+                </div>
+              ) : null}
 
             <form onSubmit={submitConsult} className="flex-1 w-full max-w-md space-y-4">
               {/* honeypot */}
@@ -224,12 +230,7 @@ export default function Contact() {
                 {loading ? "Надсилаємо…" : "Відправити"}
               </button>
 
-              {/* бейдж під формою */}
-              {notice.text ? (
-                <div className="pt-3">
-                  <Banner type={notice.type}>{notice.text}</Banner>
-                </div>
-              ) : null}
+
             </form>
           </div>
         </div>
