@@ -496,7 +496,7 @@ export const products = [
     giftText:  { text: "+ Приціл 4x28 і 200 куль." }, // для тексту у картці товару (ProductPage)
     badgeText: "Приціл 4x28 і 200 куль",
     warranty: "Повернення/обмін — 14 днів.",
-    category: "rifles" },
+    category: "pistols" },
 ];
 
 // Утиліти відбору популярних
