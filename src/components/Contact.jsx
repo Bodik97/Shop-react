@@ -28,6 +28,7 @@ export default function Contact() {
   ];
 
   /** Стан форми */
+  const [okBadge, setOkBadge] = useState(false);
   const [form, setForm] = useState({ name: "", phone: "+380 ", message: "", website: "" });
   const [err, setErr] = useState({ name: "", phone: "", message: "" });
   const [notice, setNotice] = useState({ type: "", text: "" });
@@ -53,6 +54,8 @@ export default function Contact() {
     if (!validate()) return;
     setLoading(true);
     setNotice({ type: "", text: "" });
+    setOkBadge(true);
+    setTimeout(() => setOkBadge(false), 3000);
 
     const payload = {
       type: "consult",
@@ -142,6 +145,16 @@ export default function Contact() {
                 Напишіть, що вас цікавить — і наш менеджер зв’яжеться з вами найближчим часом.
               </p>
             </div>
+            {okBadge && (
+              <div
+                role="status"
+                aria-live="polite"
+                className="rounded-xl border border-green-200 bg-green-50 text-green-800 text-sm px-4 py-3"
+              >
+                Форму прийнято. Очікуйте дзвінка від менеджера.
+              </div>
+            )}
+
 
             <form onSubmit={submitConsult} className="flex-1 w-full max-w-md space-y-4">
               {/* банер */}
