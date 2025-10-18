@@ -31,6 +31,55 @@
   }
 }
 
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fadeInUp {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+/* М'яка пульсація subtitle */
+@keyframes subtlePulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+    text-shadow: 0 0 0 transparent;
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.04);
+    text-shadow: 0 0 8px rgba(255, 0, 0, 0.25);
+  }
+}
+.animate-subtlePulse {
+  animation: subtlePulse 2.5s ease-in-out infinite;
+}
+
+/* Ефект "успішного кліку" на кнопці Купити зараз */
+@keyframes buyFlash {
+  0% {
+    background-color: transparent;
+  }
+  30% {
+    background-color: #16a34a33; /* напівпрозорий зелений */
+  }
+  60% {
+    background-color: #16a34a55;
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+.animate-buyFlash {
+  animation: buyFlash 0.6s ease-out;
+}
 
 .animate-fadeIn {
   animation: fadeIn 0.25s ease-out;

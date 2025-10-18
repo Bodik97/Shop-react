@@ -75,9 +75,12 @@ export default function CategoryPage({ onAddToCart, onBuy }) {
 
         {/* mobile: select, desktop: кнопки */}
         <select
+          id="sort-select"
+          name="sort-select"
           value={sort}
-          onChange={(e)=>setSort(e.target.value)}
-          className="sm:hidden w-full rounded-xl border px-3 py-2 text-sm text-gray-700 bg-white "
+          onChange={(e) => setSort(e.target.value)}
+          className="sm:hidden w-full rounded-xl border px-3 py-2 text-sm text-gray-700 bg-white"
+          aria-label="Сортування товарів"
         >
           <option value="default">Без сортування</option>
           <option value="price-asc">Ціна ↑</option>
@@ -85,6 +88,7 @@ export default function CategoryPage({ onAddToCart, onBuy }) {
           <option value="popular">Популярні</option>
           <option value="new">Нові</option>
         </select>
+
 
         <div className="hidden sm:flex flex-wrap gap-2">
             {[

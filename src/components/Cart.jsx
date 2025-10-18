@@ -256,9 +256,10 @@ export default function Cart({
                   )}
 
                   <div className="mt-1 flex items-center gap-2">
-                    <div className="text-red-600 font-extrabold text-2xl sm:text-3xl md:text-4xl lg:text-5xl tabular-nums">
+                    <div className="text-red-600 font-extrabold text-xl sm:text-2xl md:text-3xl lg:text-4xl tabular-nums">
                       {fmtUAH(price)}
                     </div>
+
 
                     {saving > 0 && oldPrice > 0 && (
                       <>

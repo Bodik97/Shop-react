@@ -83,7 +83,7 @@ export default function CategoryPage({ onAddToCart, onBuy }) {
       {/* Заголовок + сортування */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
         <h1 className="!text-gray-900 font-extrabold text-3xl md:text-4xl">{title}</h1>
-
+        
         {/* MOBILE: “комбобокс” замість select */}
         <div ref={sortWrapRef} className="relative sm:hidden w-full z-[60]">
           <label className="block text-[13px] text-black mb-1">Сортування</label>
@@ -246,6 +246,8 @@ export default function CategoryPage({ onAddToCart, onBuy }) {
           </div>
         </div>
       )}
+      {/* прихований select для уникнення помилки валідації */}
+      
     </main>
   );
 }
