@@ -200,18 +200,26 @@ export default function CategoryPage({ onAddToCart, onBuy }) {
       {/* Пошук */}
       <div className="flex items-center gap-2 border rounded-2xl px-3 py-2 w-full sm:w-80 bg-white mb-4 text-black">
         <input
+          id="search"
+          name="search"
           type="search"
           placeholder="Пошук…"
           value={q}
           onChange={(e) => setQ(e.target.value)}
           className="outline-none bg-transparent text-sm flex-1"
+          autoComplete="off"
         />
         {q && (
-          <button onClick={() => setQ("")} className="text-xs text-gray-600 hover:text-gray-900">
+          <button
+            type="button"
+            onClick={() => setQ("")}
+            className="text-xs text-gray-600 hover:text-gray-900"
+          >
             Очистити
           </button>
         )}
       </div>
+
 
       {/* Лічильник */}
       <div className="text-sm text-white/90 mb-4">

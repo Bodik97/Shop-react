@@ -152,9 +152,10 @@ export default function Contact() {
               ) : null}
 
             <form onSubmit={submitConsult} className="flex-1 w-full max-w-md space-y-4">
-              {/* honeypot */}
+{/* honeypot */}
               <input
                 type="text"
+                id="website"
                 name="website"
                 value={form.website}
                 onChange={(e) => setForm((s) => ({ ...s, website: e.target.value }))}
@@ -163,10 +164,12 @@ export default function Contact() {
                 autoComplete="off"
               />
 
-              {/* Ім’я */}
-              <label className="block">
+{/* Ім’я */}
+              <label htmlFor="name" className="block">
                 <span className="mb-1 block text-sm font-medium text-slate-700">Ім’я</span>
                 <input
+                  id="name"
+                  name="name"
                   type="text"
                   value={form.name}
                   onChange={(e) => setForm((s) => ({ ...s, name: e.target.value }))}
@@ -177,14 +180,17 @@ export default function Contact() {
                   autoComplete="name"
                   aria-invalid={!!err.name}
                   aria-describedby={err.name ? "err-name" : undefined}
+                  required
                 />
                 {err.name && <div id="err-name" className="mt-1 text-xs text-red-600">{err.name}</div>}
               </label>
 
-              {/* Телефон */}
-              <label className="block">
+{/* Телефон */}
+              <label htmlFor="phone" className="block">
                 <span className="mb-1 block text-sm font-medium text-slate-700">Телефон</span>
                 <input
+                  id="phone"
+                  name="phone"
                   type="tel"
                   inputMode="numeric"
                   value={form.phone}
@@ -199,15 +205,17 @@ export default function Contact() {
                   autoComplete="tel"
                   aria-invalid={!!err.phone}
                   aria-describedby={err.phone ? "err-phone" : undefined}
+                  required
                 />
                 <div className="mt-1 text-xs text-slate-500">Формат: +380 12 345 67 89</div>
                 {err.phone && <div id="err-phone" className="mt-1 text-xs text-red-600">{err.phone}</div>}
               </label>
-
-              {/* Коментар */}
-              <label className="block">
+{/* Коментар */}
+              <label htmlFor="message" className="block">
                 <span className="mb-1 block text-sm font-medium text-slate-700">Коментар</span>
                 <textarea
+                  id="message"
+                  name="message"
                   rows={4}
                   value={form.message}
                   onChange={(e) => setForm((s) => ({ ...s, message: e.target.value }))}
@@ -217,6 +225,7 @@ export default function Contact() {
                   placeholder="Коротко опишіть запит"
                   aria-invalid={!!err.message}
                   aria-describedby={err.message ? "err-message" : undefined}
+                  required
                 />
                 {err.message && <div id="err-message" className="mt-1 text-xs text-red-600">{err.message}</div>}
               </label>
@@ -225,13 +234,12 @@ export default function Contact() {
                 type="submit"
                 disabled={loading}
                 className="w-full rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold py-3
-                           hover:from-blue-500 hover:to-indigo-500 transition shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
+                          hover:from-blue-500 hover:to-indigo-500 transition shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 {loading ? "Надсилаємо…" : "Відправити"}
               </button>
-
-
             </form>
+
           </div>
         </div>
       </motion.section>

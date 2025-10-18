@@ -28,12 +28,12 @@ const imgHatsan_4 =  "https://res.cloudinary.com/da27wfewm/image/upload/v1758398
 // import winGun_5 from "../img/pistolets/WinGun/pist-5.webp";
 
 // Glock
- const  glock_1 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399457/pist-1_paje0r.png";
- const  glock_2 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399494/pist-3_vwxo9u.png";
- const  glock_3 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399483/pist-2_p60uja.png";
- const  glock_4 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399514/pist-4_hoeyee.png";
- const  glock_5 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399543/pist-5_bmcamh.png";
- const  glock_6 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399543/pist-5_bmcamh.png";
+const  glock_1 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399457/pist-1_paje0r.png";
+const  glock_2 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399494/pist-3_vwxo9u.png";
+const  glock_3 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399483/pist-2_p60uja.png";
+const  glock_4 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399514/pist-4_hoeyee.png";
+const  glock_5 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399543/pist-5_bmcamh.png";
+const  glock_6 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399543/pist-5_bmcamh.png";
 
 // Sur
 const sur_1 = "https://res.cloudinary.com/da27wfewm/image/upload/v1758399714/pist-1_bvrrxh.png";
@@ -122,6 +122,36 @@ const berretta_3 = "https://res.cloudinary.com/da27wfewm/image/upload/e_backgrou
 const berretta_4 = "https://res.cloudinary.com/da27wfewm/image/upload/e_background_removal/f_png/v1760736804/photo_2025-10-18_00-00-30_fkz2xe_batvlw.png";
 const berretta_5 = "https://res.cloudinary.com/da27wfewm/image/upload/e_background_removal/f_png/v1760736808/photo_2025-10-18_00-00-25_jd1npz_edp0xb.png";
 const berretta_6 = "https://res.cloudinary.com/da27wfewm/image/upload/e_background_removal/f_png/v1760736809/photo_2025-10-18_00-00-27_hvnmj7_bidbk2.png";
+
+// Mantis
+const mantis_1 = "https://res.cloudinary.com/da27wfewm/image/upload/v1760824142/photo_2025-10-19_00-33-08_c1eurt_tfe6bl.png";
+const mantis_2 = "https://res.cloudinary.com/da27wfewm/image/upload/v1760824144/photo_2025-10-19_00-33-04_j2tgim_wh6pve.png";
+const mantis_3 = "https://res.cloudinary.com/da27wfewm/image/upload/v1760824145/photo_2025-10-19_00-32-58_vc5a9g_uca4o6.png";
+const mantis_4 = "https://res.cloudinary.com/da27wfewm/image/upload/v1760824149/photo_2025-10-19_00-32-35_w3fy8a_kfr5w9.png";
+const mantis_5 = "https://res.cloudinary.com/da27wfewm/image/upload/v1760824141/photo_2025-10-19_00-33-11_ooy7s4_zjpigc.png";
+const mantis_6 = "https://res.cloudinary.com/da27wfewm/image/upload/v1760824147/photo_2025-10-19_00-32-54_o57g1j_reyil4.png";
+
+// Wolvwerine
+const wolverine_1 = "https://res.cloudinary.com/da27wfewm/image/upload/v1760824557/photo_2025-10-19_00-33-40_nkxvny_ujrn33.png";
+const wolverine_2 = "https://res.cloudinary.com/da27wfewm/image/upload/v1760824552/photo_2025-10-19_00-33-53_jbuazj_cyltfq.png";
+const wolverine_3 = "https://res.cloudinary.com/da27wfewm/image/upload/v1760824550/photo_2025-10-19_00-33-50_euwfhk_jcvb2l.png";
+const wolverine_4 = "https://res.cloudinary.com/da27wfewm/image/upload/v1760824549/photo_2025-10-19_00-33-58_pfvvz7_diixib.png";
+const wolverine_5 = "https://res.cloudinary.com/da27wfewm/image/upload/v1760824547/photo_2025-10-19_00-34-01_wwg4qt_walotv.png";
+const wolverine_6 = "https://res.cloudinary.com/da27wfewm/image/upload/v1760824545/photo_2025-10-19_00-34-04_o6xwi4_wguuh5.png";
+const wolverine_7 = "https://res.cloudinary.com/da27wfewm/image/upload/v1760824559/photo_2025-10-19_00-33-33_nms7k2_ncbpmp.png";
+const wolverine_8 = "https://res.cloudinary.com/da27wfewm/image/upload/v1760824556/photo_2025-10-19_00-33-47_s3sncu_a44rnr.png";
+const wolverine_9 = "https://res.cloudinary.com/da27wfewm/image/upload/v1760824555/photo_2025-10-19_00-33-44_omvowp_jhis8r.png";
+
+// Kodiak
+const kodiak_1 = "https://res.cloudinary.com/da27wfewm/image/upload/v1760824043/photo_2025-10-19_00-36-33_hlclok_tyo4da.png";
+const kodiak_2 = "https://res.cloudinary.com/da27wfewm/image/upload/v1760824042/photo_2025-10-19_00-36-36_ztpizf_xzs3bm.png";
+const kodiak_3 = "https://res.cloudinary.com/da27wfewm/image/upload/v1760824041/photo_2025-10-19_00-36-44_jensct_qhupie.png";
+const kodiak_4 = "https://res.cloudinary.com/da27wfewm/image/upload/v1760824039/photo_2025-10-19_00-36-41_sbqbnf_whk6ub.png";
+const kodiak_5 = "https://res.cloudinary.com/da27wfewm/image/upload/v1760824045/photo_2025-10-19_00-36-27_ugvnrm_rpngu3.png";
+const kodiak_6 = "https://res.cloudinary.com/da27wfewm/image/upload/v1760824039/photo_2025-10-19_00-36-47_erwkyu_lui9sh.png";
+const kodiak_7 = "https://res.cloudinary.com/da27wfewm/image/upload/v1760824037/photo_2025-10-19_00-36-50_ihmu9c_jmkmmc.png";
+const kodiak_8 = "https://res.cloudinary.com/da27wfewm/image/upload/v1760824036/photo_2025-10-19_00-36-54_cc7ffg_e_background_removal_f_png_ugepnr.png";
+
 
 export const categories = [
   { id: "pistols", name: "Пістолети", image: pistolsImg },
@@ -497,6 +527,84 @@ export const products = [
     badgeText: "Приціл 4x28 і 200 куль",
     warranty: "Повернення/обмін — 14 днів.",
     category: "pistols" },
+
+     { id: 18, title: "Пневматична гвинтівка Mantis",
+    price: 8199, 
+    image: mantis_1, 
+    imgs: [mantis_1, mantis_2, mantis_3, mantis_4, mantis_5, mantis_6],
+    description: "Пневматична гвинтівка Mantis - це надійна та точна гвинтівка, яка підходить для спортивної стрільби та тренувань. Вона має ергономічний дизайн та зручну рукоятку, що забезпечує комфорт при використанні.",
+    features: [
+    ],
+    specs: {
+      "Виробник": "Beeman",
+      "Країна виробник": "США",
+      "Тип": "Газо-пружинна",
+      "Тип ствола": "Сталевий з нарізами",
+      "Довжина ствола": "510 мм",
+      "Початкова швидкість": "395 м/сек",
+      "Калібр": "4.5 мм",
+      "Прицільні пристосування": "Оптичний приціл, Регульована прицільна планка з мушкою, Фібероптичні нитки",
+      "Запобіжник": "Автоматичний",
+      "Ластівчиний хвіст для кріплення оптики": "Так",
+      "Гарантійний термін": "12 міс"
+    },
+    giftBadge: { text: "Подарунок" },         // для бейджа у списках (ProductCard)
+    giftText:  { text: "+ Приціл 4x28 і 200 куль." }, // для тексту у картці товару (ProductPage)
+    badgeText: "Приціл 4x28 і 200 куль",
+    warranty: "Повернення/обмін — 14 днів.",
+    category: "rifles" },
+
+    { id: 19, title: "Пневматична гвинтівка Wolverine",
+    price: 7899, 
+    image: wolverine_1, 
+    imgs: [wolverine_1, wolverine_2, wolverine_3, wolverine_4, wolverine_5, wolverine_6, wolverine_7, wolverine_8, wolverine_9],
+    description: "Пневматична гвинтівка Wolverine - це надійна та точна гвинтівка, яка підходить для спортивної стрільби та тренувань. Вона має ергономічний дизайн та зручну рукоятку, що забезпечує комфорт при використанні.",
+    features: [
+    ],
+    specs: {
+      "Виробник": "Beeman",
+      "Країна виробник": "США",
+      "Тип": "Газо-пружинна",
+      "Тип ствола": "Сталевий з нарізами",
+      "Початкова швидкість": "360 м/сек",
+      "Калібр": "4.5 мм",
+      "Прицільні пристосування": "Оптичний приціл, Регульована прицільна планка з мушкою, Фібероптичні нитки",
+      "Запобіжник": "Автоматичний",
+      "Ластівчиний хвіст для кріплення оптики": "Так",
+      "Гарантійний термін": "12 міс"
+    },
+    giftBadge: { text: "Подарунок" },         // для бейджа у списках (ProductCard)
+    giftText:  { text: "+ Приціл 4x28 і 200 куль." }, // для тексту у картці товару (ProductPage)
+    badgeText: "Приціл 4x28 і 200 куль",
+    warranty: "Повернення/обмін — 14 днів.",
+    category: "rifles" },
+
+    { id: 20, title: "Пневматична гвинтівка Kodiak",
+    price: 8399, 
+    image: kodiak_1, 
+    imgs: [kodiak_1, kodiak_2, kodiak_3, kodiak_4, kodiak_5, kodiak_6, kodiak_7, kodiak_8],
+    description: "Пневматична гвинтівка Kodiak - це надійна та точна гвинтівка, яка підходить для спортивної стрільби та тренувань. Вона має ергономічний дизайн та зручну рукоятку, що забезпечує комфорт при використанні.",
+    features: [
+    ],
+    specs: {
+      "Виробник": "Beeman",
+      "Країна виробник": "США",
+      "Тип": "Пружинно-поршнева",
+      "Тип ствола": "Сталевий з нарізами",
+      "Довжина ствола": "457 мм",
+      "Початкова швидкість": "360 м/сек",
+      "Калібр": "4.5 мм",
+      "Прицільні пристосування": "Оптичний приціл",
+      "Запобіжник": "Автоматичний",
+      "Ластівчиний хвіст для кріплення оптики": "Так",
+      "Гарантійний термін": "12 міс"
+    },
+    giftBadge: { text: "Подарунок" },         // для бейджа у списках (ProductCard)
+    giftText:  { text: "+ Приціл 4x28 і 200 куль." }, // для тексту у картці товару (ProductPage)
+    badgeText: "Приціл 4x28 і 200 куль",
+    warranty: "Повернення/обмін — 14 днів.",
+    category: "rifles" },
+
 ];
 
 // Утиліти відбору популярних
