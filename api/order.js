@@ -212,7 +212,7 @@ export default async function handler(req, res) {
   // ---------- telegram ----------
   async function tgSend(text, chatId) {
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 8000);
+    const timer = setTimeout(() => controller.abort(), 4000);
     try {
       const r = await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
         method: "POST",
