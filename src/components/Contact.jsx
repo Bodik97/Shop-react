@@ -17,8 +17,8 @@ const asE164UA = (s) => {
 };
 
 export default function Contact() {
-  const PHONE_DISPLAY = "+38 (096) 000-00-00";
-  const PHONE_TEL = "+380960000000";
+  // const PHONE_DISPLAY = "+38 (096) 000-00-00";
+  // const PHONE_TEL = "+380960000000";
   const EMAIL = "support@airsoft.shop";
   const HOURS = "Пн–Пт 10:00–19:00, Сб 11:00–16:00";
   const ADDRESS_LINES = [
@@ -115,11 +115,11 @@ export default function Contact() {
 
       {/* CONTACT CARDS */}
       <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-        <InfoCard
+        {/* <InfoCard
           icon={<Phone className="h-5 w-5 text-slate-900" />}
           label="Телефон"
           value={<a className="hover:text-blue-600" href={`tel:${PHONE_TEL}`}>{PHONE_DISPLAY}</a>}
-        />
+        /> */}
         <InfoCard
           icon={<Mail className="h-5 w-5 text-slate-900" />}
           label="Email"
