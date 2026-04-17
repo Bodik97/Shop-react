@@ -1,10 +1,8 @@
 // src/components/ModalBuy.jsx
 import { useEffect, useMemo, useRef, useState, useId } from "react";
-import { MapPin, Landmark, Package, ChevronDown, CheckCircle2, Circle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const API_URL = "/api/order";
-const NP_API = "/api/np";
 
 /** Формат UAH */
 const formatUAH = (n) =>
@@ -26,21 +24,9 @@ export default function ModalBuy({
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("+380");
   const [qty, setQty] = useState(1);
-  const [delivery, setDelivery] = useState("nova");
-  const [city, setCity] = useState("");
-  const [branch, setBranch] = useState("");
-  const [comment, setComment] = useState("");
   const [agree, setAgree] = useState(true);
   const [errors, setErrors] = useState({});
   const [sending, setSending] = useState(false);
-
-  // НП довідники
-  const [region, setRegion] = useState("");
-  const [areas, setAreas] = useState([]);
-  const [areaRef, setAreaRef] = useState("");
-  const [cities, setCities] = useState([]);
-  const [cityRef, setCityRef] = useState("");
-  const [warehouses, setWarehouses] = useState([]);
 
   const closeBtnRef = useRef(null);
 
@@ -58,25 +44,18 @@ export default function ModalBuy({
   const genOrderId = () => "ORD-" + Date.now().toString(36).toUpperCase();
 
   // ids
-  const nameId = `name-${useId()}`;
-  const phoneId = `phone-${useId()}`;
-  const commentId = `comment-${useId()}`;
-  const qtyId = `qty-${useId()}`;
-  const agreeId = `agree-${useId()}`;
-  const areaFieldId = `area-${useId()}`;
-  const cityFieldId = `city-${useId()}`;
-  const branchFieldId = `branch-${useId()}`;
+  const uid = useId();
+  const nameId = `name-${uid}`;
+  const phoneId = `phone-${uid}`;
+  const qtyId = `qty-${uid}`;
+  const agreeId = `agree-${uid}`;
 
-  // open/reset: завжди викликається, логіка всередині з guard'ом
+  // open/reset
   useEffect(() => {
     if (!open) return;
     setName("");
     setPhone("+380");
     setQty(1);
-    setDelivery("nova");
-    setCity("");
-    setBranch("");
-    setComment("");
     setAgree(true);
     setErrors({});
     setSending(false);
@@ -97,49 +76,11 @@ export default function ModalBuy({
     return () => window.removeEventListener("keydown", onKey);
   }, [open, onClose]);
 
-  // завантаження НП довідників
-  useEffect(() => {
-    if (!open) return;
-    fetch(`${NP_API}?op=areas`)
-      .then((r) => r.json())
-      .then((j) => setAreas(j.data || []))
-      .catch(() => setAreas([]));
-  }, [open]);
-
-  useEffect(() => {
-    // скидаємо залежні поля
-    setCities([]);
-    setCityRef("");
-    setCity("");
-    setWarehouses([]);
-    setBranch("");
-    if (!areaRef) return;
-    fetch(`${NP_API}?op=cities&areaRef=${encodeURIComponent(areaRef)}`)
-      .then((r) => r.json())
-      .then((j) => setCities(j.data || []))
-      .catch(() => setCities([]));
-  }, [areaRef]);
-
-  useEffect(() => {
-    setWarehouses([]);
-    setBranch("");
-    if (!cityRef) return;
-    fetch(`${NP_API}?op=warehouses&cityRef=${encodeURIComponent(cityRef)}`)
-      .then((r) => r.json())
-      .then((j) => setWarehouses(j.data || []))
-      .catch(() => setWarehouses([]));
-  }, [cityRef]);
-
   // валідація
   function validateLocal() {
     const err = {};
-    if (!name.trim() || name.trim().length < 2) err.name = "Вкажіть ім’я";
+    if (!name.trim() || name.trim().length < 2) err.name = "Вкажіть ім'я";
     if (!/^\+380\d{9}$/.test(phone)) err.phone = "Формат: +380XXXXXXXXX";
-    if (delivery === "nova") {
-      if (!areaRef) err.region = "Оберіть область";
-      if (!cityRef) err.city = "Оберіть місто";
-      if (!branch.trim()) err.branch = "Оберіть відділення";
-    }
     if (!agree) err.agree = "Потрібна згода на обробку даних";
     setErrors(err);
     return Object.keys(err).length === 0;
@@ -148,28 +89,28 @@ export default function ModalBuy({
   // складання замовлення
   function buildOrderPayload() {
     if (isCart) {
-    const items = cart.map((i) => {
-      const q = Math.max(1, Number(i.qty) || 1);
-      const p = Number(i.price) || 0;
-      return { 
-        id: i.id, 
-        title: i.title, 
-        qty: q, 
-        price: p, 
-        lineTotal: p * q,
-        giftText: i.giftText?.text || i.giftText || null   // ✅ додав сюди
-      };
-    });
+      const items = cart.map((i) => {
+        const q = Math.max(1, Number(i.qty) || 1);
+        const p = Number(i.price) || 0;
+        return {
+          id: i.id,
+          title: i.title,
+          qty: q,
+          price: p,
+          lineTotal: p * q,
+          giftText: i.giftText?.text || i.giftText || null,
+        };
+      });
 
-    return {
-      items,
-      subtotal,
-      discount,
-      shipping: shipping || 0,
-      total: displayTotal,
-      mode: "cart",
-    };
-  }
+      return {
+        items,
+        subtotal,
+        discount,
+        shipping: shipping || 0,
+        total: displayTotal,
+        mode: "cart",
+      };
+    }
 
     const q = Math.max(1, Number(qty) || 1);
     const p = Number(price) || 0;
@@ -180,7 +121,7 @@ export default function ModalBuy({
         qty: q,
         price: p,
         lineTotal: p * q,
-        giftText: product?.giftText?.text || product?.giftText || null   // 🎁 ДОДАНО СЮДИ
+        giftText: product?.giftText?.text || product?.giftText || null,
       }],
       subtotal: p * q,
       discount: 0,
@@ -188,7 +129,6 @@ export default function ModalBuy({
       total: displayTotal,
       mode: "single",
     };
-
   }
 
   // submit
@@ -204,11 +144,6 @@ export default function ModalBuy({
       orderId,
       name: name.trim(),
       phone: phone.trim(),
-      comment: comment.trim(),
-      delivery: "nova",
-      region: region.trim(),
-      city: city.trim(),
-      branch: branch.trim(),
       order: buildOrderPayload(),
       createdAt: new Date().toISOString(),
     };
@@ -230,7 +165,6 @@ export default function ModalBuy({
         total: displayTotal,
         name,
         phone,
-        delivery: { region, city, branch },
       };
       localStorage.setItem("lastOrderSummary", JSON.stringify(summary));
       onClose?.();
@@ -378,7 +312,6 @@ export default function ModalBuy({
                   <hr className="my-2 border-slate-200" />
                   <Row label="Сума товарів" value={formatUAH(subtotal)} />
                   {discount > 0 && <Row label="Знижка" value={`−${formatUAH(discount)}`} />}
-                  {/* <Row label="Доставка" value={shipping ? formatUAH(shipping) : "Безкоштовно"} /> */}
                   <Row strong label="Разом" value={formatUAH(displayTotal)} />
                 </div>
               </section>
@@ -393,8 +326,8 @@ export default function ModalBuy({
                 <Field
                   id={nameId}
                   name="name"
-                  label="Ім’я"
-                  placeholder="Ваше ім’я"
+                  label="Ім'я"
+                  placeholder="Ваше ім'я"
                   autoComplete="name"
                   value={name}
                   onChange={(e) => {
@@ -429,99 +362,7 @@ export default function ModalBuy({
                   disabled={sending}
                 />
               </div>
-            </section>
-
-            {/* address (НП) */}
-            {delivery === "nova" && (
-              <section aria-labelledby="np">
-                <h3 id="np" className="text-sm font-semibold text-gray-900 mb-2">
-                  Нова Пошта
-                </h3>
-
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-                  {/* Область */}
-                  <NPSelect
-                    id={areaFieldId}
-                    name="region"
-                    label="Область"
-                    required
-                    icon={MapPin}
-                    value={areaRef}
-                    onChange={(e) => {
-                      const ref = e.target.value;
-                      setAreaRef(ref);
-                      const a = areas.find((x) => x.ref === ref);
-                      setRegion(a?.name || "");
-                    }}
-                    options={areas.map((a) => ({ value: a.ref, label: a.name }))}
-                    autoComplete="address-level1"
-                    placeholder="Оберіть область"
-                    disabled={sending}
-                    error={errors.region}
-                  />
-
-                  {/* Місто */}
-                  <NPSelect
-                    id={cityFieldId}
-                    name="city"
-                    label="Місто"
-                    required
-                    icon={Landmark}
-                    value={cityRef}
-                    onChange={(e) => {
-                      const ref = e.target.value;
-                      setCityRef(ref);
-                      const c = cities.find((x) => x.ref === ref);
-                      setCity(c?.name || "");
-                    }}
-                    options={cities.map((c) => ({ value: c.ref, label: c.name }))}
-                    autoComplete="address-level2"
-                    placeholder={areaRef ? "Оберіть місто" : "Спочатку оберіть область"}
-                    disabled={!areaRef || sending}
-                    error={errors.city}
-                  />
-
-                  {/* Відділення */}
-                  <NPSelect
-                    id={branchFieldId}
-                    name="branch"
-                    label="Відділення"
-                    required
-                    icon={Package}
-                    value={branch}
-                    onChange={(e) => setBranch(e.target.value)}
-                    options={warehouses.map((w) => ({ value: w.name, label: w.name }))}
-                    autoComplete="shipping street-address"
-                    placeholder={cityRef ? "Оберіть відділення" : "Спочатку оберіть місто"}
-                    disabled={!cityRef || sending}
-                    error={errors.branch}
-                  />
-                </div>
-              </section>
-            )}
-
-            {/* comment */}
-            <section aria-labelledby="comment">
-              <h3 id="comment" className="text-sm font-semibold text-gray-900 mb-2">
-                Коментар
-              </h3>
-              <div>
-                <label htmlFor={commentId} className="block text-sm text-gray-800 mb-1">
-                  Коментар (необов’язково)
-                </label>
-                <textarea
-                  id={commentId}
-                  name="comment"
-                  rows={3}
-                  placeholder="Побажання до замовлення…"
-                  value={comment}
-                  onChange={(e) => setComment(e.target.value)}
-                  className="w-full rounded-xl border border-gray-300/70 bg-white px-3 py-2.5 text-[15px] text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600 disabled:opacity-50"
-                  disabled={sending}
-                />
-                <p className="mt-1 text-xs text-gray-700">Додайте важливі деталі для доставлення.</p>
-                {errors.submit && <p className="mt-1 text-xs text-red-700">{errors.submit}</p>}
-              </div>
+              {errors.submit && <p className="mt-2 text-xs text-red-700">{errors.submit}</p>}
             </section>
 
             {/* agree */}
@@ -582,11 +423,6 @@ export default function ModalBuy({
           </div>
         </form>
       </div>
-
-      <style>{`
-        @keyframes bm-fade { from { opacity: 0 } to { opacity: 1 } }
-        @keyframes bm-zoom { from { opacity: 0; transform: translateY(8px) scale(.98) } to { opacity: 1; transform: translateY(0) scale(1) } }
-      `}</style>
     </div>
   );
 }
@@ -597,77 +433,6 @@ function Row({ label, value, strong = false }) {
     <div className={`flex justify-between gap-3 ${strong ? "font-semibold" : ""}`}>
       <span className="text-gray-800">{label}</span>
       <span className="tabular-nums text-gray-900">{value}</span>
-    </div>
-  );
-}
-
-function NPSelect({
-  id,
-  name,
-  label,
-  value,
-  onChange,
-  options,
-  placeholder,
-  disabled,
-  error,
-  required,
-  icon: Icon,
-  autoComplete,
-}) {
-  const val = value || "";
-  const selected = !!val;
-
-  return (
-    <div>
-      <div className="flex items-center justify-between mb-1">
-        <label htmlFor={id} className="text-sm text-gray-800 flex items-center gap-1">
-          {Icon ? <Icon className="h-4 w-4 text-red" /> : null}
-          {label} {required && <span className="text-rose-600">*</span>}
-        </label>
-
-        <span
-          className={`inline-flex items-center justify-center h-6 w-6 rounded-full ring-1
-            ${selected ? "bg-emerald-50 text-emerald-600 ring-emerald-200" : "bg-slate-100 text-slate-400 ring-slate-200"}`}
-          aria-label={selected ? "Вибрано" : "Не вибрано"}
-        >
-          {selected ? <CheckCircle2 className="h-4 w-4" /> : <Circle className="h-4 w-4" />}
-        </span>
-      </div>
-
-      <div className="relative">
-        <select
-          id={id}
-          name={name}
-          value={val}
-          onChange={onChange}
-          disabled={disabled}
-          aria-invalid={!!error}
-          aria-describedby={error ? `${id}-error` : undefined}
-          autoComplete={autoComplete}
-          className={`appearance-none w-full rounded-2xl border-2 bg-white px-3 py-2.5 pr-10 text-[15px] transition
-            ${error ? "border-rose-300 focus:ring-rose-500" : "border-slate-300 focus:ring-blue-600"}
-            ${val === "" ? "text-slate-400" : "text-slate-900"}
-            focus:outline-none focus:ring-2`}
-        >
-          <option value="" disabled hidden>
-            {placeholder}
-          </option>
-          {options.map((o) => (
-            <option key={o.value} value={o.value}>
-              {o.label}
-            </option>
-          ))}
-        </select>
-
-        <ChevronDown className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500" />
-      </div>
-
-      {error && (
-        <p id={`${id}-error`} className="mt-1 text-xs text-rose-700">
-          {error}
-        </p>
-      )}
     </div>
   );
 }
