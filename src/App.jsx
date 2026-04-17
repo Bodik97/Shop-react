@@ -5,7 +5,7 @@ import { Helmet } from "react-helmet";
 import * as Data from "./data/products";
 
 import Header from "./components/Header";
-import CategoryNav from "./components/CategoryNav";
+// import CategoryNav from "./components/CategoryNav";
 import CategoryPage from "./components/CategoryPage";
 import CatalogPage from "./components/CatalogPage";
 import PopularSlider from "./components/PopularSlider";
@@ -207,7 +207,7 @@ export default function App() {
                 />
               </h1>
 
-              <CategoryNav />
+              {/* <CategoryNav /> */}
 
               <section className="mt-8">
                 {products.length ? (
