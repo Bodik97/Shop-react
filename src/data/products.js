@@ -190,6 +190,11 @@ export const products = [
     category: "rifles",
     popular: true,
     popularityScore: 95,
+    addons: [
+    { id: "co2-2",    name: "2 балончики CO2",  price: 200 },
+    { id: "bb-4x32",  name: "Кулі 4×32",        price: 600 },
+    { id: "bb-4x28",  name: "Кулі 4×28",        price: 300 },
+  ],
   },
   { id: 2, title: "Пневматична гвинтівка Snow Peak GR ",
     price: 4999, 
@@ -214,6 +219,11 @@ export const products = [
     inBox: ["Snow Peak", "Приціл 4x28", "200 куль", "Шестигранні ключі", "Інструкція/гарантійний талон"],
     warranty: "Повернення/обмін — 14 днів.",
     category: "rifles",
+    addons: [
+    { id: "co2-2",    name: "2 балончики CO2",  price: 200 },
+    { id: "bb-4x32",  name: "Кулі 4×32",        price: 600 },
+    { id: "bb-4x28",  name: "Кулі 4×28",        price: 300 },
+  ],
   },
   // { id: 3, title: "WinGun ",
   //   price: 2799, image: imgGiv_1,
@@ -264,7 +274,15 @@ export const products = [
     giftText:  { text: "+ 2 бал СО2 і 100 шаріків." },
     warranty: "Гарантія — 6 місяців.",
     category: "pistols",
-    popular: true, popularityScore: 92 },
+    popular: true, 
+    popularityScore: 92,
+    addons: [
+        { id: "co2-2",    name: "2 балончики CO2",  price: 200 },
+        { id: "bb-4x32",  name: "Кулі 4×32",        price: 600 },
+        { id: "bb-4x28",  name: "Кулі 4×28",        price: 300 },
+      ],
+    },
+    
 
 
   { id: 5, title: "Стартовий пістолет SUR Beretta Storm ",
@@ -283,7 +301,12 @@ export const products = [
     giftText:  { text: "+ 10 куль." }, // для тексту у картці товару (ProductPage)
     warranty: "Гарантія — 6 місяців.",
     category: "pistols",
-    popular: true, popularityScore: 88 },
+    popular: true, popularityScore: 88,
+    addons: [
+      { id: "co2-2",    name: "2 балончики CO2",  price: 200 },
+      { id: "bb-4x32",  name: "Кулі 4×32",        price: 600 },
+      { id: "bb-4x28",  name: "Кулі 4×28",        price: 300 },
+    ], },
 
   { id: 6, title: "Стартовий пістолет BLOW Walter ",
     price: 3789, 
@@ -301,7 +324,12 @@ export const products = [
     giftText:  { text: "+ 10 куль." }, // для тексту у картці товару (ProductPage)
     warranty: "Гарантія — 6 місяців.",
     category: "pistols",
-    popular: true, popularityScore: 84 },
+    popular: true, popularityScore: 84,
+    addons: [
+    { id: "co2-2",    name: "2 балончики CO2",  price: 200 },
+    { id: "bb-4x32",  name: "Кулі 4×32",        price: 600 },
+    { id: "bb-4x28",  name: "Кулі 4×28",        price: 300 },
+    ], },
 
   { id: 7, title: "Стартовий пістолет SUR Walter PP",
     price: 3999, 
@@ -319,7 +347,12 @@ export const products = [
     giftText:  { text: "+ 10 куль." }, // для тексту у картці товару (ProductPage)
     warranty: "Гарантія — 6 місяців.",
     category: "pistols",
-    popular: true, popularityScore: 90 },
+    popular: true, popularityScore: 90,
+  addons: [
+    { id: "co2-2",    name: "2 балончики CO2",  price: 200 },
+    { id: "bb-4x32",  name: "Кулі 4×32",        price: 600 },
+    { id: "bb-4x28",  name: "Кулі 4×28",        price: 300 },
+  ], },
 
   { id: 8, title: "Стартовий пістолет SUR TT",
     price: 4899, 
@@ -337,7 +370,12 @@ export const products = [
     },
     giftBadge: { text: "Подарунок" },         // для бейджа у списках (ProductCard)
     giftText:  { text: "+ 10 куль." }, // для тексту у картці товару (ProductPage)
-    category: "pistols" },
+    category: "pistols",
+    addons: [
+    { id: "co2-2",    name: "2 балончики CO2",  price: 200 },
+    { id: "bb-4x32",  name: "Кулі 4×32",        price: 600 },
+    { id: "bb-4x28",  name: "Кулі 4×28",        price: 300 },
+  ], },
 
   { id: 9, title: "Пневматичний пістолет Snow Peak",
     price: 3299, 
@@ -354,7 +392,12 @@ export const products = [
     },
     giftBadge: { text: "Подарунок" },         // для бейджа у списках (ProductCard)
     giftText:  { text: "+ 10 куль." }, // для тексту у картці товару (ProductPage)
-    category: "pistols" },
+    category: "pistols",
+     addons: [
+    { id: "co2-2",    name: "2 балончики CO2",  price: 200 },
+    { id: "bb-4x32",  name: "Кулі 4×32",        price: 600 },
+    { id: "bb-4x28",  name: "Кулі 4×28",        price: 300 },
+  ], },
 
   { id: 10, title: "Latek",
     price: 5999, 
@@ -369,7 +412,12 @@ export const products = [
     },
     giftBadge: { text: "Подарунок" },         // для бейджа у списках (ProductCard)
     giftText:  { text: "+ 10 куль." }, // для тексту у картці товару (ProductPage)
-    category: "pistols" },
+    category: "pistols",
+    addons: [
+    { id: "co2-2",    name: "2 балончики CO2",  price: 200 },
+    { id: "bb-4x32",  name: "Кулі 4×32",        price: 600 },
+    { id: "bb-4x28",  name: "Кулі 4×28",        price: 300 },
+  ], },
 
   { id: 11, title: "Latek-2",
     price: 5999, 
@@ -384,7 +432,12 @@ export const products = [
     },
     giftBadge: { text: "Подарунок" },        // для бейджа у списках (ProductCard)
     giftText:  { text: "+ 10 куль." }, // для тексту у картці товару (ProductPage)
-    category: "pistols" },
+    category: "pistols",
+  addons: [
+    { id: "co2-2",    name: "2 балончики CO2",  price: 200 },
+    { id: "bb-4x32",  name: "Кулі 4×32",        price: 600 },
+    { id: "bb-4x28",  name: "Кулі 4×28",        price: 300 },
+  ], },
 
   { id: 12, title: "Пневматична гвинтівка Hatsan ED ",
     price: 6199, 
@@ -408,7 +461,12 @@ export const products = [
     giftBadge: { text: "Подарунок" },         // для бейджа у списках (ProductCard)
     giftText:  { text: "+ Приціл 4x28 і 200 куль." }, // для тексту у картці товару (ProductPage)
     warranty: "Повернення/обмін — 14 днів.",
-    category: "rifles" },
+    category: "rifles",
+  addons: [
+    { id: "co2-2",    name: "2 балончики CO2",  price: 200 },
+    { id: "bb-4x32",  name: "Кулі 4×32",        price: 600 },
+    { id: "bb-4x28",  name: "Кулі 4×28",        price: 300 },
+  ], },
 
   // { id: 13, title: "Hatsan-3",
   //   price: 6199, 
@@ -457,7 +515,12 @@ export const products = [
     giftBadge: { text: "Подарунок" },         // для бейджа у списках (ProductCard)
     giftText:  { text: "+ Приціл 4x28 і 200 куль." }, // для тексту у картці товару (ProductPage)
     warranty: "Повернення/обмін — 14 днів.",
-    category: "rifles" },
+    category: "rifles",
+  addons: [
+    { id: "co2-2",    name: "2 балончики CO2",  price: 200 },
+    { id: "bb-4x32",  name: "Кулі 4×32",        price: 600 },
+    { id: "bb-4x28",  name: "Кулі 4×28",        price: 300 },
+  ], },
 
   { id: 15, title: "Пневматична гвинтівка Snow Peak LB ",
     price: 3999, 
@@ -479,7 +542,12 @@ export const products = [
     giftBadge: { text: "Подарунок" },         // для бейджа у списках (ProductCard)
     giftText:  { text: "+ Приціл 4x28 і 200 куль." }, // для тексту у картці товару (ProductPage)
     warranty: "Повернення/обмін — 14 днів.",
-    category: "rifles" },
+    category: "rifles",
+  addons: [
+    { id: "co2-2",    name: "2 балончики CO2",  price: 200 },
+    { id: "bb-4x32",  name: "Кулі 4×32",        price: 600 },
+    { id: "bb-4x28",  name: "Кулі 4×28",        price: 300 },
+  ], },
 
 
   // { id: 16, title: "Snow Peak",
@@ -526,7 +594,12 @@ export const products = [
     giftText:  { text: "+ Приціл 4x28 і 200 куль." }, // для тексту у картці товару (ProductPage)
     badgeText: "Приціл 4x28 і 200 куль",
     warranty: "Повернення/обмін — 14 днів.",
-    category: "pistols" },
+    category: "pistols",
+  addons: [
+    { id: "co2-2",    name: "2 балончики CO2",  price: 200 },
+    { id: "bb-4x32",  name: "Кулі 4×32",        price: 600 },
+    { id: "bb-4x28",  name: "Кулі 4×28",        price: 300 },
+  ], },
 
      { id: 18, title: "Пневматична гвинтівка Mantis",
     price: 8199, 
@@ -552,7 +625,12 @@ export const products = [
     giftText:  { text: "+ Приціл 4x28 і 200 куль." }, // для тексту у картці товару (ProductPage)
     badgeText: "Приціл 4x28 і 200 куль",
     warranty: "Повернення/обмін — 14 днів.",
-    category: "rifles" },
+    category: "rifles",
+  addons: [
+    { id: "co2-2",    name: "2 балончики CO2",  price: 200 },
+    { id: "bb-4x32",  name: "Кулі 4×32",        price: 600 },
+    { id: "bb-4x28",  name: "Кулі 4×28",        price: 300 },
+  ], },
 
     { id: 19, title: "Пневматична гвинтівка Wolverine",
     price: 7899, 
@@ -577,7 +655,12 @@ export const products = [
     giftText:  { text: "+ Приціл 4x28 і 200 куль." }, // для тексту у картці товару (ProductPage)
     badgeText: "Приціл 4x28 і 200 куль",
     warranty: "Повернення/обмін — 14 днів.",
-    category: "rifles" },
+    category: "rifles",
+  addons: [
+    { id: "co2-2",    name: "2 балончики CO2",  price: 200 },
+    { id: "bb-4x32",  name: "Кулі 4×32",        price: 600 },
+    { id: "bb-4x28",  name: "Кулі 4×28",        price: 300 },
+  ], },
 
     { id: 20, title: "Пневматична гвинтівка Kodiak",
     price: 8399, 
@@ -603,7 +686,12 @@ export const products = [
     giftText:  { text: "+ Приціл 4x28 і 200 куль." }, // для тексту у картці товару (ProductPage)
     badgeText: "Приціл 4x28 і 200 куль",
     warranty: "Повернення/обмін — 14 днів.",
-    category: "rifles" },
+    category: "rifles",
+  addons: [
+    { id: "co2-2",    name: "2 балончики CO2",  price: 200 },
+    { id: "bb-4x32",  name: "Кулі 4×32",        price: 600 },
+    { id: "bb-4x28",  name: "Кулі 4×28",        price: 300 },
+  ], },
 
 ];
 

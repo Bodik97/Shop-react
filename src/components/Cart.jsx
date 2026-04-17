@@ -14,14 +14,10 @@ export default function Cart({
   refreshPrices,
   changeQty,
   removeFromCart,
-  checkout,
   freeShippingFrom = 0,
-  shippingOptions,
 }) {
   const [isPending, startTransition] = useTransition();
   const [armedId, setArmedId] = useState(null);
-
-  const [shipId, setShipId] = useState(() => shippingOptions?.[0]?.id ?? "pickup");
 
   const [mobileDetails, setMobileDetails] = useState(false);
   const [showForm, setShowForm] = useState(false);
@@ -55,35 +51,10 @@ export default function Cart({
     return { itemsCount, subtotal };
   }, [cart]);
 
-  /* shipping options (memo) */
-  const options = useMemo(
-    () =>
-      shippingOptions?.length
-        ? shippingOptions
-        : [
-            { id: "pickup", label: "Безкоштовно", price: 0 },
-            { id: "post", label: "Вантажне | Нова Пошта", price: 70 },
-            { id: "courier", label: "Кур'єр", price: 100 },
-          ],
-    [shippingOptions]
-  );
-
-  /* keep shipId valid if options change */
-  useEffect(() => {
-    if (!options.length) return;
-    if (!options.some((o) => o.id === shipId)) {
-      setShipId(options[0].id);
-    }
-  }, [options, shipId]);
-
-  const currentShip = options.find((o) => o.id === shipId) || options[0];
-  const shipping =
-    subtotal >= freeShippingFrom && freeShippingFrom > 0 ? 0 : Number(currentShip?.price || 0);
-
   /* без промокодів => знижка 0 */
   const discount = 0;
 
-  const total = Math.max(0, subtotal - discount + shipping);
+  const total = Math.max(0, subtotal - discount);
   const leftToFree = Math.max(0, (freeShippingFrom || 0) - subtotal);
   const freeProgress = freeShippingFrom
     ? Math.min(100, Math.round((subtotal / freeShippingFrom) * 100))
@@ -152,17 +123,14 @@ export default function Cart({
               to="/"
               className="group relative h-12 px-6 rounded-2xl font-semibold focus:outline-none active:scale-[0.98] transition"
             >
-              {/* glow */}
               <span
                 aria-hidden
                 className="absolute -inset-1 rounded-3xl bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 blur-lg opacity-60 group-hover:opacity-80 transition"
               />
-              {/* fill */}
               <span
                 aria-hidden
                 className="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 shadow-[0_10px_30px_rgba(0,0,0,0.25)]"
               />
-              {/* shine */}
               <span
                 aria-hidden
                 className="pointer-events-none absolute -left-10 top-0 h-full w-10 rotate-12 bg-white/25 opacity-0 group-hover:opacity-100 group-hover:translate-x-[140%] transition-transform duration-700 ease-out"
@@ -229,7 +197,7 @@ export default function Cart({
                 className="flex flex-col sm:flex-row sm:items-stretch gap-4 p-4 bg-white rounded-2xl border"
               >
                 <div className="sm:self-center">
-                  <div className="w-16 sm:w-20 aspect-square overflow-hidden rounded-xl bg-gray-50 relative">
+                  <div className="w-full sm:w-22 md:w-30 lg:w-38 aspect-square overflow-hidden rounded-xl bg-gray-50 relative">
                     <img
                       src={item.image}
                       alt={item.title}
@@ -240,7 +208,7 @@ export default function Cart({
                       }}
                     />
                     {low && (
-                      <span className="absolute left-1 top-1 rounded-full bg-amber-100 text-amber-800 text-[11px] font-bold px-1.5 py-0.5">
+                      <span className="absolute left-2 top-2 rounded-full bg-amber-100 text-amber-800 text-[11px] font-bold px-2 py-0.5">
                         Залишилось {item.stock}
                       </span>
                     )}
@@ -260,7 +228,6 @@ export default function Cart({
                       {fmtUAH(price)}
                     </div>
 
-
                     {saving > 0 && oldPrice > 0 && (
                       <>
                         <div className="text-sm text-gray-500 line-through">{fmtUAH(oldPrice)}</div>
@@ -270,12 +237,12 @@ export default function Cart({
                       </>
                     )}
                   </div>
-                      {item.giftText && (
-                        <div className="mt-1 text-sm text-emerald-600 font-medium flex items-center gap-1">
-                          <span className="animate-pulse">🎁</span>
-                          <span>{item.giftText}</span>
-                        </div>
-                      )}
+                  {item.giftText && (
+                    <div className="mt-1 text-sm text-emerald-600 font-medium flex items-center gap-1">
+                      <span className="animate-pulse">🎁</span>
+                      <span>{item.giftText}</span>
+                    </div>
+                  )}
 
                   <div className="mt-3">
                     <label htmlFor={`qty-${item.id}`} className="sr-only">
@@ -338,19 +305,16 @@ export default function Cart({
         {/* sidebar */}
         <aside className="hidden lg:block lg:col-span-1">
           <div className="p-5 sm:p-6 bg-white/95 backdrop-blur rounded-2xl border shadow-xl ring-1 ring-slate-200 sticky top-24">
-            <h2 className="text-lg  text-center text-black sm:text-xl font-bold tracking-tight mb-4">Підсумок</h2>
+            <h2 className="text-lg text-center text-black sm:text-xl font-bold tracking-tight mb-4">Підсумок</h2>
 
             <Breakdown
               itemsCount={itemsCount}
               subtotal={subtotal}
               discount={discount}
-              shipping={shipping}
               total={total}
             />
 
             <div className="my-3 h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
-
-
 
             <button
               type="button"
@@ -363,12 +327,12 @@ export default function Cart({
 
             {/* Траст-блок */}
             <div className="mt-3">
-              {/* рівні колонки, адаптив: 2 у ряд */}
-              <div className="grid grid-cols-1">
-                {/* eslint-disable-next-line no-unused-vars */}
-                {perks.map(({ icon: Icon, text }) => (
+            <div className="grid grid-cols-1">
+              {perks.map((perk) => {
+                const Icon = perk.icon;
+                return (
                   <div
-                    key={text}
+                    key={perk.text}
                     className="flex h-12 w-full items-center justify-start mt-1.5 gap-2
                               rounded-2xl bg-white/90 ring-1 ring-black/5 text-center"
                   >
@@ -376,19 +340,18 @@ export default function Cart({
                                     bg-gradient-to-r from-orange-500 via-rose-500 to-pink-500 text-white">
                       <Icon className="h-4 w-4" />
                     </span>
-                    <span className="text-sm font-medium text-gray-900">{text}</span>
+                    <span className="text-sm font-medium text-gray-900">{perk.text}</span>
                   </div>
-                ))}
-              </div>
+                );
+              })}
             </div>
-
+          </div>
 
             <Link to="/" className="block mt-3 text-center text-sm text-black hover:underline animate-pulse">
               ← Продовжити покупки
             </Link>
           </div>
         </aside>
-
       </div>
 
       <div aria-live="polite" className="sr-only">
@@ -404,7 +367,7 @@ export default function Cart({
               <div className="min-w-0">
                 <div className="flex items-baseline gap-1 text-red-600 font-extrabold tabular-nums whitespace-nowrap overflow-hidden">
                   {(() => {
-                    const f = fmtUAH(total); // "12 345 ₴"
+                    const f = fmtUAH(total);
                     const amount = f.replace(/\s*₴$/, "");
                     return (
                       <>
@@ -450,10 +413,6 @@ export default function Cart({
 
             {mobileDetails && (
               <div className="mt-3 text-xs sm:text-sm text-gray-800 space-y-1">
-                {/* <div className="flex justify-between">
-                  <span>Доставка</span>
-                  <span className="font-medium">{currentShip.label}</span>
-                </div> */}
                 <div className="flex justify-between">
                   <span>Товарів</span>
                   <span className="tabular-nums">{itemsCount}</span>
@@ -468,21 +427,15 @@ export default function Cart({
         </div>
       </div>
 
-
       {showForm && (
         <ModalBuy
           open={showForm}
           product={null}
           cart={cart}
           subtotal={subtotal}
-          shipping={shipping}
           discount={discount}
           total={total}
           onClose={() => setShowForm(false)}
-          onSubmit={(payload) => {
-            checkout?.(payload);
-            setShowForm(false);
-          }}
         />
       )}
     </main>
@@ -565,51 +518,12 @@ function Qty({ id, value, onChange, min = 1, max = 99, pending = false }) {
   );
 }
 
-// function Shipping({ options, value, onChange, freeShippingFrom, subtotal }) {
-//   return (
-//     <fieldset className="mt-4">
-//       <legend className="text-sm font-medium text-gray-700 mb-2">Доставка</legend>
-//       <div className="space-y-2">
-//         {options.map((o) => {
-//           const free = subtotal >= freeShippingFrom && freeShippingFrom > 0;
-//           const price = free ? 0 : o.price;
-//           const id = `ship-${o.id}`;
-//           const active = value === o.id;
-//           return (
-//             <label
-//               key={o.id}
-//               htmlFor={id}
-//               className={`flex items-center justify-between gap-3 rounded-2xl border p-3 cursor-pointer ${
-//                 active ? "border-blue-600 ring-2 ring-blue-200" : "border-slate-300 hover:bg-slate-50"
-//               }`}
-//             >
-//               <span className="flex items-center gap-2">
-//                 <input
-//                   id={id}
-//                   name="shipping"
-//                   type="radio"
-//                   checked={active}
-//                   onChange={() => onChange(o.id)}
-//                   className="h-4 w-4 accent-blue-600"
-//                 />
-//                 <span>{o.label}</span>
-//               </span>
-//               <span className="tabular-nums text-gray-900">{price ? fmtUAH(price) : "0 ₴"}</span>
-//             </label>
-//           );
-//         })}
-//       </div>
-//     </fieldset>
-//   );
-// }
-
-function Breakdown({ itemsCount, subtotal, discount,  total }) {
+function Breakdown({ itemsCount, subtotal, discount, total }) {
   return (
     <div className="mb-4 text-[15px]">
       <Row label="Товарів" value={String(itemsCount)} />
       <Row label="Сума товарів" value={fmtUAH(subtotal)} />
       {discount > 0 && <Row label="Знижка" value={`−${fmtUAH(discount)}`} accent="text-emerald-700" />}
-      {/* <Row label="Доставка" value={fmtUAH(shipping)} /> */}
       <Row strong label="Разом" value={fmtUAH(total)} />
     </div>
   );
