@@ -101,17 +101,8 @@ export default async function handler(req, res) {
   const name = safeStr(b.name || b.customer?.name, 120);
   const phoneRaw = safeStr(b.phone || b.customer?.phone, 40);
   const email = safeStr(b.email || b.customer?.email, 120);
-  const comment = safeStr(b.comment || b.message, 1000);
   const orderId = safeStr(b.orderId || b.id, 80);
 
-  const deliveryRaw = safeStr(b.delivery, 40).toLowerCase();
-  const delivery =
-    deliveryRaw === "nova" || deliveryRaw === "novaposta"
-      ? "Нова Пошта"
-      : safeStr(b.delivery, 40) || "-";
-  const region = safeStr(b.region, 80);
-  const city = safeStr(b.city, 120);
-  const branch = safeStr(b.branch, 120);
 
   const items = Array.isArray(b.cart)
     ? b.cart
@@ -157,9 +148,8 @@ export default async function handler(req, res) {
 
   const lines = [];
   if (isConsult) {
-    lines.push(`<b>🆕 Консультація</b> | ${created.toLocaleString("uk-UA")}`);
-  } else {
     lines.push(`<b>🆕 Замовлення</b> | ${created.toLocaleString("uk-UA")}`);
+    lines.push("────────────");
   }
   lines.push(`ID: <code>${esc(reqId)}</code>`);
   if (!isConsult && orderId) lines.push(`<b>#${esc(orderId)}</b>`);
@@ -169,35 +159,21 @@ export default async function handler(req, res) {
   if (email) lines.push(`✉️ Email: <b>${esc(email)}</b>`);
 
   if (!isConsult) {
-    lines.push("────────────");
-    lines.push("<b>🚚 Доставка</b>");
-    lines.push(`Служба: <b>${esc(delivery)}</b>`);
-    if (region) lines.push(`Область: <b>${esc(region)}</b>`);
-    if (city) lines.push(`Місто: <b>${esc(city)}</b>`);
-    if (branch) lines.push(`Відділення: <b>${esc(branch)}</b>`);
 
     if (Array.isArray(items) && items.length) {
       lines.push("────────────");
-      lines.push("<b>🧾 Товари</b>");
+      lines.push("<b>🧾 Замовлення: </b>");
       items.forEach((it, i) => {
         const qty = Math.max(1, Number(it?.qty) || 1);
         const price = Math.max(0, Number(it?.price) || 0);
-        const title = esc(safeStr(it?.title || "Товар", 140));
+        const title = esc(safeStr(it?.title || "Продукт: ", 140));
         lines.push(`${i + 1}. ${title} — ${qty} × ${fmtUAH(price)} = ${fmtUAH(price * qty)}`);
         if (it?.giftText) lines.push(`🎁 ${esc(safeStr(it.giftText, 200))}`);
       });
     }
 
     lines.push("────────────");
-    if (discount) lines.push(`Знижка: <b>−${fmtUAH(discount)}</b>`);
-    lines.push(`Доставка: <b>${shipping ? fmtUAH(shipping) : "Безкоштовно"}</b>`);
     if (total) lines.push(`💰 Разом: <b>${fmtUAH(total)}</b>`);
-  }
-
-  if (comment) {
-    lines.push("────────────");
-    lines.push(isConsult ? "<b>📝 Запит</b>" : "<b>📝 Коментар</b>");
-    lines.push(esc(comment));
   }
 
   if (warnings.length) {
@@ -273,7 +249,6 @@ export default async function handler(req, res) {
         reason: phase === "degraded" ? "DEGRADED" : "SEND_FAIL",
         n: name,
         p: phone || phoneRaw,
-        c: city,
       });
       delivered = okMin || delivered;
     }
@@ -283,7 +258,6 @@ export default async function handler(req, res) {
       reason: "EXCEPTION",
       n: name,
       p: phone || phoneRaw,
-      c: city,
       err: safeStr(err?.message, 200),
     });
     delivered = okMin || delivered;
