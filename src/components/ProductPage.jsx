@@ -52,6 +52,13 @@ export default function ProductPage({ onAddToCart, onBuy }) {
   }, [product]);
 
   const [idx, setIdx] = useState(0);
+  const [selectedAddons, setSelectedAddons] = useState([]);
+
+  // скидаємо вибрані аддони при зміні товару
+  useEffect(() => {
+    setSelectedAddons([]);
+  }, [product?.id]);
+
   const clampIndex = useCallback((i) => (imgs.length ? (i + imgs.length) % imgs.length : 0), [imgs.length]);
   const prev = useCallback(() => setIdx((i) => clampIndex(i - 1)), [clampIndex]);
   const next = useCallback(() => setIdx((i) => clampIndex(i + 1)), [clampIndex]);
@@ -149,6 +156,22 @@ export default function ProductPage({ onAddToCart, onBuy }) {
   const specs = product?.specs || {};
   const inBox = product?.inBox || [];
   const warranty = product?.warranty;
+  const addons = product?.addons || [];
+
+  const addonsTotal = useMemo(
+    () => addons
+      .filter((a) => selectedAddons.includes(a.id))
+      .reduce((sum, a) => sum + (Number(a.price) || 0), 0),
+    [addons, selectedAddons]
+  );
+
+  const finalPrice = (Number(product?.price) || 0) + addonsTotal;
+
+  const toggleAddon = (id) => {
+    setSelectedAddons((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
+  };
 
   return (
     
@@ -310,10 +333,15 @@ export default function ProductPage({ onAddToCart, onBuy }) {
                 <div className="rounded-2xl border bg-white p-4 sm:p-5 shadow-sm">
                   {/* Ціна */}
                   <div className="text-gray-600 text-sm md:text-base mb-1">Ціна</div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <div className="text-2xl md:text-3xl font-extrabold text-red-600">
-                      {formatUAH(product.price)}
+                      {formatUAH(finalPrice)}
                     </div>
+                    {addonsTotal > 0 && (
+                      <div className="text-sm text-gray-500">
+                        (товар {formatUAH(product.price)} + додатки {formatUAH(addonsTotal)})
+                      </div>
+                    )}
                   </div>
 
                   {/* Опис подарунка під ціною */}
@@ -367,17 +395,58 @@ export default function ProductPage({ onAddToCart, onBuy }) {
                           </div>
 
                           {/* нижній ряд: іконка + “У подарунок” по центру */}
-                          <div className="relative z-10 mt-2 flex justify-center">
+                          {/* <div className="relative z-10 mt-2 flex justify-center">
                             <span className="inline-flex items-center gap-1.5 rounded-full border border-black/10
                                             bg-gradient-to-br from-white to-neutral-100 px-2.5 py-1
                                             text-[11px] sm:text-xs font-semibold text-neutral-900 shadow">
                               <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true">
                                 <path fill="currentColor" d="M20 7h-2.6a3 3 0 1 0-5.4-2 3 3 0 1 0-5.4 2H4a1 1 0 0 0-1 1v3h9V8h2v3h9V8a1 1 0 0 0-1-1Zm-9-1a1 1 0 1 1-2 0 1 1 0 0 1 2 0Zm6 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM3 13v6a2 2 0 0 0 2 2h6v-8H3Zm10 0v8h6a2 2 0 0 0 2-2v-6h-8Z"/>
-                              </svg>
+                                </svg>
                               У подарунок
                             </span>
-                          </div>
+                          </div> */}
                         </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Блок аддонів */}
+                  {addons.length > 0 && (
+                    <div className="mt-4">
+                      <div className="text-sm font-semibold text-gray-900 mb-2">
+                        Доповніть замовлення:
+                      </div>
+                      <div className="space-y-2">
+                        {addons.map((addon) => {
+                          const isChecked = selectedAddons.includes(addon.id);
+                          return (
+                            <label
+                              key={addon.id}
+                              htmlFor={`addon-${addon.id}`}
+                              className={`flex items-center justify-between gap-3 rounded-xl border-2 p-3 cursor-pointer transition
+                                ${isChecked
+                                  ? "border-blue-600 bg-blue-50"
+                                  : "border-gray-200 bg-white hover:border-gray-300"
+                                }`}
+                            >
+                              <div className="flex items-center gap-3 min-w-0">
+                                <input
+                                  id={`addon-${addon.id}`}
+                                  type="checkbox"
+                                  checked={isChecked}
+                                  onChange={() => toggleAddon(addon.id)}
+                                  className="h-5 w-5 rounded accent-blue-600 shrink-0"
+                                />
+                                <span className="text-sm font-medium text-gray-900 truncate">
+                                  {addon.name}
+                                </span>
+                              </div>
+                              <span className="text-sm font-bold text-gray-900 tabular-nums whitespace-nowrap">
+                                +{formatUAH(addon.price)}
+                              </span>
+                            </label>
+                          );
+                        })}
                       </div>
                     </div>
                   )}
@@ -410,12 +479,6 @@ export default function ProductPage({ onAddToCart, onBuy }) {
                       Додати в кошик
                     </button>
                   </div>
-
-                  <div className="mt-4 text-xs md:text-sm text-gray-600 space-y-1">
-                    <div>🚚 Доставка: 1–3 дні по Україні</div>
-                    <div>🛡️ Повернення/обмін: 14 днів</div>
-                    <div>💬 Підтримка: 09:00–21:00</div>
-                  </div>
                 </div>
               </div>
             </aside>
@@ -431,7 +494,7 @@ export default function ProductPage({ onAddToCart, onBuy }) {
                   <div className="flex justify-between items-center">
                     <div className="flex items-baseline gap-1">
                       <span className="text-2xl sm:text-3xl md:text-4xl font-extrabold leading-none tabular-nums text-red-600">
-                        {new Intl.NumberFormat("uk-UA", { maximumFractionDigits: 0 }).format(product.price)}
+                        {new Intl.NumberFormat("uk-UA", { maximumFractionDigits: 0 }).format(finalPrice)}
                       </span>
                       <span className="text-lg sm:text-2xl text-red-600">₴</span>
                     </div>
@@ -467,7 +530,7 @@ export default function ProductPage({ onAddToCart, onBuy }) {
             {/* верхня панель */}
             <div
               className="absolute top-0 inset-x-0 p-6 flex items-center justify-between text-white bg-white/80 backdrop-blur-sm shadow text-center z-20 pointer-events-auto"
-              onPointerDown={(e) => e.stopPropagation()} // не даємо батьківському drag зловити подію
+              onPointerDown={(e) => e.stopPropagation()}
             >
               <div className="flex items-center gap-1">
                 <button
@@ -497,7 +560,7 @@ export default function ProductPage({ onAddToCart, onBuy }) {
                     e.stopPropagation();
                     const cx = window.innerWidth / 2;
                     const cy = window.innerHeight / 2;
-                    zoomAt(Math.min(scale + 0.5, 5), cx, cy); // кламп до max 5
+                    zoomAt(Math.min(scale + 0.5, 5), cx, cy);
                   }}
                   className="flex items-center justify-center h-10 w-10 rounded-md bg-black text-white text-xl"
                   type="button"
@@ -510,7 +573,7 @@ export default function ProductPage({ onAddToCart, onBuy }) {
                     e.stopPropagation();
                     const cx = window.innerWidth / 2;
                     const cy = window.innerHeight / 2;
-                    zoomAt(Math.max(scale - 0.5, 1), cx, cy); // кламп до min 1
+                    zoomAt(Math.max(scale - 0.5, 1), cx, cy);
                   }}
                   className="flex items-center justify-center h-10 w-10 rounded-md bg-black text-white text-xl"
                   type="button"
