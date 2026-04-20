@@ -83,8 +83,8 @@ export default function CategoryPage({ onAddToCart, onBuy }) {
           aria-label="Сортування товарів"
         >
           <option value="default">Без сортування</option>
-          <option value="price-asc">Ціна ↑</option>
-          <option value="price-desc">Ціна ↓</option>
+          <option value="price-asc">Від дешевих ↑</option>
+          <option value="price-desc">Від дорогих ↓</option>
           <option value="popular">Популярні</option>
           <option value="new">Нові</option>
         </select>
@@ -92,9 +92,9 @@ export default function CategoryPage({ onAddToCart, onBuy }) {
 
         <div className="hidden sm:flex flex-wrap gap-2">
             {[
-              { id: "default", label: "🔄 Без сортування" },
-              { id: "price-asc", label: "⬆️ Ціна" },
-              { id: "price-desc", label: "⬇️ Ціна" },
+              { id: "default", label: "Без сортування" },
+              { id: "price-asc", label: "⬆ Дешеві" },
+              { id: "price-desc", label: "⬇ Дорогі" },
               { id: "popular", label: "⭐ Популярні" },
               { id: "new", label: "🆕 Нові" },
             ].map((opt) => (

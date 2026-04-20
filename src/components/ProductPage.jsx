@@ -156,13 +156,13 @@ export default function ProductPage({ onAddToCart, onBuy }) {
   const specs = product?.specs || {};
   const inBox = product?.inBox || [];
   const warranty = product?.warranty;
-  const addons = product?.addons || [];
+  const addons = product?.addons ?? [];
 
   const addonsTotal = useMemo(
-    () => addons
+    () => (product?.addons ?? [])
       .filter((a) => selectedAddons.includes(a.id))
       .reduce((sum, a) => sum + (Number(a.price) || 0), 0),
-    [addons, selectedAddons]
+    [product?.addons, selectedAddons]
   );
 
   const finalPrice = (Number(product?.price) || 0) + addonsTotal;
@@ -458,7 +458,13 @@ export default function ProductPage({ onAddToCart, onBuy }) {
                       className="w-full h-12 md:h-14 rounded-xl bg-blue-600 text-white font-semibold
                                 text-base md:text-lg hover:bg-blue-700 active:scale-[0.99] transition
                                 whitespace-nowrap"
-                      onClick={() => onBuy?.(product)}
+                      onClick={() => {
+                        // 🆕 передаємо product разом із вибраними addons
+                        const chosenAddons = addons.filter((a) =>
+                          selectedAddons.includes(a.id)
+                        );
+                        onBuy?.({ ...product, addons: chosenAddons });
+                      }}
                       aria-label="Купити зараз"
                     >
                       Купити зараз
@@ -468,7 +474,15 @@ export default function ProductPage({ onAddToCart, onBuy }) {
                       className="w-full h-12 md:h-14 rounded-xl border font-semibold text-base md:text-lg
                                 hover:bg-gray-50 active:scale-[0.99] transition whitespace-nowrap"
                       onClick={() => {
-                        const item = { ...product, giftText: product.giftText?.text || product.giftText || null };
+                        // 🆕 Повні об'єкти вибраних addons {id, name, price}
+                        const chosenAddons = addons.filter((a) =>
+                          selectedAddons.includes(a.id)
+                        );
+                        const item = {
+                          ...product,
+                          giftText: product.giftText?.text || product.giftText || null,
+                          addons: chosenAddons, // 🆕 передаємо addons у кошик
+                        };
                         onAddToCart?.(item);
                         setFlashCart(true);
                         if (timerRef.current) clearTimeout(timerRef.current);
@@ -501,7 +515,13 @@ export default function ProductPage({ onAddToCart, onBuy }) {
 
                     <button
                       type="button"
-                      onClick={() => onBuy?.(product)}
+                      onClick={() => {
+                        // 🆕 те саме що і десктопна кнопка
+                        const chosenAddons = addons.filter((a) =>
+                          selectedAddons.includes(a.id)
+                        );
+                        onBuy?.({ ...product, addons: chosenAddons });
+                      }}
                       className="w-32 h-10 flex items-center justify-center
                                   rounded-xl bg-blue-600 text-white font-semibold text-sm
                                   hover:bg-blue-700 active:scale-[0.98] transition whitespace-nowrap"

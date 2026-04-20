@@ -44,10 +44,13 @@ export default function Cart({
   /* totals */
   const { itemsCount, subtotal } = useMemo(() => {
     const itemsCount = cart.reduce((n, i) => n + Math.max(1, Number(i.qty) || 0), 0);
-    const subtotal = cart.reduce(
-      (s, p) => s + (Number(p.price) || 0) * Math.max(1, Number(p.qty) || 0),
-      0
-    );
+    const subtotal = cart.reduce((s, i) => {
+      const qty = Math.max(1, Number(i.qty) || 0);
+      // 🆕 unitTotal = price + addonsTotal (збережено в addToCart)
+      // Якщо unitTotal є — використовуємо його, інакше fallback на price
+      const unitPrice = Number(i.unitTotal) || Number(i.price) || 0;
+      return s + unitPrice * qty;
+    }, 0);
     return { itemsCount, subtotal };
   }, [cart]);
 
@@ -188,12 +191,18 @@ export default function Cart({
             const oldPrice = Number(item.oldPrice) || 0;
             const saving = oldPrice > price ? oldPrice - price : 0;
             const low = Number(item.stock) > 0 && Number(item.stock) <= 5;
-            const line = price * qty;
-            const armed = armedId === item.id;
+            // 🆕 рядок = unitTotal (ціна з addons) × qty
+            const unitPrice = Number(item.unitTotal) || price;
+            // const line = unitPrice * qty;
+            // 🆕 armed по cartItemId (унікальний), а не item.id (може дублюватись)
+            const armed = armedId === item.cartItemId;
+            // 🆕 вибрані addons (можуть бути відсутні у старих позиціях)
+            const addons = Array.isArray(item.addons) ? item.addons : [];
 
             return (
               <article
-                key={item.id}
+                // 🆕 key по cartItemId — гарантовано унікальний
+                key={item.cartItemId || item.id}
                 className="flex flex-col sm:flex-row sm:items-stretch gap-4 p-4 bg-white rounded-2xl border"
               >
                 <div className="sm:self-center">
@@ -223,55 +232,72 @@ export default function Cart({
                     <p className="mt-0.5 text-sm text-gray-500 line-clamp-1">{item.attrs}</p>
                   )}
 
-                  <div className="mt-1 flex items-center gap-2">
-                    <div className="text-red-600 font-extrabold text-xl sm:text-2xl md:text-3xl lg:text-4xl tabular-nums">
-                      {fmtUAH(price)}
-                    </div>
-
-                    {saving > 0 && oldPrice > 0 && (
-                      <>
-                        <div className="text-sm text-gray-500 line-through">{fmtUAH(oldPrice)}</div>
-                        <span className="inline-flex items-center rounded-full bg-rose-100 text-rose-700 text-[11px] font-bold px-2 py-0.5">
-                          −{Math.round((saving / oldPrice) * 100)}%
+                  {/* 🆕 Список addons під назвою товару */}
+                  {addons.length > 0 && (
+                    <div className="mt-1.5 flex flex-wrap gap-1.5">
+                      {addons.map((addon) => (
+                        <span
+                          key={addon.id}
+                          className="inline items-center gap-6 rounded-full border border-blue-100 bg-blue-50 px-1 py-1 text-xs font-medium text-black"
+                        >
+                          + {addon.name} 
                         </span>
-                      </>
-                    )}
-                  </div>
+                      ))}
+                    </div>
+                  )}
+
                   {item.giftText && (
                     <div className="mt-1 text-sm text-emerald-600 font-medium flex items-center gap-1">
                       <span className="animate-pulse">🎁</span>
                       <span>{item.giftText}</span>
                     </div>
                   )}
+                  <div className="mt-1 flex items-center gap-2">
+                    <div className="text-red-600 font-extrabold text-xl sm:text-xl md:text-3xl lg:text-4xl tabular-nums">
+                      {/* 🆕 показуємо unitPrice (з addons), а не лише базову ціну */}
+                      {fmtUAH(unitPrice)}
+                    </div>
 
-                  <div className="mt-3">
-                    <label htmlFor={`qty-${item.id}`} className="sr-only">
+                    {saving > 0 && oldPrice > 0 && (
+                      <>
+                        <div className="text-lg text-gray-500 line-through">{fmtUAH(oldPrice)}</div>
+                          <span className="inline-flex items-center rounded-full bg-rose-100 text-text-sm font-bold px-2.5 py-1">
+                            −{Math.round((saving / oldPrice) * 100)}%
+                          </span>
+                      </>
+                      
+                    )}
+                    <div className="mt-3 sm:mt-0 inline-flex items-center gap-2 ml-auto">
+                    <label htmlFor={`qty-${item.cartItemId || item.id}`} className="sr-only">
                       Кількість для {item.title}
                     </label>
                     <Qty
-                      id={`qty-${item.id}`}
+                      id={`qty-${item.cartItemId || item.id}`}
                       value={qty}
                       min={1}
                       max={99}
-                      onChange={(next) => onQtyChange(item.id, next)}
+                      // 🆕 передаємо cartItemId, а не item.id
+                      onChange={(next) => onQtyChange(item.cartItemId || item.id, next)}
                       pending={isPending}
                     />
                   </div>
+                  </div>
                 </div>
 
-                <div className="sm:w-48 sm:flex sm:flex-col sm:items-end sm:justify-between">
-                  <div className="sm:text-right">
+                <div className="sm:w-48 sm:flex sm:flex-col sm:items-end sm:justify-end  ml-auto">
+                  {/* <div className="sm:text-right">
                     <div className="text-xs text-gray-500">Разом:</div>
                     <div className="text-lg font-extrabold text-gray-900 tabular-nums">
                       {fmtUAH(line)}
                     </div>
-                  </div>
-
+                  </div> */}
+                    
                   {!armed ? (
                     <button
                       type="button"
-                      onClick={() => setArmedId(item.id)}
-                      className="mt-3 sm:mt-0 inline-flex items-center justify-center gap-1 rounded-2xl bg-black px-3.5 py-2 text-red-500 hover:bg-black/90"
+                      // 🆕 armedId ← cartItemId
+                      onClick={() => setArmedId(item.cartItemId || item.id)}
+                      className="mt-3 sm:mt-0 inline-flex items-center justify-center gap-1 rounded-2xl bg-black px-3.5 py-2 text-red-500 hover:bg-gray-700"
                     >
                       🗑️ <span className="font-semibold">Видалити</span>
                     </button>
@@ -280,7 +306,8 @@ export default function Cart({
                       <button
                         type="button"
                         onClick={() => {
-                          onRemove(item.id);
+                          // 🆕 передаємо cartItemId
+                          onRemove(item.cartItemId || item.id);
                           setArmedId(null);
                         }}
                         className="inline-flex items-center justify-center px-3 h-9 rounded-xl bg-red-600 text-white text-sm hover:bg-red-700"
@@ -296,6 +323,8 @@ export default function Cart({
                       </button>
                     </div>
                   )}
+                  
+                  
                 </div>
               </article>
             );

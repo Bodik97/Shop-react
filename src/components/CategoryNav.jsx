@@ -69,27 +69,29 @@ function CategoryNav() {
                 </div>
 
                 {/* Текст + індикатор */}
-                <div className="p-4 flex items-center gap-2">
-                  <h3 className="text-[15px] font-semibold text-gray-900">{cat.name}</h3>
-                  {/* рожева точка для мобільних */}
-                  <div className="sm:hidden">
-                    <span className="relative flex h-3 w-3">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-500 opacity-75" />
-                      <span className="relative inline-flex rounded-full h-3 w-3 bg-pink-600" />
-                    </span>
-                  </div>
+                <div className="p-4 flex items-center gap-1">
+                  <h3 className="text-[36px] font-semibold text-gray-800">{cat.name}</h3>
+                  
                 </div>
 
                 <div className="px-4 pb-3">
-                  <p className="mt-0.5 text-xs text-gray-500 flex items-center gap-1">
-                    <span className="font-medium text-gray-700">Перейти</span>
+                  <p className="mt-0.5 mb-1 text-xs text-gray-500 flex items-center gap-1">
+                    <span className="text-[15px] font-medium text-gray-700">Перейти</span>
+                    
                     <svg
                       viewBox="0 0 24 24"
-                      className="h-4 w-4 opacity-80 transition-transform group-hover:translate-x-0.5"
+                      className="h-6 w-6 opacity-80 transition-transform group-hover:translate-x-0.5"
                       aria-hidden="true"
                     >
                       <path fill="currentColor" d="M10 6l6 6-6 6v-4H4v-4h6V6z" />
                     </svg>
+                    {/* рожева точка для мобільних */}
+                    <div className="sm:hidden">
+                      <span className="relative flex h-3 w-3">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-500 opacity-75" />
+                        <span className="relative inline-flex rounded-full h-3 w-3 bg-pink-600" />
+                      </span>
+                    </div>
                   </p>
                 </div>
               </Link>

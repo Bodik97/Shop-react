@@ -95,14 +95,13 @@ export default async function handler(req, res) {
   }
 
   // ---------- extract ----------
-  const type = (safeStr(b.type || b.form || "", 40) || "").toLowerCase(); // "consult" => Консультація
+  const type = (safeStr(b.type || b.form || "", 40) || "").toLowerCase();
   const isConsult = type === "consult" || type === "консультація";
 
   const name = safeStr(b.name || b.customer?.name, 120);
   const phoneRaw = safeStr(b.phone || b.customer?.phone, 40);
   const email = safeStr(b.email || b.customer?.email, 120);
   const orderId = safeStr(b.orderId || b.id, 80);
-
 
   const items = Array.isArray(b.cart)
     ? b.cart
@@ -154,22 +153,47 @@ export default async function handler(req, res) {
   lines.push(`ID: <code>${esc(reqId)}</code>`);
   if (!isConsult && orderId) lines.push(`<b>#${esc(orderId)}</b>`);
   lines.push("────────────");
-  lines.push(`👤 Ім’я: <b>${esc(name || "—")}</b>`);
+  lines.push(`👤 Ім'я: <b>${esc(name || "—")}</b>`);
   lines.push(`📞 Телефон: <b>${esc(phone || phoneRaw || "—")}</b>`);
   if (email) lines.push(`✉️ Email: <b>${esc(email)}</b>`);
 
   if (!isConsult) {
-
     if (Array.isArray(items) && items.length) {
       lines.push("────────────");
-      lines.push("<b>🧾 Замовлення: </b>");
+      lines.push("<b>🧾 Замовлення:</b>");
+
       items.forEach((it, i) => {
-        const qty = Math.max(1, Number(it?.qty) || 1);
-        const price = Math.max(0, Number(it?.price) || 0);
-        const title = esc(safeStr(it?.title || "Продукт: ", 140));
-        lines.push(`${i + 1}. ${title} — ${qty} × ${fmtUAH(price)} = ${fmtUAH(price * qty)}`);
-        if (it?.giftText) lines.push(`🎁 ${esc(safeStr(it.giftText, 200))}`);
+        const qty       = Math.max(1, Number(it?.qty) || 1);
+        const price     = Math.max(0, Number(it?.price) || 0);
+        // 🆕 unitTotal враховує addons; якщо немає — fallback на price
+        const unitTotal = Math.max(price, Number(it?.unitTotal) || price);
+        const lineTotal = Math.max(0, Number(it?.lineTotal) || unitTotal * qty);
+        const title     = esc(safeStr(it?.title || "Продукт", 140));
+
+        // Основний рядок товару
+        lines.push(
+          `${i + 1}. ${title} — ${qty} × ${fmtUAH(unitTotal)} = <b>${fmtUAH(lineTotal)}</b>`
+        );
+
+        // 🆕 Addons — показуємо тільки якщо є
+        const addons = Array.isArray(it?.addons) ? it.addons : [];
+        if (addons.length > 0) {
+          // Базова ціна товару (без addons) — для розуміння розбивки
+          lines.push(`   ├ базова: ${fmtUAH(price)}`);
+          addons.forEach((a) => {
+            lines.push(
+              `   ├ ➕ ${esc(safeStr(a?.name, 100))} — ${fmtUAH(a?.price)}`
+            );
+          });
+        }
+
+        // Подарунок
+        if (it?.giftText) {
+          lines.push(`   🎁 ${esc(safeStr(it.giftText, 200))}`);
+        }
       });
+
+      lines.push("────────────");
     }
 
     lines.push("────────────");

@@ -33,7 +33,18 @@ export default function ModalBuy({
   const isCart = Array.isArray(cart) && cart.length > 0;
   const price = Number(product?.price || 0);
 
-  const singleTotal = useMemo(() => price * Math.max(1, Number(qty) || 1), [price, qty]);
+  // 🆕 addons і їх сума для режиму "Купити зараз"
+  const productAddons = Array.isArray(product?.addons) ? product.addons : [];
+  const productAddonsTotal = productAddons.reduce(
+    (s, a) => s + (Number(a.price) || 0), 0
+  );
+  const unitPrice = price + productAddonsTotal;
+
+  // 🆕 singleTotal рахує з addons
+  const singleTotal = useMemo(
+    () => unitPrice * Math.max(1, Number(qty) || 1),
+    [unitPrice, qty]
+  );
   const cartComputed = useMemo(
     () => Math.max(0, (Number(subtotal) || 0) - (Number(discount) || 0) + (Number(shipping) || 0)),
     [subtotal, discount, shipping]
@@ -92,16 +103,21 @@ export default function ModalBuy({
       const items = cart.map((i) => {
         const q = Math.max(1, Number(i.qty) || 1);
         const p = Number(i.price) || 0;
+        const addons = Array.isArray(i.addons) ? i.addons : [];
+        const addonsTotal = Number(i.addonsTotal) || 0;
+        const ut = Number(i.unitTotal) || p;
         return {
           id: i.id,
           title: i.title,
           qty: q,
           price: p,
-          lineTotal: p * q,
+          addons,           // 🆕
+          addonsTotal,      // 🆕
+          unitTotal: ut,    // 🆕
+          lineTotal: ut * q,
           giftText: i.giftText?.text || i.giftText || null,
         };
       });
-
       return {
         items,
         subtotal,
@@ -112,18 +128,21 @@ export default function ModalBuy({
       };
     }
 
+    // режим "Купити зараз"
     const q = Math.max(1, Number(qty) || 1);
-    const p = Number(price) || 0;
     return {
       items: [{
         id: product?.id,
         title: product?.title,
         qty: q,
-        price: p,
-        lineTotal: p * q,
+        price,
+        addons: productAddons,         // 🆕
+        addonsTotal: productAddonsTotal, // 🆕
+        unitTotal: unitPrice,          // 🆕
+        lineTotal: unitPrice * q,
         giftText: product?.giftText?.text || product?.giftText || null,
       }],
-      subtotal: p * q,
+      subtotal: unitPrice * q,
       discount: 0,
       shipping: shipping || 0,
       total: displayTotal,
@@ -237,8 +256,28 @@ export default function ModalBuy({
                         🎁 {product.giftText.text}
                       </div>
                     )}
+                    {/* 🆕 Addons */}
+                    {productAddons.length > 0 && (
+                      <div className="mt-1.5 flex flex-wrap gap-1">
+                        {productAddons.map((a) => (
+                          <span
+                            key={a.id}
+                            className="inline-flex items-center gap-1 rounded-full border border-blue-200 bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700"
+                          >
+                            + {a.name}
+                            <span className="font-semibold">{formatUAH(a.price)}</span>
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    {/* 🆕 unitPrice замість price */}
                     <div className="mt-1 text-red-600 font-bold text-base sm:text-lg tabular-nums">
-                      {formatUAH(price)}
+                      {formatUAH(unitPrice)}
+                      {productAddonsTotal > 0 && (
+                        <span className="ml-1.5 text-xs text-gray-400 font-normal line-through">
+                          {formatUAH(price)}
+                        </span>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -291,15 +330,32 @@ export default function ModalBuy({
                 <div className="rounded-2xl border bg-gray-50 p-3 max-h-40 sm:max-h-48 overflow-auto">
                   {cart.map((i) => {
                     const q = Math.max(1, Number(i.qty) || 1);
-                    const p = Number(i.price) || 0;
+                    const unitTotal = Number(i.unitTotal) || Number(i.price) || 0;
+                    const addons = Array.isArray(i.addons) ? i.addons : [];
                     return (
-                      <div key={i.id} className="space-y-0.5">
+                      <div key={i.cartItemId || i.id} className="space-y-0.5 mb-2">
                         <div className="flex justify-between gap-3 text-sm text-gray-800">
-                          <span className="truncate">
+                          <span className="truncate font-medium">
                             {i.title} × {q}
                           </span>
-                          <span className="tabular-nums">{formatUAH(p * q)}</span>
+                          <span className="tabular-nums shrink-0">
+                            {formatUAH(unitTotal * q)}
+                          </span>
                         </div>
+                        {/* 🆕 Addons під назвою */}
+                        {addons.length > 0 && (
+                          <div className="pl-2 flex flex-wrap gap-1 mt-0.5">
+                            {addons.map((a) => (
+                              <span
+                                key={a.id}
+                                className="inline-flex items-center gap-1 text-xs text-blue-700 bg-blue-50 border border-blue-200 rounded-full px-2 py-0.5"
+                              >
+                                + {a.name}
+                                <span className="font-semibold">{formatUAH(a.price)}</span>
+                              </span>
+                            ))}
+                          </div>
+                        )}
                         {i.giftText && (
                           <div className="text-xs text-emerald-700 flex items-center gap-1 pl-2">
                             🎁 {i.giftText}

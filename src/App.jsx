@@ -87,8 +87,17 @@ export default function App() {
       const next = prev.map((item) => {
         const prod = products.find((p) => p.id === item.id);
         if (!prod) return item;
-        if (prod.price !== item.price) changed = true;
-        return { ...item, price: prod.price };
+        if (prod.price !== item.price) {
+          changed = true;
+          // 🆕 якщо ціна товару змінилась — перераховуємо unitTotal з addons
+          const addonsTotal = Number(item.addonsTotal) || 0;
+          return {
+            ...item,
+            price: prod.price,
+            unitTotal: prod.price + addonsTotal,
+          };
+        }
+        return item;
       });
       return changed ? next : prev;
     });
@@ -98,34 +107,72 @@ export default function App() {
     refreshCartPrices();
   }, [refreshCartPrices]);
 
+  // 🆕 Helper: робить "відбиток" позиції (id товару + відсортовані id addons).
+  // Потрібен щоб зрозуміти: два набори однакові чи різні.
+  const makeItemFingerprint = (id, addons = []) => {
+    const addonIds = (addons || []).map((a) => a.id).sort().join(",");
+    return `${id}::${addonIds}`;
+  };
+
+  // 🆕 Helper: рахує суму addons
+  const sumAddons = (addons = []) =>
+    (addons || []).reduce((sum, a) => sum + (Number(a.price) || 0), 0);
+
   // кошик
   const addToCart = (product) => {
-  setCart((prev) => {
-    const i = prev.findIndex((p) => p.id === product.id);
-    if (i >= 0) {
-      const copy = [...prev];
-      copy[i] = { ...copy[i], qty: (Number(copy[i].qty) || 0) + 1 };
-      return copy;
-    }
-    return [
-      ...prev,
-      {
-        id: product.id,
-        title: product.title,
-        price: product.price,
-        image: product.image,
-        qty: 1,
-        giftText: product?.giftText?.text || product?.giftText || null, // 🎁 ДОДАНО
-      },
-    ];
-  });
-};
+    setCart((prev) => {
+      // 🆕 Витягуємо addons з product (якщо немає — порожній масив)
+      const addons = Array.isArray(product.addons) ? product.addons : [];
 
-  const changeQty = (id, qty) =>
+      // 🆕 Формуємо "відбиток" нової позиції
+      const newFingerprint = makeItemFingerprint(product.id, addons);
+
+      // 🆕 Шукаємо позицію з таким же відбитком
+      // (той самий товар + той самий набір addons)
+      const i = prev.findIndex(
+        (p) => makeItemFingerprint(p.id, p.addons) === newFingerprint
+      );
+
+      // ✅ Така позиція вже є — збільшуємо кількість
+      if (i >= 0) {
+        const copy = [...prev];
+        copy[i] = { ...copy[i], qty: (Number(copy[i].qty) || 0) + 1 };
+        return copy;
+      }
+
+      // ✅ Нова позиція — додаємо з усіма даними про addons
+      const addonsTotal = sumAddons(addons);
+      const price = Number(product.price) || 0;
+
+      return [
+        ...prev,
+        {
+          cartItemId: `${product.id}-${Date.now()}`, // 🆕 унікальний ID позиції
+          id: product.id,
+          title: product.title,
+          price: price,
+          image: product.image,
+          qty: 1,
+          giftText: product?.giftText?.text || product?.giftText || null,
+          // 🆕 Все що стосується addons:
+          addons: addons,                 // масив [{id, name, price}, ...]
+          addonsTotal: addonsTotal,       // сума цін addons
+          unitTotal: price + addonsTotal, // ціна 1 шт з addons
+        },
+      ];
+    });
+  };
+
+  // 🆕 Працюємо по cartItemId (не id!), бо може бути 2 позиції з одним id але різними addons
+  const changeQty = (cartItemId, qty) =>
     setCart((prev) =>
-      qty <= 0 ? prev.filter((p) => p.id !== id) : prev.map((p) => (p.id === id ? { ...p, qty } : p))
+      qty <= 0
+        ? prev.filter((p) => p.cartItemId !== cartItemId)
+        : prev.map((p) => (p.cartItemId === cartItemId ? { ...p, qty } : p))
     );
-  const removeFromCart = (id) => setCart((prev) => prev.filter((p) => p.id !== id));
+
+  const removeFromCart = (cartItemId) =>
+    setCart((prev) => prev.filter((p) => p.cartItemId !== cartItemId));
 
   // відкриття модалки швидкої покупки з картки товару
   const openBuy = (product) => {
@@ -217,7 +264,7 @@ export default function App() {
                 )}
               </section>
 
-              <section className="mt-10">
+              {/* <section className="mt-10">
                 <h2 className="relative text-left text-2xl md:text-5xl font-stencil uppercase tracking-[0.25em] text-white mb-4">
                   Товари
                 </h2>
@@ -240,7 +287,7 @@ export default function App() {
                     ))}
                   </div>
                 )}
-              </section>
+              </section> */}
             </main>
           }
         />

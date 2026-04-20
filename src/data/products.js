@@ -5,6 +5,9 @@ const riflesImg =  "https://res.cloudinary.com/da27wfewm/image/upload/v175835973
 const knivesImg =  "https://res.cloudinary.com/da27wfewm/image/upload/v1758359724/knifes_rsdeyq.webp";
 const accessoriesImg =  "https://res.cloudinary.com/da27wfewm/image/upload/v1758359717/acsesory_p08mzi.webp";
 
+// Додати картинки для категорій ланих продуктів
+// const flobersImg = "#";
+// const pspImg = "#"
 
 // Hatsan
 const imgHatsan_1 =  "https://res.cloudinary.com/da27wfewm/image/upload/v1758398902/img_3_ze6iff.png";
@@ -152,10 +155,15 @@ const kodiak_6 = "https://res.cloudinary.com/da27wfewm/image/upload/v1760824039/
 const kodiak_7 = "https://res.cloudinary.com/da27wfewm/image/upload/v1760824037/photo_2025-10-19_00-36-50_ihmu9c_jmkmmc.png";
 const kodiak_8 = "https://res.cloudinary.com/da27wfewm/image/upload/v1760824036/photo_2025-10-19_00-36-54_cc7ffg_e_background_removal_f_png_ugepnr.png";
 
+//mini addons img
+const imgPercBallon = "https://res.cloudinary.com/da27wfewm/image/upload/v1760824036/photo_2025-10-19_00-36-54_cc7ffg_e_background_removal_f_png_ugepnr.png";
+
 
 export const categories = [
-  { id: "pistols", name: "Пістолети", image: pistolsImg },
-  { id: "rifles", name: "Пневм. гвинт.", image: riflesImg },
+  { id: "pistols", name: "Стартові пістолети", image: pistolsImg },
+  { id: "flobers", name: "Флобери", image: pistolsImg },
+  { id: "rifles", name: "Пневматичні гвинтівки", image: riflesImg },
+  { id: "psp-rifles", name: "ПСП гвинтівки", image: riflesImg },
   { id: "knives", name: "Ножі", image: knivesImg },
   { id: "accessories", name: "Аксесуари", image: accessoriesImg },
 ];
@@ -193,12 +201,12 @@ export const products = [
     addons: [
     { id: "co2-2",    name: "2 балончики CO2",  price: 200 },
     { id: "bb-4x32",  name: "Кулі 4×32",        price: 600 },
-    { id: "bb-4x28",  name: "Кулі 4×28",        price: 300 },
   ],
   },
   { id: 2, title: "Пневматична гвинтівка Snow Peak GR ",
     price: 4999, 
     image: snowPeakR_1, 
+    littleImgAddon: imgPercBallon, 
     imgs: [snowPeakR_1, snowPeakR_2, snowPeakR_3, snowPeakR_4],
     description: "Пневматична гвинтівка Snow Peak GR – це класична газо-пружинна гвинт. Має нарізний ствол із високоякісної сталі. У гвинт встановлена газова пружина, що в порівнянні з крученою дротяною пружиною значно знижує вібрацію при пострілі, внаслідок чого підвищується точність і купність пострілу. Зведення здійснюється переламуванням ствола, стандартна однозарядна система. Пневматична гвинт має механічний запобіжник. Прицільна планка та мушка з фібер-оптичними нитками. Приклад і ложа  виготовлені з полімеру. Як заряди для гвинтівки використовуються свинцеві кул калібру 4.5 мм.",
     features: [

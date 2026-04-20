@@ -6,10 +6,13 @@ import logo from "/img/Logo.svg";
 import { FaInstagram, FaTiktok, FaTelegram } from "react-icons/fa";
 
 const CATEGORIES = [
-  { id: "pistols", name: "Пістолети" },
-  { id: "rifles", name: "Пневм.Гвинт."},
+  { id: "pistols", name: "Стартові пістолети" },
+  { id: "rifles", name: "Пневматичні гвинтівки",},
+  { id: "psp-rifles", name: "ПСП гвинтівки",},
+  { id: "flobers", name: "Флобери",},
   { id: "knives", name: "Ножі",},
   { id: "accessories", name: "Аксесуари",},
+  
 ];
 
 export default function Header({ cartCount = 0 }) {
