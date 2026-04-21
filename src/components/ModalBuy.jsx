@@ -33,14 +33,14 @@ export default function ModalBuy({
   const isCart = Array.isArray(cart) && cart.length > 0;
   const price = Number(product?.price || 0);
 
-  // 🆕 addons і їх сума для режиму "Купити зараз"
+  // 🆕 addons товару для режиму "Купити зараз"
   const productAddons = Array.isArray(product?.addons) ? product.addons : [];
   const productAddonsTotal = productAddons.reduce(
     (s, a) => s + (Number(a.price) || 0), 0
   );
   const unitPrice = price + productAddonsTotal;
 
-  // 🆕 singleTotal рахує з addons
+  // 🆕 singleTotal тепер включає addons
   const singleTotal = useMemo(
     () => unitPrice * Math.max(1, Number(qty) || 1),
     [unitPrice, qty]
@@ -111,9 +111,9 @@ export default function ModalBuy({
           title: i.title,
           qty: q,
           price: p,
-          addons,           // 🆕
-          addonsTotal,      // 🆕
-          unitTotal: ut,    // 🆕
+          addons,
+          addonsTotal,
+          unitTotal: ut,
           lineTotal: ut * q,
           giftText: i.giftText?.text || i.giftText || null,
         };
@@ -136,9 +136,9 @@ export default function ModalBuy({
         title: product?.title,
         qty: q,
         price,
-        addons: productAddons,         // 🆕
-        addonsTotal: productAddonsTotal, // 🆕
-        unitTotal: unitPrice,          // 🆕
+        addons: productAddons,
+        addonsTotal: productAddonsTotal,
+        unitTotal: unitPrice,
         lineTotal: unitPrice * q,
         giftText: product?.giftText?.text || product?.giftText || null,
       }],
@@ -178,12 +178,34 @@ export default function ModalBuy({
         throw new Error(data?.error || "Помилка відправки");
       }
 
+      // 🆕 легкі копії items для ThankYou (чек)
+      const summaryItems = isCart
+        ? cart.map((i) => ({
+            id: i.id,
+            title: i.title,
+            qty: Math.max(1, Number(i.qty) || 1),
+            price: Number(i.price) || 0,
+            unitTotal: Number(i.unitTotal) || Number(i.price) || 0,
+            addons: Array.isArray(i.addons) ? i.addons : [],
+            giftText: i.giftText?.text || i.giftText || null,
+          }))
+        : [{
+            id: product?.id,
+            title: product?.title,
+            qty: Math.max(1, Number(qty) || 1),
+            price: Number(price) || 0,
+            unitTotal: unitPrice,
+            addons: productAddons,
+            giftText: product?.giftText?.text || product?.giftText || null,
+          }];
+
       const summary = {
         orderId,
         itemsCount: isCart ? cart?.length || 1 : Math.max(1, Number(qty) || 1),
         total: displayTotal,
         name,
         phone,
+        items: summaryItems, // 🆕 для "чека" на ThankYou
       };
       localStorage.setItem("lastOrderSummary", JSON.stringify(summary));
       onClose?.();
@@ -256,7 +278,7 @@ export default function ModalBuy({
                         🎁 {product.giftText.text}
                       </div>
                     )}
-                    {/* 🆕 Addons */}
+                    {/* 🆕 Addons чіпи */}
                     {productAddons.length > 0 && (
                       <div className="mt-1.5 flex flex-wrap gap-1">
                         {productAddons.map((a) => (
@@ -270,7 +292,7 @@ export default function ModalBuy({
                         ))}
                       </div>
                     )}
-                    {/* 🆕 unitPrice замість price */}
+                    {/* 🆕 unitPrice з перекресленою базовою */}
                     <div className="mt-1 text-red-600 font-bold text-base sm:text-lg tabular-nums">
                       {formatUAH(unitPrice)}
                       {productAddonsTotal > 0 && (
@@ -342,7 +364,6 @@ export default function ModalBuy({
                             {formatUAH(unitTotal * q)}
                           </span>
                         </div>
-                        {/* 🆕 Addons під назвою */}
                         {addons.length > 0 && (
                           <div className="pl-2 flex flex-wrap gap-1 mt-0.5">
                             {addons.map((a) => (

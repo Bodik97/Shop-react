@@ -140,8 +140,8 @@ export default function CategoryPage({ onAddToCart, onBuy }) {
           <div role="group" aria-label="Опції сортування" className="flex flex-wrap gap-2">
             {[
               { id: "default",    label: "Без сортування",   title: "Початковий порядок" },
-              { id: "price-asc",  label: "Дорогі ↑",           title: "Від дешевих до дорогих" },
-              { id: "price-desc", label: "Дешеві ↓",           title: "Від дорогих до дешевих" },
+              { id: "price-asc",  label: "Дешеві ↑",           title: "Від дешевих до дорогих" },
+              { id: "price-desc", label: "Дорогі ↓",           title: "Від дорогих до дешевих" },
               { id: "popular",    label: "Популярні",        title: "Найпопулярніші першими" },
               { id: "new",        label: "Нові",             title: "Нові надходження" },
             ].map(opt => {
