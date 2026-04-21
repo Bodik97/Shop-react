@@ -459,10 +459,7 @@ export default function ProductPage({ onAddToCart, onBuy }) {
                                 text-base md:text-lg hover:bg-blue-700 active:scale-[0.99] transition
                                 whitespace-nowrap"
                       onClick={() => {
-                        // 🆕 передаємо product разом із вибраними addons
-                        const chosenAddons = addons.filter((a) =>
-                          selectedAddons.includes(a.id)
-                        );
+                        const chosenAddons = addons.filter((a) => selectedAddons.includes(a.id));
                         onBuy?.({ ...product, addons: chosenAddons });
                       }}
                       aria-label="Купити зараз"
@@ -474,14 +471,11 @@ export default function ProductPage({ onAddToCart, onBuy }) {
                       className="w-full h-12 md:h-14 rounded-xl border font-semibold text-base md:text-lg
                                 hover:bg-gray-50 active:scale-[0.99] transition whitespace-nowrap"
                       onClick={() => {
-                        // 🆕 Повні об'єкти вибраних addons {id, name, price}
-                        const chosenAddons = addons.filter((a) =>
-                          selectedAddons.includes(a.id)
-                        );
+                        const chosenAddons = addons.filter((a) => selectedAddons.includes(a.id));
                         const item = {
                           ...product,
                           giftText: product.giftText?.text || product.giftText || null,
-                          addons: chosenAddons, // 🆕 передаємо addons у кошик
+                          addons: chosenAddons,
                         };
                         onAddToCart?.(item);
                         setFlashCart(true);
@@ -516,10 +510,7 @@ export default function ProductPage({ onAddToCart, onBuy }) {
                     <button
                       type="button"
                       onClick={() => {
-                        // 🆕 те саме що і десктопна кнопка
-                        const chosenAddons = addons.filter((a) =>
-                          selectedAddons.includes(a.id)
-                        );
+                        const chosenAddons = addons.filter((a) => selectedAddons.includes(a.id));
                         onBuy?.({ ...product, addons: chosenAddons });
                       }}
                       className="w-32 h-10 flex items-center justify-center

@@ -87,17 +87,8 @@ export default function App() {
       const next = prev.map((item) => {
         const prod = products.find((p) => p.id === item.id);
         if (!prod) return item;
-        if (prod.price !== item.price) {
-          changed = true;
-          // 🆕 якщо ціна товару змінилась — перераховуємо unitTotal з addons
-          const addonsTotal = Number(item.addonsTotal) || 0;
-          return {
-            ...item,
-            price: prod.price,
-            unitTotal: prod.price + addonsTotal,
-          };
-        }
-        return item;
+        if (prod.price !== item.price) changed = true;
+        return { ...item, price: prod.price };
       });
       return changed ? next : prev;
     });
@@ -107,72 +98,87 @@ export default function App() {
     refreshCartPrices();
   }, [refreshCartPrices]);
 
-  // 🆕 Helper: робить "відбиток" позиції (id товару + відсортовані id addons).
-  // Потрібен щоб зрозуміти: два набори однакові чи різні.
-  const makeItemFingerprint = (id, addons = []) => {
+  // ─── helpers ───────────────────────────────────────────────────────────────
+  // "відбиток" позиції: id товару + відсортовані id addons
+  // Якщо однакові товари з тими ж addons — один рядок (qty+1)
+  // Якщо ті самі товари але різні addons — різні рядки
+  const makeFingerprint = (id, addons = []) => {
     const addonIds = (addons || []).map((a) => a.id).sort().join(",");
     return `${id}::${addonIds}`;
   };
 
-  // 🆕 Helper: рахує суму addons
   const sumAddons = (addons = []) =>
-    (addons || []).reduce((sum, a) => sum + (Number(a.price) || 0), 0);
+    (addons || []).reduce((s, a) => s + (Number(a.price) || 0), 0);
 
   // кошик
   const addToCart = (product) => {
     setCart((prev) => {
-      // 🆕 Витягуємо addons з product (якщо немає — порожній масив)
-      const addons = Array.isArray(product.addons) ? product.addons : [];
+      const addons     = Array.isArray(product.addons) ? product.addons : [];
+      const fingerprint = makeFingerprint(product.id, addons);
 
-      // 🆕 Формуємо "відбиток" нової позиції
-      const newFingerprint = makeItemFingerprint(product.id, addons);
-
-      // 🆕 Шукаємо позицію з таким же відбитком
-      // (той самий товар + той самий набір addons)
+      // Шукаємо позицію з таким же товаром і тими ж addons
       const i = prev.findIndex(
-        (p) => makeItemFingerprint(p.id, p.addons) === newFingerprint
+        (p) => makeFingerprint(p.id, p.addons) === fingerprint
       );
 
-      // ✅ Така позиція вже є — збільшуємо кількість
       if (i >= 0) {
+        // Та сама позиція — збільшуємо qty
         const copy = [...prev];
         copy[i] = { ...copy[i], qty: (Number(copy[i].qty) || 0) + 1 };
         return copy;
       }
 
-      // ✅ Нова позиція — додаємо з усіма даними про addons
+      // Нова позиція
       const addonsTotal = sumAddons(addons);
-      const price = Number(product.price) || 0;
-
+      const price       = Number(product.price) || 0;
       return [
         ...prev,
         {
-          cartItemId: `${product.id}-${Date.now()}`, // 🆕 унікальний ID позиції
-          id: product.id,
-          title: product.title,
-          price: price,
-          image: product.image,
-          qty: 1,
-          giftText: product?.giftText?.text || product?.giftText || null,
-          // 🆕 Все що стосується addons:
-          addons: addons,                 // масив [{id, name, price}, ...]
-          addonsTotal: addonsTotal,       // сума цін addons
-          unitTotal: price + addonsTotal, // ціна 1 шт з addons
+          cartItemId: `${product.id}-${Date.now()}`, // унікальний ID позиції
+          id:         product.id,
+          title:      product.title,
+          price,
+          image:      product.image,
+          qty:        1,
+          giftText:   product?.giftText?.text || product?.giftText || null,
+          addons,
+          addonsTotal,
+          unitTotal:  price + addonsTotal,
         },
       ];
     });
   };
 
-  // 🆕 Працюємо по cartItemId (не id!), бо може бути 2 позиції з одним id але різними addons
+  // changeQty і removeFromCart — по cartItemId (не id!)
   const changeQty = (cartItemId, qty) =>
     setCart((prev) =>
       qty <= 0
-        ? prev.filter((p) => p.cartItemId !== cartItemId)
-        : prev.map((p) => (p.cartItemId === cartItemId ? { ...p, qty } : p))
+        ? prev.filter((p) => (p.cartItemId || p.id) !== cartItemId)
+        : prev.map((p) =>
+            (p.cartItemId || p.id) === cartItemId ? { ...p, qty } : p
+          )
     );
 
   const removeFromCart = (cartItemId) =>
-    setCart((prev) => prev.filter((p) => p.cartItemId !== cartItemId));
+    setCart((prev) =>
+      prev.filter((p) => (p.cartItemId || p.id) !== cartItemId)
+    );
+
+  // Видалити один addon з позиції — перераховує addonsTotal і unitTotal
+  const removeAddon = (cartItemId, addonId) =>
+    setCart((prev) =>
+      prev.map((item) => {
+        if ((item.cartItemId || item.id) !== cartItemId) return item;
+        const addons      = (item.addons || []).filter((a) => a.id !== addonId);
+        const addonsTotal = sumAddons(addons);
+        return {
+          ...item,
+          addons,
+          addonsTotal,
+          unitTotal: (Number(item.price) || 0) + addonsTotal,
+        };
+      })
+    );
 
   // відкриття модалки швидкої покупки з картки товару
   const openBuy = (product) => {
@@ -264,7 +270,7 @@ export default function App() {
                 )}
               </section>
 
-              {/* <section className="mt-10">
+              <section className="mt-10">
                 <h2 className="relative text-left text-2xl md:text-5xl font-stencil uppercase tracking-[0.25em] text-white mb-4">
                   Товари
                 </h2>
@@ -287,7 +293,7 @@ export default function App() {
                     ))}
                   </div>
                 )}
-              </section> */}
+              </section>
             </main>
           }
         />
@@ -300,6 +306,7 @@ export default function App() {
               refreshPrices={refreshCartPrices}
               changeQty={changeQty}
               removeFromCart={removeFromCart}
+              removeAddon={removeAddon}
               checkout={checkout}
             />
           }

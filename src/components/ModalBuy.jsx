@@ -374,45 +374,61 @@ export default function ModalBuy({
                     const lineTotal = unitTotal * q;
 
                     return (
-                      <div key={i.cartItemId || i.id} className="space-y-1">
-                        {/* Назва + базова ціна */}
-                        <div className="flex justify-between gap-3 text-sm">
-                          <span className="font-medium text-gray-800 truncate">
-                            {i.title}{q > 1 && <span className="text-gray-400 font-normal"> × {q}</span>}
-                          </span>
-                          <span className="tabular-nums shrink-0 text-gray-800">
-                            {formatUAH(basePrice)}
-                          </span>
+                      <div key={i.cartItemId || i.id} className="flex gap-3">
+
+                        {/* Картинка товару */}
+                        <div className="shrink-0 w-14 h-14 rounded-xl overflow-hidden border bg-white">
+                          <img
+                            src={i.image || "/placeholder.png"}
+                            alt={i.title}
+                            className="w-full h-full object-cover"
+                            loading="lazy"
+                            onError={(e) => { e.currentTarget.src = "/placeholder.png"; }}
+                          />
                         </div>
 
-                        {/* Кожен addon окремим рядком */}
-                        {addons.map((a) => (
-                          <div key={a.id} className="flex justify-between gap-3 pl-2">
-                            <span className="text-xs text-blue-600 truncate">+ {a.name}</span>
-                            <span className="text-xs font-semibold text-blue-700 tabular-nums shrink-0">
-                              {formatUAH(a.price)}
+                        {/* Права частина: назва + addons + підсумок */}
+                        <div className="flex-1 min-w-0 space-y-1">
+                          {/* Назва + базова ціна */}
+                          <div className="flex justify-between gap-3 text-sm">
+                            <span className="font-medium text-gray-800 leading-snug line-clamp-2">
+                              {i.title}{q > 1 && <span className="text-gray-400 font-normal"> × {q}</span>}
+                            </span>
+                            <span className="tabular-nums shrink-0 text-gray-800">
+                              {formatUAH(basePrice)}
                             </span>
                           </div>
-                        ))}
 
-                        {/* Подарунок */}
-                        {i.giftText && (
-                          <div className="text-xs text-emerald-700 flex items-center gap-1 pl-2">
-                            🎁 {i.giftText}
-                          </div>
-                        )}
+                          {/* Кожен addon окремим рядком */}
+                          {addons.map((a) => (
+                            <div key={a.id} className="flex justify-between gap-3 pl-2">
+                              <span className="text-xs text-blue-600 truncate">+ {a.name}</span>
+                              <span className="text-xs font-semibold text-blue-700 tabular-nums shrink-0">
+                                {formatUAH(a.price)}
+                              </span>
+                            </div>
+                          ))}
 
-                        {/* Підсумок позиції — тільки якщо є addons або qty > 1 */}
-                        {(addons.length > 0 || q > 1) && (
-                          <div className="flex justify-between gap-3 pt-1 border-t border-dashed border-gray-200">
-                            <span className="text-xs text-gray-400">
-                              {q > 1 ? `${q} × ${formatUAH(unitTotal)}` : "Разом за позицію:"}
-                            </span>
-                            <span className="text-xs font-bold text-gray-800 tabular-nums shrink-0">
-                              {formatUAH(lineTotal)}
-                            </span>
-                          </div>
-                        )}
+                          {/* Подарунок */}
+                          {i.giftText && (
+                            <div className="text-xs text-emerald-700 flex items-center gap-1 pl-2">
+                              🎁 {i.giftText}
+                            </div>
+                          )}
+
+                          {/* Підсумок позиції */}
+                          {(addons.length > 0 || q > 1) && (
+                            <div className="flex justify-between gap-3 pt-1 border-t border-dashed border-gray-200">
+                              <span className="text-xs text-gray-400">
+                                {q > 1 ? `${q} × ${formatUAH(unitTotal)}` : "Разом за позицію:"}
+                              </span>
+                              <span className="text-xs font-bold text-gray-800 tabular-nums shrink-0">
+                                {formatUAH(lineTotal)}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+
                       </div>
                     );
                   })}
@@ -420,7 +436,7 @@ export default function ModalBuy({
                   <hr className="border-slate-200" />
                   <Row label="Сума товарів" value={formatUAH(subtotal)} />
                   {discount > 0 && <Row label="Знижка" value={`−${formatUAH(discount)}`} />}
-                  <Row strong label="Разом" value={formatUAH(displayTotal)} />
+                  <Row strong accent label="Разом" value={formatUAH(displayTotal)} />
                 </div>
               </section>
             )}
@@ -536,11 +552,13 @@ export default function ModalBuy({
 }
 
 /* helpers */
-function Row({ label, value, strong = false }) {
+function Row({ label, value, strong = false, accent = false }) {
   return (
     <div className={`flex justify-between gap-3 ${strong ? "font-semibold" : ""}`}>
       <span className="text-gray-800">{label}</span>
-      <span className="tabular-nums text-gray-900">{value}</span>
+      <span className={`tabular-nums ${accent ? "text-red-600" : "text-gray-900"}`}>
+        {value}
+      </span>
     </div>
   );
 }
