@@ -137,48 +137,63 @@ export default function ThankYou() {
 
                   <ul className="divide-y divide-gray-100">
                     {items.map((item, idx) => {
-                      const qty       = Math.max(1, Number(item.qty) || 1);
-                      const unitTotal = Number(item.unitTotal) || Number(item.price) || 0;
-                      const lineTotal = unitTotal * qty;
-                      const addons    = Array.isArray(item.addons) ? item.addons : [];
+                      const qty        = Math.max(1, Number(item.qty) || 1);
+                      const basePrice  = Number(item.price) || 0;
+                      const addons     = Array.isArray(item.addons) ? item.addons : [];
+                      const addonsSum  = addons.reduce((s, a) => s + (Number(a.price) || 0), 0);
+                      const unitTotal  = basePrice + addonsSum;
+                      const lineTotal  = unitTotal * qty;
 
                       return (
-                        <li key={`${item.id ?? idx}-${idx}`} className="px-5 py-4">
+                        <li key={`${item.id ?? idx}-${idx}`} className="px-5 py-4 space-y-1.5">
+
+                          {/* ── Рядок 1: базовий товар ── */}
                           <div className="flex items-start justify-between gap-3">
                             <div className="flex-1 min-w-0">
-                              <div className="text-sm font-medium text-gray-900 leading-snug">
+                              <span className="text-sm font-semibold text-gray-900 leading-snug">
                                 {item.title}
-                              </div>
-
-                              {addons.length > 0 && (
-                                <div className="mt-1.5 flex flex-wrap gap-1">
-                                  {addons.map((a) => (
-                                    <span key={a.id} className="inline-flex items-center gap-1 rounded-full border border-blue-200 bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700">
-                                      + {a.name}
-                                      <span className="font-semibold">{formatUAH(a.price)}</span>
-                                    </span>
-                                  ))}
-                                </div>
-                              )}
-
-                              {item.giftText && (
-                                <div className="mt-1 text-xs text-emerald-700 flex items-center gap-1">
-                                  🎁 {item.giftText}
-                                </div>
-                              )}
+                                {qty > 1 && (
+                                  <span className="ml-1.5 text-gray-400 font-normal">× {qty}</span>
+                                )}
+                              </span>
                             </div>
-
-                            <div className="text-right shrink-0 ml-2">
-                              <div className="text-sm font-semibold text-gray-900 tabular-nums">
-                                {formatUAH(lineTotal)}
-                              </div>
-                              {(qty > 1 || addons.length > 0) && (
-                                <div className="text-xs text-gray-400 tabular-nums mt-0.5">
-                                  {qty > 1 && `${qty} × `}{formatUAH(unitTotal)}
-                                </div>
-                              )}
-                            </div>
+                            <span className="text-sm font-semibold text-gray-900 tabular-nums shrink-0">
+                              {formatUAH(basePrice)}
+                            </span>
                           </div>
+
+                          {/* ── Рядки 2+: кожен addon окремо ── */}
+                          {addons.map((a) => (
+                            <div key={a.id} className="flex items-center justify-between gap-3 pl-3">
+                              <span className="text-xs text-blue-700 flex items-center gap-1">
+                                <span className="text-blue-400">+</span>
+                                {a.name}
+                              </span>
+                              <span className="text-xs font-semibold text-blue-700 tabular-nums shrink-0">
+                                {formatUAH(a.price)}
+                              </span>
+                            </div>
+                          ))}
+
+                          {/* Подарунок */}
+                          {item.giftText && (
+                            <div className="pl-3 text-xs text-emerald-700 flex items-center gap-1">
+                              🎁 {item.giftText}
+                            </div>
+                          )}
+
+                          {/* ── Підсумок рядка (тільки якщо є addons або qty > 1) ── */}
+                          {(addons.length > 0 || qty > 1) && (
+                            <div className="flex items-center justify-between gap-3 pt-1.5 mt-1 border-t border-dashed border-gray-200">
+                              <span className="text-xs text-gray-500">
+                                {qty > 1 ? `${qty} × ${formatUAH(unitTotal)}` : "Разом за позицію:"}
+                              </span>
+                              <span className="text-sm font-bold text-gray-900 tabular-nums shrink-0">
+                                {formatUAH(lineTotal)}
+                              </span>
+                            </div>
+                          )}
+
                         </li>
                       );
                     })}
