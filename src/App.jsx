@@ -270,7 +270,7 @@ export default function App() {
                 )}
               </section>
 
-              <section className="mt-10">
+              {/* <section className="mt-10">
                 <h2 className="relative text-left text-2xl md:text-5xl font-stencil uppercase tracking-[0.25em] text-white mb-4">
                   Товари
                 </h2>
@@ -293,7 +293,7 @@ export default function App() {
                     ))}
                   </div>
                 )}
-              </section>
+              </section> */}
             </main>
           }
         />
