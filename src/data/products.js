@@ -284,6 +284,8 @@ export const products = [
     category: "pistols",
     popular: true, 
     popularityScore: 92,
+    oldPrice: 4500,
+    stock: 5,
     addons: [
         { id: "co2-2",    name: "2 балончики CO2",  price: 200 },
         { id: "bb-4x32",  name: "Кулі 4×32",        price: 600 },

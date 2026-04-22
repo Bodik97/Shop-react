@@ -335,16 +335,31 @@ export default function ProductPage() {
                 <div className="rounded-2xl border bg-white p-4 sm:p-5 shadow-sm">
                   {/* Ціна */}
                   <div className="text-gray-600 text-sm md:text-base mb-1">Ціна</div>
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <div className="text-2xl md:text-3xl font-extrabold text-red-600">
-                      {formatUAH(finalPrice)}
-                    </div>
-                    {addonsTotal > 0 && (
-                      <div className="text-sm text-gray-500">
-                        (товар {formatUAH(product.price)} + додатки {formatUAH(addonsTotal)})
+                    <div className="flex items-center gap-3 flex-wrap">
+                      <div className="text-2xl md:text-3xl font-extrabold text-red-600">
+                        {formatUAH(finalPrice)}
                       </div>
-                    )}
-                  </div>
+
+                      {/* Стара ціна (якщо знижка) */}
+                      {Number(product.oldPrice) > Number(product.price) && (
+                        <>
+                          <div className="text-lg text-gray-400 line-through tabular-nums">
+                            {formatUAH(product.oldPrice)}
+                          </div>
+                          <span className="inline-flex items-center rounded-full
+                                          bg-red-600 text-white shadow-md ring-2 ring-white
+                                          px-2.5 py-0.5 text-xs font-extrabold tabular-nums">
+                            −{Math.round((1 - product.price / product.oldPrice) * 100)}%
+                          </span>
+                        </>
+                      )}
+
+                      {addonsTotal > 0 && (
+                        <div className="text-sm text-gray-500 w-full">
+                          (товар {formatUAH(product.price)} + додатки {formatUAH(addonsTotal)})
+                        </div>
+                      )}
+                    </div>
 
                   {/* Опис подарунка під ціною */}
                   {product.giftText && (

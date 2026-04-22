@@ -46,9 +46,10 @@ export function CartProvider({ children, products = [] }) {
       const next = prev.map((item) => {
         const prod = products.find((p) => p.id === item.id);
         if (!prod) return item;
-        if (prod.price !== item.price) changed = true;
-        return { ...item, price: prod.price };
-      });
+        const newOldPrice = Number(prod.oldPrice) || 0;
+        if (prod.price !== item.price || newOldPrice !== item.oldPrice) changed = true;
+        return { ...item, price: prod.price, oldPrice: newOldPrice };
+        });
       return changed ? next : prev;
     });
   }, [products]);
@@ -75,18 +76,19 @@ export function CartProvider({ children, products = [] }) {
       return [
         ...prev,
         {
-          cartItemId: `${product.id}-${Date.now()}`,
-          id:         product.id,
-          title:      product.title,
-          price,
-          image:      product.image,
-          qty:        1,
-          giftText:   product?.giftText?.text || product?.giftText || null,
-          addons,
-          addonsTotal,
-          unitTotal:  price + addonsTotal,
+            cartItemId: `${product.id}-${Date.now()}`,
+            id:         product.id,
+            title:      product.title,
+            price,
+            oldPrice:   Number(product.oldPrice) || 0,  // ← додали
+            image:      product.image,
+            qty:        1,
+            giftText:   product?.giftText?.text || product?.giftText || null,
+            addons,
+            addonsTotal,
+            unitTotal:  price + addonsTotal,
         },
-      ];
+        ];
     });
   }, []);
 

@@ -197,7 +197,7 @@ export default function Cart({ freeShippingFrom = 0 }) {
                     {saving > 0 && oldPrice > 0 && (
                       <>
                         <div className="text-sm text-gray-400 line-through tabular-nums">{formatUAH(oldPrice)}</div>
-                        <span className="inline-flex items-center rounded-full bg-rose-100 text-rose-700 text-[11px] font-bold px-2 py-0.5">
+                        <span className="inline-flex items-center rounded-full bg-red-600 text-white shadow-md ring-2 ring-white text-xs font-extrabold tabular-nums px-2.5 py-0.5">
                           −{Math.round((saving / oldPrice) * 100)}%
                         </span>
                       </>
@@ -274,7 +274,7 @@ export default function Cart({ freeShippingFrom = 0 }) {
                     <button
                       type="button"
                       onClick={() => setArmedId(cartItemId)}
-                      className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-red-200 bg-red-50 px-2.5 py-1.5 text-sm text-red-600 hover:bg-red-100 transition whitespace-nowrap"
+                      className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-red-200 bg-red-50 mt-5 h-10 px-2.5 py-1.5 text-sm text-red-600 hover:bg-red-100 transition whitespace-nowrap"
                     >
                       🗑️ <span className="font-medium">Видалити</span>
                     </button>
@@ -284,14 +284,14 @@ export default function Cart({ freeShippingFrom = 0 }) {
                       <button
                         type="button"
                         onClick={() => { onRemove(cartItemId); setArmedId(null); }}
-                        className="inline-flex items-center justify-center h-8 px-2 rounded-lg bg-red-600 text-white text-xs font-medium hover:bg-red-700 transition w-full"
+                        className="inline-flex items-center justify-center h-8 px-2 rounded-lg bg-red-600 text-red-500 text-xs font-medium hover:bg-red-700 transition w-full"
                       >
-                        ✓ Так, видалити
+                        Видалити
                       </button>
                       <button
                         type="button"
                         onClick={() => setArmedId(null)}
-                        className="inline-flex items-center justify-center h-8 px-2 rounded-lg border text-xs text-gray-600 hover:bg-gray-50 transition w-full"
+                        className="inline-flex items-center justify-center h-8 px-2 rounded-lg border text-xs text-white hover:bg-gray-50 transition w-full"
                       >
                         Скасувати
                       </button>
@@ -345,56 +345,77 @@ export default function Cart({ freeShippingFrom = 0 }) {
 
       {/* ── Sticky мобільний footer ── */}
       <div className="fixed inset-x-0 bottom-0 z-40 lg:hidden">
-        <div className="mx-auto max-w-6xl px-3 sm:px-4 pb-[max(env(safe-area-inset-bottom),10px)]">
-          <div className="rounded-t-2xl border bg-white shadow-2xl p-3">
+        <div className="mx-auto max-w-2xl px-2 sm:px-4 pb-[max(env(safe-area-inset-bottom),10px)]">
+          <div className="rounded-t-2xl border bg-white shadow-2xl p-2 sm:p-3">
+
             <div className="flex items-center justify-between gap-2">
-              {/* Ціна */}
-              <div className="min-w-0">
-                <div className="flex items-baseline gap-1 text-red-600 font-extrabold tabular-nums">
+              {/* ── Ціна ── */}
+              <div className="min-w-0 flex-1">
+                <div className="flex items-baseline gap-0.5 text-red-600 font-extrabold tabular-nums flex-wrap leading-none">
                   {(() => {
                     const f = formatUAH(total);
                     const amount = f.replace(/\s*₴$/, "");
                     return (
                       <>
-                        <span className="leading-none text-[clamp(18px,8vw,28px)]">{amount}</span>
-                        <span className="leading-none opacity-80 text-[clamp(14px,3vw,18px)]">₴</span>
+                        {/* Мінімум 16px на 320px → максимум 26px на великих */}
+                        <span className="text-[clamp(16px,5vw,26px)]">{amount}</span>
+                        <span className="text-[clamp(13px,3vw,18px)] opacity-80">₴</span>
                       </>
                     );
                   })()}
                 </div>
+
                 {freeShippingFrom > 0 && leftToFree > 0 && (
-                  <div className="text-[11px] text-gray-500 mt-0.5">
-                    Ще {formatUAH(leftToFree)} до безкоштовної доставки
+                  <div className="text-[10px] xs:text-[11px] text-gray-500 mt-0.5 line-clamp-1">
+                    Ще {formatUAH(leftToFree)} до безкоштовної
                   </div>
                 )}
                 {freeShippingFrom > 0 && leftToFree === 0 && (
-                  <div className="text-[11px] text-emerald-700 mt-0.5">
+                  <div className="text-[10px] xs:text-[11px] text-emerald-700 mt-0.5">
                     Безкоштовна доставка ✓
                   </div>
                 )}
               </div>
 
-              {/* Кнопки */}
-              <div className="flex items-center gap-2">
+              {/* ── Кнопки ── */}
+              <div className="flex items-center gap-1.5 shrink-0">
                 <button
                   type="button"
                   onClick={() => setMobileDetails((v) => !v)}
-                  className="inline-flex items-center justify-center h-11 px-3 rounded-xl border text-sm hover:bg-gray-50 shrink-0"
+                  aria-label={mobileDetails ? "Сховати деталі" : "Показати деталі"}
+                  className="
+                    inline-flex items-center justify-center
+                    h-10 sm:h-11
+                    px-2.5 sm:px-3
+                    rounded-xl border border-gray-300
+                    text-xs sm:text-sm font-medium text-white
+                    hover:bg-gray-50 active:scale-95
+                    transition shrink-0
+                  "
                 >
                   {mobileDetails ? "Сховати" : "Деталі"}
                 </button>
+
                 <button
                   type="button"
                   onClick={handleCheckout}
                   disabled={!itemsCount}
-                  className="inline-flex items-center justify-center h-11 px-5 rounded-xl bg-black text-white font-semibold active:scale-[0.98] disabled:opacity-50 transition shrink-0"
+                  className="
+                    inline-flex items-center justify-center
+                    h-10 sm:h-11
+                    px-3 sm:px-5
+                    rounded-xl bg-black text-white
+                    text-xs sm:text-sm font-semibold
+                    active:scale-[0.98] disabled:opacity-50
+                    transition shrink-0
+                  "
                 >
-                  Оформити
+                  Купити
                 </button>
               </div>
             </div>
 
-            {/* 🆕 Розгортаємий підсумок на мобільному */}
+            {/* Розгортаємий підсумок */}
             {mobileDetails && (
               <div className="mt-3 pt-3 border-t space-y-1.5 text-sm">
                 <div className="flex justify-between text-gray-600">
@@ -417,6 +438,7 @@ export default function Cart({ freeShippingFrom = 0 }) {
                 </div>
               </div>
             )}
+
           </div>
         </div>
       </div>
