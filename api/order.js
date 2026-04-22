@@ -94,8 +94,11 @@ export default async function handler(req, res) {
     }
   }
 
-  // ---------- extract ----------
-  const type = (safeStr(b.type || b.form || "", 40) || "").toLowerCase();
+  // 🐛 DEBUG: подивимось що приходить
+console.log("[DEBUG] incoming body:", JSON.stringify(b, null, 2));
+
+// ---------- extract ----------
+const type = (safeStr(b.type || b.form || "", 40) || "").toLowerCase();
   const isConsult = type === "consult" || type === "консультація";
 
   const name = safeStr(b.name || b.customer?.name, 120);
