@@ -25,6 +25,16 @@ import Footer from "./components/Footer";
 // === налаштування API
 const API_URL = "/api/telegram";
 
+// ─── cart helpers ───────────────────────────────────────────────────────────
+// Поза компонентом — не створюються заново при кожному рендері
+const makeFingerprint = (id, addons = []) => {
+  const addonIds = (addons || []).map((a) => a.id).sort().join(",");
+  return `${id}::${addonIds}`;
+};
+
+const sumAddons = (addons = []) =>
+  (addons || []).reduce((s, a) => s + (Number(a.price) || 0), 0);
+
 export default function App() {
   useEffect(() => {
     const opts = { passive: false };
@@ -59,7 +69,6 @@ export default function App() {
       .map((p) => ({
         ...p,
         price: Number(p.price) || 0,
-        // 🔧 якщо image відсутнє — беремо першу картинку з imgs[]
         image: p.image || (Array.isArray(p.imgs) ? p.imgs[0] : null) || "/placeholder.png",
       }));
   }, []);
@@ -100,17 +109,6 @@ export default function App() {
   }, [refreshCartPrices]);
 
   // ─── helpers ───────────────────────────────────────────────────────────────
-  // "відбиток" позиції: id товару + відсортовані id addons
-  // Якщо однакові товари з тими ж addons — один рядок (qty+1)
-  // Якщо ті самі товари але різні addons — різні рядки
-  const makeFingerprint = (id, addons = []) => {
-    const addonIds = (addons || []).map((a) => a.id).sort().join(",");
-    return `${id}::${addonIds}`;
-  };
-
-  const sumAddons = (addons = []) =>
-    (addons || []).reduce((s, a) => s + (Number(a.price) || 0), 0);
-
   // кошик
   const addToCart = (product) => {
     setCart((prev) => {
@@ -309,13 +307,11 @@ export default function App() {
               removeFromCart={removeFromCart}
               removeAddon={removeAddon}
               checkout={checkout}
+              clearCart={() => setCart([])}
             />
           }
         />
         <Route path="/catalog" element={<CategoryPage onAddToCart={addToCart} onBuy={openBuy} />} />
-        <Route path="/category/:id" element={<CategoryPage onAddToCart={addToCart} onBuy={openBuy} />} />
-
-          
         <Route path="/category/:id" element={<CategoryPage onAddToCart={addToCart} onBuy={openBuy} />} />
         <Route path="/product/:id" element={<ProductPage onAddToCart={addToCart} onBuy={openBuy} />} />
         <Route path="/about" element={<About />} />
