@@ -94,8 +94,6 @@ export default async function handler(req, res) {
     }
   }
 
-  // 🐛 DEBUG: подивимось що приходить
-console.log("[DEBUG] incoming body:", JSON.stringify(b, null, 2));
 
 // ---------- extract ----------
 const type = (safeStr(b.type || b.form || "", 40) || "").toLowerCase();
