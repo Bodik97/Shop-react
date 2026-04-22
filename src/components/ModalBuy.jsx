@@ -199,6 +199,7 @@ export default function ModalBuy({
             title: i.title,
             qty: Math.max(1, Number(i.qty) || 1),
             price: Number(i.price) || 0,
+            oldPrice: Number(i.oldPrice) || 0,                    // ← нове
             unitTotal: Number(i.unitTotal) || Number(i.price) || 0,
             addons: Array.isArray(i.addons) ? i.addons : [],
             giftText: i.giftText?.text || i.giftText || null,
@@ -208,6 +209,7 @@ export default function ModalBuy({
             title: product?.title,
             qty: Math.max(1, Number(qty) || 1),
             price: Number(price) || 0,
+            oldPrice: Number(product?.oldPrice) || 0,             // ← нове
             unitTotal: unitPrice,
             addons: productAddons,
             giftText: product?.giftText?.text || product?.giftText || null,
