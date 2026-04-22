@@ -217,9 +217,9 @@ export default function Cart({
                             type="button"
                             aria-label={`Видалити ${addon.name}`}
                             onClick={() => onRemoveAddon(cartItemId, addon.id)}
-                            className="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full text-red-500 hover:bg-red-500 transition shrink-0"
-                          >
-                           X <X className="h-2.5 w-2.5" />
+                            className="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full text-red-500 hover:bg-red-500 hover:text-white transition shrink-0"
+                          >X
+                            <X className="h-2.5 w-2.5" />
                           </button>
                         </span>
                       ))}
@@ -236,7 +236,7 @@ export default function Cart({
 
                   {/* Лічильник кількості */}
                   <div className="mt-1">
-                    <label htmlFor={`qty-${cartItemId}`} className="sr-only ">
+                    <label htmlFor={`qty-${cartItemId}`} className="sr-only">
                       Кількість для {item.title}
                     </label>
                     <Qty
@@ -272,24 +272,24 @@ export default function Cart({
                     <button
                       type="button"
                       onClick={() => setArmedId(cartItemId)}
-                      className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-red-200 bg-red-50 px-2.5 py-1.5 text-sm text-red-600 hover:bg-red-100 transition whitespace-nowrap"
+                      className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-red-200 bg-red-50 h-12 px-1.5 py-1.5 text-sm text-red-600 hover:bg-red-100 transition whitespace-nowrap"
                     >
                       🗑️ <span className="font-medium">Видалити</span>
                     </button>
                   ) : (
                     // 🔑 Ключова зміна: flex-col + w-full щоб обидві кнопки поміщались
-                    <div className="flex flex-col gap-1.5 w-full sm:w-auto">
+                    <div className="flex flex-col  gap-1.5 w-40 sm:w-auto">
                       <button
                         type="button"
                         onClick={() => { onRemove(cartItemId); setArmedId(null); }}
-                        className="inline-flex items-center justify-center h-8 px-2 rounded-lg bg-red-600 text-white text-xs font-medium hover:bg-red-700 transition w-full"
+                        className="inline-flex items-center justify-center h-8 px-2 rounded-lg bg-red-600 text-white text-xs font-medium hover:bg-red-700 transition w-40 "
                       >
-                        ✓ Так, видалити
+                        Видалити
                       </button>
                       <button
                         type="button"
                         onClick={() => setArmedId(null)}
-                        className="inline-flex items-center justify-center h-8 px-2 rounded-lg border text-xs text-gray-600 hover:bg-gray-50 transition w-full"
+                        className="inline-flex items-center justify-center h-8 px-2 rounded-lg border text-xs text-gray-600 hover:bg-gray-50 transition w-40"
                       >
                         Скасувати
                       </button>
@@ -303,10 +303,10 @@ export default function Cart({
 
         {/* ── Сайдбар підсумку ── */}
         <aside className="hidden lg:block lg:col-span-1">
-          <div className="p-5 sm:p-6 bg-white/95 backdrop-blur rounded-2xl border shadow-xl ring-3 ring-slate-800 sticky top-24">
-            <h2 className="text-blue-950 text-2xl text-center font-bold tracking-tight mb-4">Підсумок</h2>
+          <div className="p-5 sm:p-6 bg-white/95 backdrop-blur rounded-2xl border shadow-xl ring-1 ring-slate-200 sticky top-24">
+            <h2 className="text-gray-900 text-xl text-center font-bold tracking-tight mb-4">Підсумок</h2>
             <Breakdown itemsCount={itemsCount} subtotal={subtotal} discount={discount} total={total} />
-            <div className="my-3 h-px bg-gradient-to-r from-transparent via-slate-600 to-transparent" />
+            <div className="my-3 h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
             <button
               type="button"
               onClick={handleCheckout}

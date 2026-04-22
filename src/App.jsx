@@ -25,6 +25,15 @@ import Footer from "./components/Footer";
 // === налаштування API
 const API_URL = "/api/telegram";
 
+// ─── cart helpers (поза компонентом — не створюються заново кожен рендер) ───
+const makeFingerprint = (id, addons = []) => {
+  const addonIds = (addons || []).map((a) => a.id).sort().join(",");
+  return `${id}::${addonIds}`;
+};
+
+const sumAddons = (addons = []) =>
+  (addons || []).reduce((s, a) => s + (Number(a.price) || 0), 0);
+
 export default function App() {
   useEffect(() => {
     const opts = { passive: false };
@@ -87,8 +96,17 @@ export default function App() {
       const next = prev.map((item) => {
         const prod = products.find((p) => p.id === item.id);
         if (!prod) return item;
-        if (prod.price !== item.price) changed = true;
-        return { ...item, price: prod.price };
+        if (prod.price !== item.price) {
+          changed = true;
+          // перераховуємо unitTotal бо базова ціна змінилась
+          const addonsTotal = Number(item.addonsTotal) || 0;
+          return {
+            ...item,
+            price: prod.price,
+            unitTotal: prod.price + addonsTotal,
+          };
+        }
+        return item;
       });
       return changed ? next : prev;
     });
@@ -97,18 +115,6 @@ export default function App() {
   useEffect(() => {
     refreshCartPrices();
   }, [refreshCartPrices]);
-
-  // ─── helpers ───────────────────────────────────────────────────────────────
-  // "відбиток" позиції: id товару + відсортовані id addons
-  // Якщо однакові товари з тими ж addons — один рядок (qty+1)
-  // Якщо ті самі товари але різні addons — різні рядки
-  const makeFingerprint = (id, addons = []) => {
-    const addonIds = (addons || []).map((a) => a.id).sort().join(",");
-    return `${id}::${addonIds}`;
-  };
-
-  const sumAddons = (addons = []) =>
-    (addons || []).reduce((s, a) => s + (Number(a.price) || 0), 0);
 
   // кошик
   const addToCart = (product) => {
@@ -193,17 +199,29 @@ export default function App() {
 
       const payload = payloadFromCart ?? {
         mode: "cart",
-        cart: cart.map((i) => ({
-          id: i.id,
-          title: i.title,
-          qty: Math.max(1, Number(i.qty) || 1),
-          price: Number(i.price) || 0,
-          lineTotal: (Number(i.price) || 0) * Math.max(1, Number(i.qty) || 1),
-        })),
-        subtotal: cart.reduce((s, i) => s + (Number(i.price) || 0) * (Number(i.qty) || 1), 0),
+        cart: cart.map((i) => {
+          const qty       = Math.max(1, Number(i.qty) || 1);
+          const unitTotal = Number(i.unitTotal) || Number(i.price) || 0;
+          return {
+            id:        i.id,
+            title:     i.title,
+            qty,
+            price:     Number(i.price) || 0,
+            addons:    Array.isArray(i.addons) ? i.addons : [],
+            unitTotal,
+            lineTotal: unitTotal * qty,
+          };
+        }),
+        subtotal: cart.reduce((s, i) => {
+          const unit = Number(i.unitTotal) || Number(i.price) || 0;
+          return s + unit * Math.max(1, Number(i.qty) || 1);
+        }, 0),
         discount: 0,
         shipping: 0,
-        total: cart.reduce((s, i) => s + (Number(i.price) || 0) * (Number(i.qty) || 1), 0),
+        total: cart.reduce((s, i) => {
+          const unit = Number(i.unitTotal) || Number(i.price) || 0;
+          return s + unit * Math.max(1, Number(i.qty) || 1);
+        }, 0),
         createdAt: new Date().toISOString(),
       };
 
@@ -312,9 +330,6 @@ export default function App() {
           }
         />
         <Route path="/catalog" element={<CategoryPage onAddToCart={addToCart} onBuy={openBuy} />} />
-        <Route path="/category/:id" element={<CategoryPage onAddToCart={addToCart} onBuy={openBuy} />} />
-
-          
         <Route path="/category/:id" element={<CategoryPage onAddToCart={addToCart} onBuy={openBuy} />} />
         <Route path="/product/:id" element={<ProductPage onAddToCart={addToCart} onBuy={openBuy} />} />
         <Route path="/about" element={<About />} />
