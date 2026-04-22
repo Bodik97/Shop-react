@@ -165,7 +165,9 @@ export default async function handler(req, res) {
       items.forEach((it, i) => {
         const qty       = Math.max(1, Number(it?.qty) || 1);
         const price     = Math.max(0, Number(it?.price) || 0);
-        // 🆕 unitTotal враховує addons; якщо немає — fallback на price
+        const oldPrice  = Math.max(0, Number(it?.oldPrice) || 0);      // ← нове
+        const savings   = Math.max(0, Number(it?.savings) || 0);       // ← нове
+        // unitTotal враховує addons; якщо немає — fallback на price
         const unitTotal = Math.max(price, Number(it?.unitTotal) || price);
         const lineTotal = Math.max(0, Number(it?.lineTotal) || unitTotal * qty);
         const title     = esc(safeStr(it?.title || "Продукт", 140));
@@ -175,6 +177,13 @@ export default async function handler(req, res) {
           `${i + 1}. ${title} — ${qty} × ${fmtUAH(unitTotal)} = <b>${fmtUAH(lineTotal)}</b>`
         );
 
+        // 🆕 Знижка — показуємо тільки якщо була стара ціна
+        if (oldPrice > price && savings > 0) {
+          const percent = Math.round((1 - price / oldPrice) * 100);
+          lines.push(
+            `   🔥 Знижка <b>−${percent}%</b> (було <s>${fmtUAH(oldPrice)}</s>, економія: <b>${fmtUAH(savings)}</b>)`
+          );
+        }
         // 🆕 Addons — показуємо тільки якщо є
         const addons = Array.isArray(it?.addons) ? it.addons : [];
         if (addons.length > 0) {
@@ -193,11 +202,20 @@ export default async function handler(req, res) {
         }
       });
 
-      lines.push("────────────");
     }
 
     lines.push("────────────");
-    if (total) lines.push(`💰 Разом: <b>${fmtUAH(total)}</b>`);
+     // 🆕 Загальна економія замовлення
+      const totalSavings = Math.max(
+        0,
+        Number(b?.order?.totalSavings ?? b?.amounts?.totalSavings) || 0
+      );
+
+      lines.push("────────────");
+      if (totalSavings > 0) {
+        lines.push(`💚 Ваша економія: <b>${fmtUAH(totalSavings)}</b>`);
+      }
+      if (total) lines.push(`💰 Разом: <b>${fmtUAH(total)}</b>`);
   }
 
   if (warnings.length) {

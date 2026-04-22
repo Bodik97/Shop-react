@@ -101,16 +101,19 @@ export default function ModalBuy({
   function buildOrderPayload() {
     if (isCart) {
       const items = cart.map((i) => {
-        const q = Math.max(1, Number(i.qty) || 1);
-        const p = Number(i.price) || 0;
-        const addons = Array.isArray(i.addons) ? i.addons : [];
+        const q           = Math.max(1, Number(i.qty) || 1);
+        const p           = Number(i.price) || 0;
+        const op          = Number(i.oldPrice) || 0;
+        const addons      = Array.isArray(i.addons) ? i.addons : [];
         const addonsTotal = Number(i.addonsTotal) || 0;
-        const ut = Number(i.unitTotal) || p;
+        const ut          = Number(i.unitTotal) || p;
         return {
           id: i.id,
           title: i.title,
           qty: q,
           price: p,
+          oldPrice: op,                              // ← нове
+          savings: op > p ? (op - p) * q : 0,        // ← економія за позицію
           addons,
           addonsTotal,
           unitTotal: ut,
@@ -118,24 +121,34 @@ export default function ModalBuy({
           giftText: i.giftText?.text || i.giftText || null,
         };
       });
+
+      // Загальна економія
+      const totalSavings = items.reduce((s, it) => s + (it.savings || 0), 0);
+
       return {
         items,
         subtotal,
         discount,
         shipping: shipping || 0,
         total: displayTotal,
+        totalSavings,                                // ← нове
         mode: "cart",
       };
     }
 
     // режим "Купити зараз"
-    const q = Math.max(1, Number(qty) || 1);
+    const q       = Math.max(1, Number(qty) || 1);
+    const op      = Number(product?.oldPrice) || 0;
+    const savings = op > price ? (op - price) * q : 0;
+
     return {
       items: [{
         id: product?.id,
         title: product?.title,
         qty: q,
         price,
+        oldPrice: op,                                // ← нове
+        savings,                                     // ← нове
         addons: productAddons,
         addonsTotal: productAddonsTotal,
         unitTotal: unitPrice,
@@ -146,6 +159,7 @@ export default function ModalBuy({
       discount: 0,
       shipping: shipping || 0,
       total: displayTotal,
+      totalSavings: savings,                         // ← нове
       mode: "single",
     };
   }
