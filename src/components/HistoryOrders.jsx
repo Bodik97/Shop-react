@@ -1,5 +1,5 @@
 // src/components/HistoryOrders.jsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Package, ChevronDown, ChevronUp, ShoppingCart, Home } from "lucide-react";
 
@@ -18,27 +18,26 @@ const formatDate = (iso) => {
   }
 };
 
-// Читаємо historію з localStorage — один раз при маунті
-function loadHistory() {
-  try {
-    const saved = localStorage.getItem("orderHistory");
-    return saved ? JSON.parse(saved) : [];
-  } catch {
-    return [];
-  }
-}
-
 export default function HistoryOrders() {
-  const [orders] = useState(() => loadHistory());
-  // expandedId — яке замовлення розгорнуто для перегляду деталей
+  const [orders, setOrders]   = useState([]);
   const [expandedId, setExpandedId] = useState(null);
+
+  // Читаємо при кожному відкритті — щоб бачити щойно додані замовлення
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("orderHistory");
+      setOrders(saved ? JSON.parse(saved) : []);
+    } catch {
+      setOrders([]);
+    }
+  }, []);
 
   const toggle = (id) => setExpandedId((prev) => (prev === id ? null : id));
 
   // ── Порожній стан ──
   if (!orders.length) {
     return (
-      <main className="mx-auto max-w-screen-sm px-4 sm:px-6 py-10">
+      <main className="mx-auto max-w-screen-sm px-4 sm:px-6 py-10 min-h-[800px]">
         <div className="rounded-3xl border bg-white p-8 text-center shadow-sm">
           <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow mb-4">
             <Package className="h-8 w-8" />
@@ -68,7 +67,7 @@ export default function HistoryOrders() {
 
   // ── Список замовлень ──
   return (
-    <main className="mx-auto max-w-screen-md px-4 sm:px-6 py-8">
+    <main className="mx-auto max-w-screen-md px-4 sm:px-6 py-8 min-h-[800px]">
       {/* Заголовок */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">

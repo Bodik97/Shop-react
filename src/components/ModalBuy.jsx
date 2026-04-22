@@ -17,7 +17,7 @@ export default function ModalBuy({
   discount = 0,
   total = 0,
   onClose,
-  onSuccess,
+  onSuccess,  // викликається після успішного замовлення
 }) {
   const navigate = useNavigate();
 
@@ -210,14 +210,13 @@ export default function ModalBuy({
       };
       localStorage.setItem("lastOrderSummary", JSON.stringify(summary));
 
-      // 🆕 Зберігаємо в історію замовлень
+      // Зберігаємо в історію замовлень
       try {
         const prev    = JSON.parse(localStorage.getItem("orderHistory") || "[]");
         const updated = [summary, ...prev].slice(0, 50);
         localStorage.setItem("orderHistory", JSON.stringify(updated));
       } catch {/* ignore */}
 
-      // 🆕 onSuccess очищає кошик (якщо передано), потім переходимо на ThankYou
       onSuccess ? onSuccess() : onClose?.();
       navigate("/thanks", { state: summary });
     } catch (err) {
