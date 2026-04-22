@@ -5,7 +5,7 @@ import ProductCard from "./ProductCard";
 import { products, categories } from "../data/products";
 import { ArrowUpDown, ChevronDown, SlidersHorizontal } from "lucide-react";
 
-export default function CategoryPage({ onAddToCart, onBuy }) {
+export default function CategoryPage() {
   const { id } = useParams();
 
   // --- state ---
@@ -230,7 +230,10 @@ export default function CategoryPage({ onAddToCart, onBuy }) {
       {items.length ? (
         <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {items.map(p => (
-            <ProductCard key={p.id} product={p} onAddToCart={onAddToCart} onBuy={onBuy} />
+            <ProductCard
+              key={p.id}
+              product={p}
+            />
           ))}
         </div>
       ) : (

@@ -1,4 +1,6 @@
 // src/components/Header.jsx
+import { useCart } from "../context/CartContext";
+
 import { useState, useRef, useEffect } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { ShoppingCartIcon, XMarkIcon } from "@heroicons/react/24/outline";
@@ -15,7 +17,8 @@ const CATEGORIES = [
   
 ];
 
-export default function Header({ cartCount = 0 }) {
+export default function Header() {
+  const { cartCount } = useCart();
   const [open, setOpen] = useState(false);
   const drawerRef = useRef(null);
   const firstFocusableRef = useRef(null);

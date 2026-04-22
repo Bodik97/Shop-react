@@ -3,8 +3,12 @@ import { memo, useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Flame } from "lucide-react";
 import ImageWithPlaceholder from "./ImageWithPlaceholder";
+import { useCart } from "../context/CartContext";
+import ModalBuy from "./ModalBuy";
 
-const ProductCard = memo(function ProductCard({ product, onAddToCart, onBuy }) {
+const ProductCard = memo(function ProductCard({ product }) {
+  const { addToCart } = useCart();
+  const [buyProduct, setBuyProduct] = useState(null);
   const navigate = useNavigate();
   const [added, setAdded] = useState(false);
   const [buyFlash, setBuyFlash] = useState(false);
@@ -125,7 +129,7 @@ const ProductCard = memo(function ProductCard({ product, onAddToCart, onBuy }) {
               type="button"
               onClick={(e) => {
                 stop(e);
-                onAddToCart?.(product);
+                addToCart(product);
                 setAdded(true);
               }}
               className="h-11 w-full rounded-xl bg-gradient-to-r from-gray-900 to-black 
@@ -140,7 +144,7 @@ const ProductCard = memo(function ProductCard({ product, onAddToCart, onBuy }) {
               type="button"
               onClick={(e) => {
                 stop(e);
-                onBuy?.(product);
+                setBuyProduct(product);
                 setBuyFlash(true);
               }}
               className={`h-11 w-full rounded-xl border border-gray-300 
@@ -154,6 +158,13 @@ const ProductCard = memo(function ProductCard({ product, onAddToCart, onBuy }) {
           </div>
         </div>
       </div>
+      {buyProduct && (
+        <ModalBuy
+          open
+          product={buyProduct}
+          onClose={() => setBuyProduct(null)}
+        />
+      )}
     </article>
   );
 });

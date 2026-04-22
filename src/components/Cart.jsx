@@ -3,11 +3,12 @@ import { useCallback, useEffect, useId, useMemo, useState, useTransition } from 
 import { Link, useNavigate } from "react-router-dom";
 import ModalBuy from "./ModalBuy";
 import { ShieldCheck, RotateCcw, CreditCard, Truck, X } from "lucide-react";
+import { useCart } from "../context/CartContext";
+import { formatUAH } from "../utils/format";
 
 /* helpers */
-const fmtUAH = (n) =>
-  new Intl.NumberFormat("uk-UA", { maximumFractionDigits: 0 }).format(Math.max(0, Number(n) || 0)) + " ₴";
 const clamp = (n, a, b) => Math.min(b, Math.max(a, n));
+
 
 // 🔧 FIX: перенесено поза компонент — не створюється заново кожен рендер
 const PERKS = [
@@ -17,21 +18,21 @@ const PERKS = [
   { icon: Truck,       text: "Швидка доставка" },
 ];
 
-export default function Cart({
-  cart = [],
-  refreshPrices,
-  changeQty,
-  removeFromCart,
-  removeAddon,
-  freeShippingFrom = 0,
-  clearCart,          // 🆕 очищення після замовлення
-}) {
+export default function Cart({ freeShippingFrom = 0 }) {
+  const {
+    cart,
+    changeQty,
+    removeFromCart,
+    removeAddon,
+    clearCart,
+    refreshCartPrices,
+  } = useCart();
   const [isPending, startTransition] = useTransition();
   const [armedId, setArmedId] = useState(null);
   const [mobileDetails, setMobileDetails] = useState(false);
   const [showForm, setShowForm] = useState(false);
 
-  useEffect(() => { refreshPrices?.(); }, [refreshPrices]);
+  useEffect(() => { refreshCartPrices?.(); }, [refreshCartPrices]);
 
   // Автоматично знімаємо "armed" через 3 сек якщо не підтвердив
   useEffect(() => {
@@ -91,7 +92,7 @@ export default function Cart({
           </p>
           {freeShippingFrom > 0 && (
             <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-emerald-700 text-xs sm:text-sm font-semibold ring-1 ring-emerald-200">
-              <span>Безкоштовна доставка від {fmtUAH(freeShippingFrom)}</span>
+              <span>Безкоштовна доставка від {formatUAH(freeShippingFrom)}</span>
             </div>
           )}
           <div className="mt-8 flex flex-col sm:flex-row justify-center gap-3">
@@ -124,8 +125,8 @@ export default function Cart({
         <div className="mb-5 rounded-2xl border bg-white p-4">
           {leftToFree > 0 ? (
             <p className="text-sm text-gray-700 mb-2">
-              Додайте ще <span className="font-semibold">{fmtUAH(leftToFree)}</span>, щоб отримати
-              безкоштовну доставку від {fmtUAH(freeShippingFrom)}.
+              Додайте ще <span className="font-semibold">{formatUAH(leftToFree)}</span>, щоб отримати
+              безкоштовну доставку від {formatUAH(freeShippingFrom)}.
             </p>
           ) : (
             <p className="text-sm text-emerald-700 mb-2 font-medium">
@@ -191,11 +192,11 @@ export default function Cart({
                   <div className="flex items-center gap-2 flex-wrap">
                     {/* 🔧 FIX: прибрали lg:text-4xl — виглядало кричаще */}
                     <div className="text-red-600 font-extrabold text-2xl sm:text-3xl tabular-nums">
-                      {fmtUAH(price)}
+                      {formatUAH(price)}
                     </div>
                     {saving > 0 && oldPrice > 0 && (
                       <>
-                        <div className="text-sm text-gray-400 line-through tabular-nums">{fmtUAH(oldPrice)}</div>
+                        <div className="text-sm text-gray-400 line-through tabular-nums">{formatUAH(oldPrice)}</div>
                         <span className="inline-flex items-center rounded-full bg-rose-100 text-rose-700 text-[11px] font-bold px-2 py-0.5">
                           −{Math.round((saving / oldPrice) * 100)}%
                         </span>
@@ -212,7 +213,7 @@ export default function Cart({
                           className="inline-flex items-center gap-1 rounded-full border border-blue-200 bg-blue-50 pl-2.5 pr-1 py-0.5 text-xs font-medium text-blue-900"
                         >
                           + {addon.name}
-                          <span className="font-semibold ml-0.5 tabular-nums">{fmtUAH(addon.price)}</span>
+                          <span className="font-semibold ml-0.5 tabular-nums">{formatUAH(addon.price)}</span>
                           {/* 🆕 Червоний хрестик */}
                           <button
                             type="button"
@@ -259,11 +260,11 @@ export default function Cart({
                   <div className="sm:text-right">
                     <div className="text-xs text-gray-400 mb-0.5">Разом:</div>
                     <div className="text-xl font-extrabold text-gray-900 tabular-nums leading-none">
-                      {fmtUAH(line)}
+                      {formatUAH(line)}
                     </div>
                     {(qty > 1 || addons.length > 0) && (
                       <div className="text-xs text-gray-400 tabular-nums mt-1">
-                        {qty > 1 && `${qty} × `}{fmtUAH(unitTotal)}
+                        {qty > 1 && `${qty} × `}{formatUAH(unitTotal)}
                       </div>
                     )}
                   </div>
@@ -340,7 +341,7 @@ export default function Cart({
         </aside>
       </div>
 
-      <div aria-live="polite" className="sr-only">Разом: {fmtUAH(total)}</div>
+      <div aria-live="polite" className="sr-only">Разом: {formatUAH(total)}</div>
 
       {/* ── Sticky мобільний footer ── */}
       <div className="fixed inset-x-0 bottom-0 z-40 lg:hidden">
@@ -351,7 +352,7 @@ export default function Cart({
               <div className="min-w-0">
                 <div className="flex items-baseline gap-1 text-red-600 font-extrabold tabular-nums">
                   {(() => {
-                    const f = fmtUAH(total);
+                    const f = formatUAH(total);
                     const amount = f.replace(/\s*₴$/, "");
                     return (
                       <>
@@ -363,7 +364,7 @@ export default function Cart({
                 </div>
                 {freeShippingFrom > 0 && leftToFree > 0 && (
                   <div className="text-[11px] text-gray-500 mt-0.5">
-                    Ще {fmtUAH(leftToFree)} до безкоштовної доставки
+                    Ще {formatUAH(leftToFree)} до безкоштовної доставки
                   </div>
                 )}
                 {freeShippingFrom > 0 && leftToFree === 0 && (
@@ -402,17 +403,17 @@ export default function Cart({
                 </div>
                 <div className="flex justify-between text-gray-600">
                   <span>Сума товарів</span>
-                  <span className="tabular-nums">{fmtUAH(subtotal)}</span>
+                  <span className="tabular-nums">{formatUAH(subtotal)}</span>
                 </div>
                 {discount > 0 && (
                   <div className="flex justify-between text-emerald-700">
                     <span>Знижка</span>
-                    <span className="tabular-nums">−{fmtUAH(discount)}</span>
+                    <span className="tabular-nums">−{formatUAH(discount)}</span>
                   </div>
                 )}
                 <div className="flex justify-between font-semibold pt-1 border-t">
                   <span>Разом</span>
-                  <span className="tabular-nums text-red-600">{fmtUAH(total)}</span>
+                  <span className="tabular-nums text-red-600">{formatUAH(total)}</span>
                 </div>
               </div>
             )}
@@ -522,12 +523,12 @@ function Breakdown({ itemsCount, subtotal, discount, total }) {
   return (
     <div className="space-y-2 text-[15px]">
       <Row label="Товарів"       value={String(itemsCount)} />
-      <Row label="Сума товарів"  value={fmtUAH(subtotal)} />
+      <Row label="Сума товарів"  value={formatUAH(subtotal)} />
       {discount > 0 && (
-      <Row label="Знижка" value={`−${fmtUAH(discount)}`} valueClass="text-emerald-600" />
+      <Row label="Знижка" value={`−${formatUAH(discount)}`} valueClass="text-emerald-600" />
       )}
       <div className="pt-2 border-t">
-        <Row label="Разом" value={fmtUAH(total)} strong valueClass="text-red-600" />
+        <Row label="Разом" value={formatUAH(total)} strong valueClass="text-red-600" />
       </div>
     </div>
   );

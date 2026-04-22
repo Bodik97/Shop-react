@@ -75,9 +75,8 @@ function CategoryNav() {
                 </div>
 
                 <div className="px-4 pb-3">
-                  <p className="mt-0.5 mb-1 text-xs text-gray-500 flex items-center gap-1">
+                  <div className="mt-0.5 mb-1 text-xs text-gray-500 flex items-center gap-1">
                     <span className="text-[15px] font-medium text-gray-700">Перейти</span>
-                    
                     <svg
                       viewBox="0 0 24 24"
                       className="h-6 w-6 opacity-80 transition-transform group-hover:translate-x-0.5"
@@ -92,7 +91,7 @@ function CategoryNav() {
                         <span className="relative inline-flex rounded-full h-3 w-3 bg-pink-600" />
                       </span>
                     </div>
-                  </p>
+                  </div>
                 </div>
               </Link>
             </motion.div>

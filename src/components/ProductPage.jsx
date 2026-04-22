@@ -3,10 +3,10 @@ import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { products } from "../data/products";
+import { useCart } from "../context/CartContext";
+import { formatUAH } from "../utils/format";
+import ModalBuy from "./ModalBuy";
 
-const formatUAH = (n) =>
-  new Intl.NumberFormat("uk-UA", { maximumFractionDigits: 0 })
-    .format(Number(n) || 0) + " ₴";
 
 const Badge = ({ children, variant = "blue", className = "" }) => {
   const styles =
@@ -31,7 +31,9 @@ const Badge = ({ children, variant = "blue", className = "" }) => {
   );
 };
 
-export default function ProductPage({ onAddToCart, onBuy }) {
+export default function ProductPage() {
+  const { addToCart } = useCart();
+  const [buyProduct, setBuyProduct] = useState(null); 
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -460,7 +462,7 @@ export default function ProductPage({ onAddToCart, onBuy }) {
                                 whitespace-nowrap"
                       onClick={() => {
                         const chosenAddons = addons.filter((a) => selectedAddons.includes(a.id));
-                        onBuy?.({ ...product, addons: chosenAddons });
+                        setBuyProduct({ ...product, addons: chosenAddons });
                       }}
                       aria-label="Купити зараз"
                     >
@@ -477,7 +479,7 @@ export default function ProductPage({ onAddToCart, onBuy }) {
                           giftText: product.giftText?.text || product.giftText || null,
                           addons: chosenAddons,
                         };
-                        onAddToCart?.(item);
+                        addToCart(item);
                         setFlashCart(true);
                         if (timerRef.current) clearTimeout(timerRef.current);
                         timerRef.current = setTimeout(() => setFlashCart(false), 2200);
@@ -502,7 +504,7 @@ export default function ProductPage({ onAddToCart, onBuy }) {
                   <div className="flex justify-between items-center">
                     <div className="flex items-baseline gap-1">
                       <span className="text-2xl sm:text-3xl md:text-4xl font-extrabold leading-none tabular-nums text-red-600">
-                        {new Intl.NumberFormat("uk-UA", { maximumFractionDigits: 0 }).format(finalPrice)}
+                        {formatUAH(finalPrice)}
                       </span>
                       <span className="text-lg sm:text-2xl text-red-600">₴</span>
                     </div>
@@ -511,7 +513,7 @@ export default function ProductPage({ onAddToCart, onBuy }) {
                       type="button"
                       onClick={() => {
                         const chosenAddons = addons.filter((a) => selectedAddons.includes(a.id));
-                        onBuy?.({ ...product, addons: chosenAddons });
+                        setBuyProduct({ ...product, addons: chosenAddons });
                       }}
                       className="w-32 h-10 flex items-center justify-center
                                   rounded-xl bg-blue-600 text-white font-semibold text-sm
@@ -684,6 +686,15 @@ export default function ProductPage({ onAddToCart, onBuy }) {
             )}
           </div>
         </>
+      )}
+
+      {/* Модалка "Купити зараз" */}
+      {buyProduct && (
+        <ModalBuy
+          open
+          product={buyProduct}
+          onClose={() => setBuyProduct(null)}
+        />
       )}
     </main>
   );
