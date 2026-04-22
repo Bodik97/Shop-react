@@ -97,8 +97,18 @@ export default function Header({ cartCount = 0 }) {
             <img src={logo} alt="Airsoft Shop Logo" className="h-12 w-auto" />
           </Link>
 
-          {/* RIGHT: Кошик + бургер */}
-          <div className="flex items-center gap-4">
+          {/* RIGHT: Замовлення + Кошик + бургер */}
+          <div className="flex items-center gap-3">
+            {/* КНОПКА ЗАМОВЛЕННЯ — тільки десктоп */}
+            <Link
+              to="/history-orders"
+              onClick={() => setOpen(false)}
+              className="hidden lg:inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-4 py-2.5 text-sm text-white font-semibold hover:bg-white/20 transition"
+              aria-label="Мої замовлення"
+            >
+              📋 Замовлення
+            </Link>
+
             {/* КНОПКА КОШИКА */}
             <Link
               to="/cart"
@@ -202,8 +212,8 @@ export default function Header({ cartCount = 0 }) {
         </nav>
 
 
-        {/* ДОДАТКОВИЙ БЛОК: Кошик + соцмережі */}
-        <div className="p-4 border-t">
+        {/* ДОДАТКОВИЙ БЛОК: Кошик + Замовлення */}
+        <div className="p-4 border-t space-y-2">
           <Link
             to="/cart"
             onClick={() => setOpen(false)}
@@ -211,8 +221,6 @@ export default function Header({ cartCount = 0 }) {
               md:hover:bg-black/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-black
               motion-safe:transition motion-safe:duration-200 [transition-property:transform,background-color,box-shadow]
               active:scale-[0.98] active:shadow-none sm:active:scale-100 touch-manipulation"
-
-
             aria-label="Перейти до кошика"
           >
             <ShoppingCartIcon className="h-5 w-5" />
@@ -224,48 +232,15 @@ export default function Header({ cartCount = 0 }) {
             )}
           </Link>
 
-          {/* <div className="mt-4">
-            <div className="text-center mb-3">
-              <h2 className="px-1 pb-2 text-xs md:text-sm uppercase tracking-widest text-gray-500 font-semibold">
-                Ми в соцмережах
-              </h2>
-            </div>
-            <div className="flex items-center justify-center gap-3">
-              <a
-                href="https://instagram.com/"
-                target="_blank"
-                rel="noreferrer"
-                onClick={() => setOpen(false)}
-                aria-label="Instagram"
-                className="inline-flex h-11 w-11 items-center justify-center rounded-xl border hover:bg-gray-50"
-                title="Instagram"
-              >
-                <FaInstagram className="text-pink-600 h-6 w-6" />
-              </a>
-              <a
-                href="https://t.me/"
-                target="_blank"
-                rel="noreferrer"
-                onClick={() => setOpen(false)}
-                aria-label="Telegram"
-                className="inline-flex h-11 w-11 items-center justify-center rounded-xl border hover:bg-gray-50"
-                title="Telegram"
-              >
-                <FaTelegram className="text-sky-500 h-6 w-6" />
-              </a>
-              <a
-                href="https://www.tiktok.com/"
-                target="_blank"
-                rel="noreferrer"
-                onClick={() => setOpen(false)}
-                aria-label="TikTok"
-                className="inline-flex h-11 w-11 items-center justify-center rounded-xl border hover:bg-gray-50"
-                title="TikTok"
-              >
-                <FaTiktok className="text-black h-6 w-6" />
-              </a>
-            </div>
-          </div> */}
+          {/* Кнопка перегляду замовлень */}
+          <Link
+            to="/history-orders"
+            onClick={() => setOpen(false)}
+            className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border px-4 py-3 text-sm font-semibold text-gray-800 hover:bg-gray-50 transition"
+            aria-label="Мої замовлення"
+          >
+            📋 Мої замовлення
+          </Link>
         </div>
       </aside>
     </header>

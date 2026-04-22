@@ -38,7 +38,7 @@ export default function HistoryOrders() {
   // ── Порожній стан ──
   if (!orders.length) {
     return (
-      <main className="mx-auto max-w-screen-sm px-4 sm:px-6 py-10 min-h-[800px]">
+      <main className="mx-auto max-w-screen-sm px-4 sm:px-6 py-10">
         <div className="rounded-3xl border bg-white p-8 text-center shadow-sm">
           <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow mb-4">
             <Package className="h-8 w-8" />
@@ -68,7 +68,7 @@ export default function HistoryOrders() {
 
   // ── Список замовлень ──
   return (
-    <main className="mx-auto max-w-screen-md px-4 sm:px-6 py-8 min-h-[800px]">
+    <main className="mx-auto max-w-screen-md px-4 sm:px-6 py-8">
       {/* Заголовок */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">

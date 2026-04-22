@@ -17,6 +17,7 @@ export default function ModalBuy({
   discount = 0,
   total = 0,
   onClose,
+  onSuccess, // 🆕 викликається після успішного замовлення
 }) {
   const navigate = useNavigate();
 
@@ -208,7 +209,19 @@ export default function ModalBuy({
         items: summaryItems, // 🆕 для "чека" на ThankYou
       };
       localStorage.setItem("lastOrderSummary", JSON.stringify(summary));
-      onClose?.();
+
+      // 🆕 Зберігаємо в історію замовлень
+      try {
+        const prev = JSON.parse(localStorage.getItem("orderHistory") || "[]");
+        // Додаємо нове замовлення на початок (найновіші зверху)
+        const updated = [summary, ...prev].slice(0, 50); // максимум 50 замовлень
+        localStorage.setItem("orderHistory", JSON.stringify(updated));
+      } catch {
+        // ignore: localStorage недоступний
+      }
+
+      // 🆕 onSuccess очищає кошик, потім переходимо на ThankYou
+      onSuccess ? onSuccess() : onClose?.();
       navigate("/thanks", { state: summary });
     } catch (err) {
       setErrors((prev) => ({ ...prev, submit: err.message || "Щось пішло не так" }));
