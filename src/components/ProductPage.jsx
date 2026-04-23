@@ -509,39 +509,7 @@ export default function ProductPage() {
             </aside>
           </div>
 
-          {/* мобільна нижня панель (лише ціна) */}
-          {!openFS && (
-            <div className="fixed inset-x-0 bottom-0 z-40 lg:hidden">
-              <div className="mx-auto max-w-7xl px-3 sm:px-4 pb-[max(env(safe-area-inset-bottom), 6px)]">
-                <div className="rounded-t-2xl border bg-white shadow-2xl p-3 sm:p-4">
-                  
-                  {/* ціна + кнопка*/}
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-baseline gap-1">
-                      <span className="text-2xl sm:text-3xl md:text-4xl font-extrabold leading-none tabular-nums text-red-600">
-                        {formatUAH(finalPrice)}
-                      </span>
-                      <span className="text-lg sm:text-2xl text-red-600">₴</span>
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const chosenAddons = addons.filter((a) => selectedAddons.includes(a.id));
-                        setBuyProduct({ ...product, addons: chosenAddons });
-                      }}
-                      className="w-32 h-10 flex items-center justify-center
-                                  rounded-xl bg-blue-600 text-white font-semibold text-sm
-                                  hover:bg-blue-700 active:scale-[0.98] transition whitespace-nowrap"
-
-                    >
-                      Оформити
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
+          
 
           {/* фулскрін */}
           {openFS && (

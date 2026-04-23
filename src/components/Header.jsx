@@ -155,18 +155,20 @@ export default function Header() {
           ${open ? "translate-x-0" : "-translate-x-full"}`}
         aria-label="Мобільне меню"
       >
-        <div className="flex items-center justify-between p-2 border-b">
-          <span className="text-lg font-semibold">Меню</span>
+        <div className="flex items-center justify-between p-2 ">
+          <Link to="/" onClick={() => setOpen(false)} aria-label="На головну">
+            <img src={logo} alt="AirSoft" className="h-10 w-20" />
+          </Link>
           <button
             ref={firstFocusableRef}
             onClick={() => setOpen(false)}
-            className="p-2 hover:bg-gray-100 rounded-lg"
+            className="p-2 bg-black rounded-lg hover:bg-gray-800 active:scale-95 transition"
             aria-label="Закрити меню"
           >
-            <XMarkIcon className="h-6 w-6" />
+            <XMarkIcon className="h-6 w-6 text-white" />
           </button>
         </div>
-
+          <hr className="my-2 border-gray-300" />
         <nav className="p-2 space-y-2 text-[18px] font-medium w-full select-none [-webkit-tap-highlight-color:transparent]">
           {/* Категорії (без бордерів, ефект лише на тап) */}
           {CATEGORIES.map((c) => (
@@ -183,7 +185,7 @@ export default function Header() {
             </Link>
           ))}
 
-          <hr className="my-2 border-gray-500" />
+          <hr className="my-2 border-gray-300" />
 
           {/* Про нас — постійний фон + tap-ефект */}
           <NavLink

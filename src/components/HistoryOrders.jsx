@@ -75,34 +75,58 @@ export default function HistoryOrders() {
 
   // ── Список замовлень ──
   return (
-    <main className="mx-auto max-w-screen-md px-2 sm:px-6 py-4 sm:py-8 min-h-[800px]">
+    <main className="mx-auto max-w-screen-md px-2 sm:px-6 py-4 sm:py-8 min-h-[980px]">
 
       {/* Заголовок */}
       <div className="flex items-center justify-between gap-2 mb-4 sm:mb-6">
-        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-          <div className="grid h-9 w-9 sm:h-10 sm:w-10 place-items-center rounded-xl bg-black text-white shrink-0">
-            <Package className="h-4 w-4 sm:h-5 sm:w-5" />
+
+      {/* ── Ліва частина: іконка + заголовок ── */}
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+          <div className="
+            grid place-items-center shrink-0
+            h-12 w-12 sm:h-12 sm:w-12
+            rounded-xl bg-black/40 ring-1 ring-white/10
+          ">
+            <Package className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
           </div>
+
           <div className="min-w-0">
-            <h1 className="text-lg sm:text-xl font-extrabold text-gray-900 leading-tight truncate">
+            <h1 className="
+              text-base sm:text-xl md:text-2xl
+              font-extrabold text-white leading-tight truncate
+            ">
               Мої замовлення
             </h1>
-            <p className="text-[11px] sm:text-xs text-gray-500">
+            <p className="text-[11px] sm:text-sm text-gray-300">
               {orders.length} {orders.length === 1 ? "замовлення" : "замовлень"}
             </p>
           </div>
         </div>
+
+        {/* ── Права частина: кнопка "На головну" ── */}
         <Link
           to="/"
-          className="inline-flex items-center gap-1 h-9 px-2.5 sm:px-3 rounded-xl border text-xs sm:text-sm text-gray-600 hover:bg-gray-50 transition shrink-0"
+          aria-label="На головну"
+          className="
+            inline-flex items-center justify-center gap-1.5
+            h-14 sm:h-14
+            w-20 sm:w-20
+            px-3 sm:px-5
+            rounded-xl sm:rounded-2xl
+            bg-black !text-white
+            text-xs sm:text-sm font-semibold
+            hover:bg-gray-800 active:scale-[0.98]
+            transition shrink-0
+          "
         >
-          ← <span className="hidden sm:inline">На головну</span>
-          <span className="sm:hidden">Home</span>
+          <Home className="h-7 w-7" />
+          <span className="hidden xs:inline">На головну</span>
         </Link>
+
       </div>
 
       {/* Список */}
-      <div className="space-y-2.5 sm:space-y-3">
+      <div className="space-y-3 sm:space-y-3">
         {orders.map((order) => {
           const isOpen        = expandedId === order.orderId;
           const items         = Array.isArray(order.items) ? order.items : [];
@@ -111,26 +135,26 @@ export default function HistoryOrders() {
           return (
             <div
               key={order.orderId}
-              className="rounded-xl sm:rounded-2xl border bg-white overflow-hidden transition-shadow hover:shadow-md"
+              className="rounded-xl sm:rounded-2xl border   bg-white shadow-sm"
             >
               {/* ── Шапка замовлення ── */}
               <button
                 type="button"
                 onClick={() => toggle(order.orderId)}
-                className="w-full flex items-center justify-between gap-2 sm:gap-4 px-3 sm:px-5 py-3 sm:py-4 text-left"
+                className="w-full  flex items-center justify-between gap-2 sm:gap-4 px-3 sm:px-5 py-3 sm:py-4 text-left"
               >
                 <div className="flex-1 min-w-0">
                   {/* Номер + дата */}
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-mono text-xs sm:text-sm font-semibold text-gray-900 break-all">
+                    <span className="font-mono text-xs sm:text-sm font-semibold text-blue-600 break-all">
                       {order.orderId}
                     </span>
-                    <span className="text-[10px] sm:text-xs text-gray-400">
+                    <span className="text-[10px] sm:text-xs text-white/80">
                       {formatDate(order.createdAt)}
                     </span>
                   </div>
                   {/* Ім'я + телефон */}
-                  <div className="mt-0.5 text-xs sm:text-sm text-gray-600 truncate">
+                  <div className="mt-0.5 text-xs sm:text-sm text-white truncate">
                     {order.name && <span>{order.name}</span>}
                     {order.name && order.phone && <span className="mx-1 sm:mx-1.5 text-gray-300">·</span>}
                     {order.phone && <span>{order.phone}</span>}
@@ -157,7 +181,7 @@ export default function HistoryOrders() {
 
               {/* ── Деталі ── */}
               {isOpen && (
-                <div className="border-t px-3 sm:px-5 pb-4 sm:pb-5 pt-3 sm:pt-4 bg-gray-50">
+                <div className="border-s-black px-3 sm:px-5 pb-4 sm:pb-5 pt-3 sm:pt-4 bg-gray-200 xs:bg-gray-200">
                   {items.length > 0 ? (
                     <>
                       <div className="text-[11px] sm:text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2 sm:mb-3">
@@ -178,7 +202,7 @@ export default function HistoryOrders() {
                           return (
                             <li
                               key={`${item.id ?? idx}-${idx}`}
-                              className="rounded-lg sm:rounded-xl border bg-white p-2.5 sm:p-3"
+                              className="rounded-2xl sm:rounded-xl border bg-white p-2.5 sm:p-3"
                             >
                               {/* Назва + ціна */}
                               <div className="flex items-start justify-between gap-2">
@@ -271,20 +295,7 @@ export default function HistoryOrders() {
       </div>
 
       {/* Кнопки внизу */}
-      <div className="mt-5 sm:mt-6 flex flex-col sm:flex-row gap-2.5 sm:gap-3">
-        <Link
-          to="/"
-          className="inline-flex w-full sm:w-auto items-center justify-center gap-2 h-11 px-4 sm:px-5 rounded-2xl bg-black text-white text-sm sm:text-base font-semibold hover:bg-black/90 transition"
-        >
-          <Home className="h-4 w-4" /> На головну
-        </Link>
-        <Link
-          to="/cart"
-          className="inline-flex w-full sm:w-auto items-center justify-center gap-2 h-11 px-4 sm:px-5 rounded-2xl border font-semibold text-sm sm:text-base text-gray-800 hover:bg-gray-50 transition"
-        >
-          <ShoppingCart className="h-4 w-4" /> До кошика
-        </Link>
-      </div>
+      
     </main>
   );
 }

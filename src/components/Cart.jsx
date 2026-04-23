@@ -280,18 +280,18 @@ export default function Cart({ freeShippingFrom = 0 }) {
                     </button>
                   ) : (
                     // 🔑 Ключова зміна: flex-col + w-full щоб обидві кнопки поміщались
-                    <div className="flex flex-col gap-1.5 w-full sm:w-auto">
+                    <div className="flex flex-col gap-1.5 w-35 sm:w-auto">
                       <button
                         type="button"
                         onClick={() => { onRemove(cartItemId); setArmedId(null); }}
-                        className="inline-flex items-center justify-center h-8 px-2 rounded-lg bg-red-600 text-red-500 text-xs font-medium hover:bg-red-700 transition w-full"
+                        className="inline-flex items-center justify-center h-8 w-36 px-2 rounded-lg bg-red-600 text-red-500 text-xs font-medium hover:bg-red-700 transition "
                       >
                         Видалити
                       </button>
                       <button
                         type="button"
                         onClick={() => setArmedId(null)}
-                        className="inline-flex items-center justify-center h-8 px-2 rounded-lg border text-xs text-white hover:bg-gray-50 transition w-full"
+                        className="inline-flex items-center justify-center h-8 w-36 px-2 rounded-lg border text-xs text-white hover:bg-gray-50 transition "
                       >
                         Скасувати
                       </button>
@@ -506,7 +506,7 @@ function Qty({ id, value, onChange, min = 1, max = 99, pending = false }) {
         disabled={pending || value <= min}
         onClick={() => commit((value || min) - 1)}
         // 🔧 h-11 w-11 = 44px — мінімум для зручного tap на мобільному
-        className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-gray-100 text-gray-700 text-lg font-bold hover:bg-gray-200 active:scale-95 disabled:opacity-40 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
+        className="inline-flex h-8 w-11 items-center justify-center rounded-2xl bg-gray-100 text-white text-lg font-bold hover:bg-gray-200 active:scale-95 disabled:opacity-40 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
       >
         −
       </button>
@@ -519,7 +519,7 @@ function Qty({ id, value, onChange, min = 1, max = 99, pending = false }) {
         min={min}
         max={max}
         // 🔧 w-20 замість w-16 — ширше поле, зручніше вводити
-        className="w-20 h-11 text-center rounded-2xl border-2 border-gray-200 bg-white text-gray-900 tabular-nums font-semibold text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition"
+        className="w-15 h-8 text-center rounded-2xl border-2 border-gray-200 bg-white text-gray-900 tabular-nums font-semibold text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition"
         value={draft}
         onChange={(e) => setDraft(e.target.value.replace(/[^0-9]/g, ""))}
         onBlur={() => commit(draft)}
@@ -532,7 +532,7 @@ function Qty({ id, value, onChange, min = 1, max = 99, pending = false }) {
         aria-label="Збільшити кількість"
         disabled={pending || value >= max}
         onClick={() => commit((value || min) + 1)}
-        className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-gray-100 text-gray-700 text-lg font-bold hover:bg-gray-200 active:scale-95 disabled:opacity-40 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
+        className="inline-flex h-8 w-11 items-center justify-center rounded-2xl bg-gray-100 text-white text-lg font-bold hover:bg-gray-200 active:scale-95 disabled:opacity-40 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
       >
         +
       </button>

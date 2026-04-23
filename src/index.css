@@ -1,51 +1,77 @@
 @import url('https://fonts.googleapis.com/css2?family=Stardos+Stencil:wght@700&display=swap');
 @import "tailwindcss";
+
+/* ═══════════════════════════════════════════════════
+   БАЗОВІ СТИЛІ
+   ═══════════════════════════════════════════════════ */
+
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: light;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: #344b5b;
+  color: #1a202c;                    /* темний текст за замовчуванням */
+}
+
+/* Посилання — ТІЛЬКИ скидаємо підкреслення і колір успадковується */
+/* Конкретні кольори задаємо вже через Tailwind-класи */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Кнопки — скидаємо браузерні дефолти щоб Tailwind мав повний контроль */
+button {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+/* ═══════════════════════════════════════════════════
+   АНІМАЦІЇ
+   ═══════════════════════════════════════════════════ */
+
 @keyframes slideUpFade {
   0%   { transform: translateY(6px); opacity: 0; }
   40%  { transform: translateY(-2px); opacity: 1; }
   100% { transform: translateY(0); opacity: 1; }
 }
-.animate-slideUpFade {
-  animation: slideUpFade 0.4s ease-out;
-}
+.animate-slideUpFade { animation: slideUpFade 0.4s ease-out; }
+
 @keyframes shine {
   0%   { transform: translateX(-200%) skewX(-12deg); }
   60%  { transform: translateX(200%) skewX(-12deg); }
   100% { transform: translateX(200%) skewX(-12deg); }
 }
+.animate-shine { animation: shine 3s ease-in-out infinite; }
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-4px); }
   to { opacity: 1; transform: translateY(0); }
 }
-@media (prefers-reduced-motion: no-preference) {
-  @keyframes rise {
-    from { opacity: 0; transform: translateY(8px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  .animate-rise {
-    animation: rise .35s ease-out;
-  }
-  /* лише для мобільних */
-  @media (min-width: 640px) {
-    .animate-rise { animation: none; }
-  }
-}
+.animate-fadeIn { animation: fadeIn 0.25s ease-out; }
 
 @keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
 }
-.animate-fadeInUp {
-  animation: fadeInUp 0.3s ease-out;
-}
+.animate-fadeInUp { animation: fadeInUp 0.3s ease-out; }
 
-/* М'яка пульсація subtitle */
 @keyframes subtlePulse {
   0%, 100% {
     opacity: 1;
@@ -58,67 +84,94 @@
     text-shadow: 0 0 8px rgba(255, 0, 0, 0.25);
   }
 }
-.animate-subtlePulse {
-  animation: subtlePulse 2.5s ease-in-out infinite;
-}
+.animate-subtlePulse { animation: subtlePulse 2.5s ease-in-out infinite; }
 
-/* Ефект "успішного кліку" на кнопці Купити зараз */
 @keyframes buyFlash {
-  0% {
-    background-color: transparent;
-  }
-  30% {
-    background-color: #16a34a33; /* напівпрозорий зелений */
-  }
-  60% {
-    background-color: #16a34a55;
-  }
-  100% {
-    background-color: transparent;
-  }
+  0%   { background-color: transparent; }
+  30%  { background-color: #16a34a33; }
+  60%  { background-color: #16a34a55; }
+  100% { background-color: transparent; }
 }
-.animate-buyFlash {
-  animation: buyFlash 0.6s ease-out;
+.animate-buyFlash { animation: buyFlash 0.6s ease-out; }
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .animate-rise { animation: rise .35s ease-out; }
+  @media (min-width: 640px) {
+    .animate-rise { animation: none; }
+  }
 }
 
-.animate-fadeIn {
-  animation: fadeIn 0.25s ease-out;
-}
-
-.animate-shine {
-  animation: shine 3s ease-in-out infinite;
-}
-
+/* ═══════════════════════════════════════════════════
+   УТИЛІТИ
+   ═══════════════════════════════════════════════════ */
 
 .font-stencil { font-family: 'Stardos Stencil', sans-serif; }
 
-/* приховати горизонтальний скролбар у слайдера */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
+/* ═══════════════════════════════════════════════════
+   КОМПОНЕНТНІ КЛАСИ
+   ═══════════════════════════════════════════════════ */
 
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+.heading-title {
+  font-size: 3.7rem;
 }
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
+.policy-title {
+  font-size: 2.95rem;
 }
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+
+.header-title {
+  font-size: clamp(1.6rem, 8vw, 2.8rem);
+  font-weight: 800;
+  text-align: center;
+  line-height: 1.2;
+  text-transform: uppercase;
+  font-family: 'Stardos Stencil', sans-serif;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #ffffff, #8a86a4, #ffffff);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 1px;
+  word-break: break-word;
+  margin: 0 auto;
+  text-shadow: 0 2px 6px rgba(75, 59, 59, 0.2);
+  transition: transform 0.3s ease, text-shadow 0.3s ease;
 }
+
+.header-title:hover {
+  transform: scale(1.03);
+  text-shadow: 0 4px 10px rgba(6, 5, 4, 0.5);
+}
+
+@media (min-width: 640px) {
+  .header-flex {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    text-align: left;
+  }
+}
+
+@media (max-width: 375px) {
+  .heading-title { font-size: 3.2rem; }
+  .policy-title { font-size: 2.499rem; }
+}
+
+@media (max-width: 340px) {
+  .heading-title { font-size: 2.7rem; }
+  .policy-title { font-size: 2.1rem; }
+}
+
+
 
 a {
   font-weight: 500;
@@ -127,18 +180,6 @@ a {
 }
 a:hover {
   color: #535bf2;
-}
-
-body {
-  margin: 0 auto;
-  min-width: 320px;
-  min-height: 100vh;
-  background-color: #344b5b;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
 }
 
 button {
@@ -159,78 +200,7 @@ button:focus {
   outline: none;
   border-color: #646cff;
 }
-/* button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-} */
-/* 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #35364d;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-}
-*/
-/* адаптив заголовку для маленьких екранів */
-.heading-title {
-  font-size: 3.7rem; 
-}
-.policy-title {
-  font-size: 2.95rem; 
-}
-/* Адаптація заголовку під усі екрани */
-.header-title {
-  font-size: clamp(1.6rem, 8vw, 2.8rem);
-  font-weight: 800;
-  text-align: center;
-  line-height: 1.2;
-  text-transform: uppercase;
-  font-family: 'Stardos Stencil', sans-serif;
-  border-radius: 8px; 
-  background: linear-gradient(90deg, #ffffff, #8a86a4, #ffffff);
-   background-clip: text;  
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  letter-spacing: 1px;
-  word-break: break-word;
-  margin: 0 auto;
-  text-shadow: 0 2px 6px rgba(75, 59, 59, 0.2);
-  transition: transform 0.3s ease, text-shadow 0.3s ease;
-}
 
-.header-title:hover {
-  transform: scale(1.03);
-  text-shadow: 0 4px 10px rgba(6, 5, 4, 0.5);
-}
-
-/* З екрана 640px (sm) — елементи в ряд */
-@media (min-width: 640px) {
-  .header-flex {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    text-align: left;
-  }
-}
-@media (max-width: 375px) {   
-  .heading-title {
-    font-size: 3.2rem; 
-  }
-  .policy-title {
-    font-size: 2.499rem; 
-  }
-}
-
-@media (max-width: 340px) {
-  .heading-title {
-    font-size: 2.7rem; 
-  }
-  .policy-title {
-    font-size: 2.1rem; 
-  } 
+:root {
+  color: rgba(255, 255, 255, 0.87);
 }
