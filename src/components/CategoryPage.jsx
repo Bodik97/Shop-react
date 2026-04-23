@@ -79,7 +79,7 @@ export default function CategoryPage({ onAddToCart, onBuy }) {
           name="sort-select"
           value={sort}
           onChange={(e) => setSort(e.target.value)}
-          className="sm:hidden w-full rounded-xl border px-3 py-2 text-sm text-gray-700 bg-white"
+          className="sm:hidden w-full rounded-xl border px-3 py-2 text-sm text-white bg-white"
           aria-label="Сортування товарів"
         >
           <option value="default">Без сортування</option>
@@ -90,7 +90,7 @@ export default function CategoryPage({ onAddToCart, onBuy }) {
         </select>
 
 
-        <div className="hidden sm:flex flex-wrap gap-2">
+        <div className="mt-4 hidden sm:flex flex-wrap gap-2">
             {[
               { id: "default", label: "Без сортування" },
               { id: "price-asc", label: "⬆ Дешеві" },
@@ -101,11 +101,14 @@ export default function CategoryPage({ onAddToCart, onBuy }) {
               <button
                 key={opt.id}
                 onClick={() => setSort(opt.id)}
-                className={`px-3 py-1.5 rounded-full text-sm font-semibold shadow
+                className={`
+                  px-3 py-1.5 rounded-full text-sm font-semibold shadow transition
+                  !text-white
                   ${sort === opt.id
                     ? "bg-gradient-to-r from-orange-500 via-rose-500 to-pink-500"
-                    : "bg-black/30 ring-1 ring-white/20 hover:bg-black/40"}
-                  ${sort === opt.id ? "!text-white" : "text-white/80"}`}
+                    : "bg-black/30 ring-1 ring-white/20 hover:bg-black/40"
+                  }
+                `}
               >
                 {opt.label}
               </button>
@@ -113,7 +116,10 @@ export default function CategoryPage({ onAddToCart, onBuy }) {
           </div>
 
       </div>
-
+       {/* Лічильник */}
+      <div className="text-sm text-white mb-4">
+        Знайдено: <span className="font-medium">{items.length}</span>
+      </div>
       {/* Пошук */}
       <div className="flex text-black items-center gap-2 border rounded-2xl px-3 py-2 w-full sm:w-80 bg-white mb-4">
         <input
@@ -134,11 +140,6 @@ export default function CategoryPage({ onAddToCart, onBuy }) {
             Очистити
           </button>
         )}
-      </div>
-
-      {/* Лічильник */}
-      <div className="text-sm text-white mb-4">
-        Знайдено: <span className="font-medium">{items.length}</span>
       </div>
 
       {/* Результати */}

@@ -471,7 +471,7 @@ function BackButton() {
     <button
       type="button"
       onClick={() => (canGoBack ? nav(-1) : nav("/"))}
-      className="inline-flex items-center justify-center gap-2 h-11 px-4 rounded-2xl border hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-600 transition"
+      className="inline-flex items-center justify-center gap-2 h-11 px-4 rounded-2xl bg-black !text-white font-semibold hover:bg-gray-800 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-blue-600 transition"
       aria-label="Назад"
     >
       ← Назад

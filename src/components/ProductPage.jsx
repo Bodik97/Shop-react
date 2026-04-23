@@ -5,6 +5,7 @@ import { Helmet } from "react-helmet";
 import { products } from "../data/products";
 import { useCart } from "../context/CartContext";
 import { formatUAH } from "../utils/format";
+import { ShoppingCart } from "lucide-react";
 import ModalBuy from "./ModalBuy";
 
 
@@ -186,7 +187,7 @@ export default function ProductPage() {
             <span className="text-gray-200">Товар</span>
           </nav>
           <p className="text-black">Товар не знайдено.</p>
-          <button onClick={() => navigate(-1)} className="mt-4 px-4 py-2 border rounded-lg hover:bg-gray-50">← Назад</button>
+          <button onClick={() => navigate(-1)} className="mt-4 px-4 py-2 border rounded-lg !text-white">← Назад</button>
         </>
       ) : (
         <>
@@ -223,16 +224,29 @@ export default function ProductPage() {
 
           {/* хлібні крихти */}
           <nav className="text-xs sm:text-sm text-gray-100 mb-4">
-            <Link to="/" className=" text-gray-100 hover:underline">Головна</Link>
+            <Link to="/" className=" !text-gray-400 hover:underline">Головна</Link>
             <span className="mx-1">/</span>
-            <Link to={`/category/${product.category}`} className="text-gray-100 hover:underline ">Категорія</Link>
+            <Link to={`/category/${product.category}`} className="!text-gray-400 hover:underline ">Категорія</Link>
             <span className="mx-1">/</span>
             <span className="text-gray-200 line-clamp-1">{product.title}</span>
           </nav>
 
-          {/* заголовок */}
           <div className="header-flex">
-            <button onClick={() => navigate(-1)} className="w-full h-11 rounded-xl border hover:bg-gray-50 sm:w-auto sm:px-4">← Назад</button>
+            <button 
+              onClick={() => navigate(-1)} 
+              className="
+                w-full sm:w-auto h-11 px-4
+                inline-flex items-center justify-center gap-2
+                rounded-xl
+                bg-black !text-white font-semibold
+                hover:bg-gray-800 active:scale-[0.98]
+                focus:outline-none focus:ring-2 focus:ring-blue-600
+                transition
+              "
+              aria-label="Назад"
+            >
+              ← Назад
+            </button>
             <h1 className="header-title">
               {product.title}
             </h1>
@@ -472,7 +486,7 @@ export default function ProductPage() {
                   {/* Кнопки */}
                   <div className="mt-4 grid grid-cols-1 gap-3 min-w-0">
                     <button
-                      className="w-full h-12 md:h-14 rounded-xl bg-blue-600 text-white font-semibold
+                      className="w-full h-12 md:h-14 rounded-xl bg-blue-600 !text-white font-semibold
                                 text-base md:text-lg hover:bg-blue-700 active:scale-[0.99] transition
                                 whitespace-nowrap"
                       onClick={() => {
@@ -485,8 +499,17 @@ export default function ProductPage() {
                     </button>
 
                     <button
-                      className="w-full h-12 md:h-14 rounded-xl border font-semibold text-base md:text-lg
-                                hover:bg-gray-50 active:scale-[0.99] transition whitespace-nowrap"
+                      className="
+                        w-full h-12 md:h-14
+                        inline-flex items-center justify-center gap-2
+                        rounded-xl
+                        bg-gradient-to-r from-gray-900 to-black
+                        !text-white font-semibold text-base md:text-lg
+                        shadow-md
+                        hover:from-gray-800 hover:to-black/90
+                        active:scale-[0.99]
+                        transition whitespace-nowrap
+                      "
                       onClick={() => {
                         const chosenAddons = addons.filter((a) => selectedAddons.includes(a.id));
                         const item = {
@@ -501,6 +524,7 @@ export default function ProductPage() {
                       }}
                       aria-label="Додати в кошик"
                     >
+                      <ShoppingCart className="h-4 w-4" />
                       Додати в кошик
                     </button>
                   </div>

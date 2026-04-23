@@ -106,7 +106,7 @@ export default function Header() {
             <Link
               to="/history-orders"
               onClick={() => setOpen(false)}
-              className="hidden lg:inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-4 py-2.5 text-sm text-white font-semibold hover:bg-white/20 transition"
+              className="hidden lg:inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-4 py-2.5 text-xl text-white font-semibold hover:bg-white/20 transition"
               aria-label="Мої замовлення"
             >
               📋 Замовлення
@@ -241,7 +241,7 @@ export default function Header() {
           <Link
             to="/history-orders"
             onClick={() => setOpen(false)}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border px-4 py-3 text-sm font-semibold text-gray-800 hover:bg-gray-50 transition"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border px-4 py-3 text-2xl font-semibold text-gray-800 hover:bg-gray-50 transition"
             aria-label="Мої замовлення"
           >
             📋 Мої замовлення

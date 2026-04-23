@@ -192,7 +192,7 @@ const ProductCard = memo(function ProductCard({ product }) {
               mt-3 w-full h-12
               inline-flex items-center justify-center gap-2
               rounded-xl
-              bg-gradient-to-r from-gray-900 to-black text-white
+              bg-gradient-to-r from-gray-900 to-black !text-white
               font-semibold text-sm
               shadow-md
               hover:from-gray-800 hover:to-black/90
