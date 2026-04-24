@@ -109,7 +109,7 @@ export default function HistoryOrders() {
           aria-label="На головну"
           className="
             inline-flex items-center justify-center gap-1.5
-            h-14 sm:h-14
+            h-12 sm:h-14
             w-20 sm:w-20
             px-3 sm:px-5
             rounded-xl sm:rounded-2xl
@@ -135,7 +135,7 @@ export default function HistoryOrders() {
           return (
             <div
               key={order.orderId}
-              className="rounded-xl sm:rounded-2xl border   bg-white shadow-sm"
+              className="rounded-xl sm:rounded-2xl border   bg-gray-500 shadow-sm"
             >
               {/* ── Шапка замовлення ── */}
               <button

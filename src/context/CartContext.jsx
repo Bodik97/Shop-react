@@ -9,6 +9,7 @@ import {
   useMemo,
   useState,
 } from "react";
+import { urlFor } from "../sanityClient";
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 const makeFingerprint = (id, addons = []) => {
@@ -18,6 +19,20 @@ const makeFingerprint = (id, addons = []) => {
 
 const sumAddons = (addons = []) =>
   (addons || []).reduce((s, a) => s + (Number(a.price) || 0), 0);
+
+// Пріоритет: готовий URL із GROQ → urlFor(mainImage) → старе поле product.image
+const resolveProductImage = (product) => {
+  if (!product) return null;
+  if (product.mainImageUrl) return product.mainImageUrl;
+  if (product.mainImage) {
+    try {
+      return urlFor(product.mainImage).width(300).url();
+    } catch {
+      return product.image || null;
+    }
+  }
+  return product.image || null;
+};
 
 // ─── 1. Створюємо "канал зв'язку" ───────────────────────────────────────────
 const CartContext = createContext(null);
@@ -38,7 +53,7 @@ export function CartProvider({ children, products = [] }) {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
-  // Синхронізація цін з каталогом
+  // Синхронізація цін і картинок з каталогом
   const refreshCartPrices = useCallback(() => {
     if (!products.length) return;
     setCart((prev) => {
@@ -47,9 +62,16 @@ export function CartProvider({ children, products = [] }) {
         const prod = products.find((p) => p.id === item.id);
         if (!prod) return item;
         const newOldPrice = Number(prod.oldPrice) || 0;
-        if (prod.price !== item.price || newOldPrice !== item.oldPrice) changed = true;
-        return { ...item, price: prod.price, oldPrice: newOldPrice };
-        });
+        const newImage = resolveProductImage(prod) || item.image;
+        if (
+          prod.price !== item.price ||
+          newOldPrice !== item.oldPrice ||
+          newImage !== item.image
+        ) {
+          changed = true;
+        }
+        return { ...item, price: prod.price, oldPrice: newOldPrice, image: newImage };
+      });
       return changed ? next : prev;
     });
   }, [products]);
@@ -80,8 +102,8 @@ export function CartProvider({ children, products = [] }) {
             id:         product.id,
             title:      product.title,
             price,
-            oldPrice:   Number(product.oldPrice) || 0,  // ← додали
-            image:      product.image,
+            oldPrice:   Number(product.oldPrice) || 0,
+            image:      resolveProductImage(product),
             qty:        1,
             giftText:   product?.giftText?.text || product?.giftText || null,
             addons,
@@ -108,11 +130,11 @@ export function CartProvider({ children, products = [] }) {
     );
   }, []);
 
-  const removeAddon = useCallback((cartItemId, addonId) => {
+  const removeAddon = useCallback((cartItemId, addonKey) => {
     setCart((prev) =>
       prev.map((item) => {
         if ((item.cartItemId || item.id) !== cartItemId) return item;
-        const addons      = (item.addons || []).filter((a) => a.id !== addonId);
+        const addons      = (item.addons || []).filter((a) => (a.id || a.name) !== addonKey);
         const addonsTotal = sumAddons(addons);
         return {
           ...item,

@@ -3,9 +3,23 @@ import { useMemo } from "react";
 // eslint-disable-next-line
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { categories } from "../data/products";
 
-const bgImage = "https://res.cloudinary.com/da27wfewm/image/upload/v1758359721/background-img_beohna.webp";
+import pistImg from "../img/pist.webp";
+import pnevmoImg from "../img/pnevmo.webp";
+import knifesImg from "../img/knifes.webp";
+import acsesoryImg from "../img/acsesory.webp";
+import bgImg from "../img/background-img.webp";
+
+const categories = [
+  { id: "air_rifles", name: "Пневматичні гвинтівки", image: pnevmoImg },
+  { id: "psp-rifles", name: "ПСП гвинтівки", image: pnevmoImg },
+  { id: "flobers", name: "Флобери", image: pnevmoImg },
+  { id: "pistols", name: "Пістолети", image: pistImg },
+  { id: "knives", name: "Ножі", image: knifesImg },
+  { id: "accessories", name: "Аксесуари", image: acsesoryImg }
+];
+
+const bgImage = bgImg;
 
 const FALLBACK_IMG =
   "data:image/svg+xml;utf8," +
@@ -17,6 +31,7 @@ const FALLBACK_IMG =
 
 function CategoryNav() {
   const catsWithImages = useMemo(() => {
+    // Тепер 'categories' береться з константи вище
     return categories.map((cat) => ({
       ...cat,
       image: cat.image || FALLBACK_IMG,
@@ -25,22 +40,20 @@ function CategoryNav() {
 
   return (
     <section
-      className="relative py-8 sm:py-10 rounded-2xl overflow-hidden"
+      className="relative py-6 sm:py-10 rounded-2xl overflow-hidden"
       style={{
         backgroundImage: `url(${bgImage})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
     >
-      {/* затемнення */}
       <div className="absolute inset-0 bg-black/40" aria-hidden />
-      <div className="relative max-w-7xl mx-auto px-4">
-        <h2 className="text-center text-2xl md:text-3xl font-extrabold text-white mb-6 ">
+      <div className="relative max-w-7xl mx-auto px-3 sm:px-4">
+        <h2 className="text-center text-xl sm:text-2xl md:text-3xl font-extrabold text-white mb-4 sm:mb-6">
           Категорії
         </h2>
 
-        {/* Сітка замість каруселі */}
-        <div className="grid grid-cols-[repeat(auto-fill,minmax(255px,1fr))] lg:grid-cols-2 gap-6 sm:gap-2.5 lg:gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
           {catsWithImages.map((cat) => (
             <motion.div
               key={cat.id}
@@ -68,23 +81,16 @@ function CategoryNav() {
                   <div className="absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-black/40 to-transparent" />
                 </div>
 
-                {/* Текст + індикатор */}
-                <div className="p-4 flex items-center gap-1">
-                  <h3 className="text-[36px] font-semibold text-gray-800">{cat.name}</h3>
-                  
+                <div className="p-3 sm:p-4 flex items-center gap-1">
+                  <h3 className="text-lg sm:text-2xl md:text-[28px] lg:text-[32px] font-semibold text-gray-800 leading-tight">{cat.name}</h3>
                 </div>
 
-                <div className="px-4 pb-3">
+                <div className="px-3 sm:px-4 pb-3">
                   <div className="mt-0.5 mb-1 text-xs text-gray-500 flex items-center gap-1">
-                    <span className="text-[15px] font-medium text-gray-700">Перейти</span>
-                    <svg
-                      viewBox="0 0 24 24"
-                      className="h-6 w-6 opacity-80 transition-transform group-hover:translate-x-0.5"
-                      aria-hidden="true"
-                    >
+                    <span className="text-sm font-medium text-gray-700">Перейти</span>
+                    <svg viewBox="0 0 24 24" className="h-6 w-6 opacity-80 transition-transform group-hover:translate-x-0.5">
                       <path fill="currentColor" d="M10 6l6 6-6 6v-4H4v-4h6V6z" />
                     </svg>
-                    {/* рожева точка для мобільних */}
                     <div className="sm:hidden">
                       <span className="relative flex h-3 w-3">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-500 opacity-75" />

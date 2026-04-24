@@ -303,9 +303,8 @@ export default function ModalBuy({
               flex-shrink-0
               inline-flex items-center justify-center
               h-11 w-11
-              rounded-xl border border-gray-200
-              text-white text-lg
-              hover:bg-gray-100 active:scale-95
+              rounded-xl bg-black !text-white text-lg font-bold
+              hover:bg-gray-900 active:scale-95
               focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600
               disabled:opacity-40
               transition
@@ -330,7 +329,7 @@ export default function ModalBuy({
             {!isCart && product && (
               <div className="flex items-start gap-3">
                 <img
-                  src={product.image}
+                  src={product.image || product.mainImageUrl}
                   alt={product.title}
                   className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl object-cover border shrink-0"
                   loading="lazy"
@@ -365,9 +364,19 @@ export default function ModalBuy({
                     </div>
                   </div>
                     {productAddons.map((a) => (
-                      <div key={a.id} className="flex justify-between text-xs">
-                        <span className="text-blue-600 truncate">+ {a.name}</span>
-                        <span className="font-semibold text-blue-700 tabular-nums shrink-0 ml-2">{formatUAH(a.price)}</span>
+                      <div key={a.name} className="flex items-center justify-between gap-2 text-xs">
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          {a.imageUrl && (
+                            <img
+                              src={a.imageUrl}
+                              alt={a.name}
+                              className="w-6 h-6 rounded object-cover border border-gray-200 bg-white shrink-0"
+                              loading="lazy"
+                            />
+                          )}
+                          <span className="text-blue-600 truncate">+ {a.name}</span>
+                        </div>
+                        <span className="font-semibold text-blue-700 tabular-nums shrink-0">{formatUAH(a.price)}</span>
                       </div>
                     ))}
                     <div className="flex justify-between text-sm font-bold pt-1 border-t border-dashed border-gray-200">
@@ -388,14 +397,14 @@ export default function ModalBuy({
                     type="button"
                     onClick={() => setQty((q) => Math.max(1, q - 1))}
                     disabled={qty <= 1 || sending}
-                    className="flex justify-center items-center h-9 w-9 rounded-xl bg-gray-100 font-bold text-lg hover:bg-gray-200 active:scale-95 disabled:opacity-40 transition"
+                    className="flex justify-center items-center h-10 w-10 rounded-xl bg-black !text-white font-bold text-lg hover:bg-gray-900 active:scale-95 disabled:opacity-40 transition"
                   >−</button>
-                  <span className="text-black w-8 text-center font-semibold tabular-nums">{qty}</span>
+                  <span className="text-gray-900 w-8 text-center font-semibold tabular-nums">{qty}</span>
                   <button
                     type="button"
                     onClick={() => setQty((q) => Math.min(99, q + 1))}
                     disabled={qty >= 99 || sending}
-                    className="flex justify-center items-center h-9 w-9 rounded-xl bg-gray-100 font-bold text-lg hover:bg-gray-200 active:scale-95 disabled:opacity-40 transition"
+                    className="flex justify-center items-center h-10 w-10 rounded-xl bg-black !text-white font-bold text-lg hover:bg-gray-900 active:scale-95 disabled:opacity-40 transition"
                   >+</button>
                 </div>
               </div>
@@ -447,8 +456,18 @@ export default function ModalBuy({
                           </div>
                         </div>
                           {addons.map((a) => (
-                            <div key={a.id} className="flex justify-between gap-2">
-                              <span className="text-xs text-blue-600 truncate">+ {a.name}</span>
+                            <div key={a.id || a.name} className="flex items-center justify-between gap-2">
+                              <div className="flex items-center gap-1.5 min-w-0">
+                                {a.imageUrl && (
+                                  <img
+                                    src={a.imageUrl}
+                                    alt={a.name}
+                                    className="w-5 h-5 rounded object-cover border border-gray-200 bg-white shrink-0"
+                                    loading="lazy"
+                                  />
+                                )}
+                                <span className="text-xs text-blue-600 truncate">+ {a.name}</span>
+                              </div>
                               <span className="text-xs font-semibold text-blue-700 tabular-nums shrink-0">{formatUAH(a.price)}</span>
                             </div>
                           ))}
@@ -562,19 +581,19 @@ export default function ModalBuy({
               </div>
 
               {/* Кнопки */}
-              <div className="flex gap-2">
+              <div className="flex gap-2 shrink-0">
                 <button
                   type="button"
                   onClick={() => onClose?.()}
                   disabled={sending}
-                  className="h-11 px-4 rounded-2xl border border-gray-300 text-sm font-semibold text-white hover:bg-gray-50 active:scale-95 disabled:opacity-40 transition"
+                  className="h-11 px-3 sm:px-4 rounded-2xl bg-black !text-white text-sm font-semibold hover:bg-gray-900 active:scale-95 disabled:opacity-40 transition"
                 >
                   Скасувати
                 </button>
                 <button
                   type="submit"
                   disabled={sending}
-                  className="h-11 px-5 rounded-2xl bg-blue-600 text-white font-semibold hover:bg-blue-700 active:scale-95 disabled:opacity-50 transition"
+                  className="h-11 px-4 sm:px-5 rounded-2xl bg-black !text-white text-sm font-semibold hover:bg-gray-900 active:scale-95 disabled:opacity-50 transition"
                 >
                   {sending ? "Надсилаємо…" : "Купити"}
                 </button>

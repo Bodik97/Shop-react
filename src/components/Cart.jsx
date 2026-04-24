@@ -115,7 +115,7 @@ export default function Cart({ freeShippingFrom = 0 }) {
 
   /* ── Основний рендер ── */
   return (
-    <main className="max-w-6xl mx-auto px-4 sm:px-5 pt-6 pb-28 md:pb-24 lg:pb-10 overflow-x-hidden">
+    <main className="max-w-6xl mx-auto px-3 sm:px-5 pt-4 sm:pt-6 pb-28 md:pb-24 lg:pb-10 overflow-x-hidden">
       <div className="flex items-center justify-between gap-3 mb-4">
         <BackButton />
       </div>
@@ -160,11 +160,11 @@ export default function Cart({ freeShippingFrom = 0 }) {
             return (
               <article
                 key={cartItemId}
-                className="flex flex-col sm:flex-row sm:items-stretch gap-4 p-4 bg-white rounded-2xl border transition-shadow hover:shadow-md"
+                className="flex flex-col sm:flex-row sm:items-stretch gap-3 sm:gap-4 p-3 sm:p-4 bg-white rounded-2xl border transition-shadow hover:shadow-md"
               >
                 {/* Фото */}
                 <div className="sm:self-start sm:mt-1">
-                  <div className="w-full sm:w-24 md:w-28 aspect-square overflow-hidden rounded-xl bg-gray-50 relative shrink-0">
+                  <div className="w-full sm:w-24 md:w-28 aspect-square sm:aspect-square max-h-[200px] sm:max-h-none overflow-hidden rounded-xl bg-gray-50 relative shrink-0">
                     <img
                       src={item.image}
                       alt={item.title}
@@ -207,24 +207,34 @@ export default function Cart({ freeShippingFrom = 0 }) {
                   {/* 🆕 Addons з хрестиком видалення */}
                   {addons.length > 0 && (
                     <div className="flex flex-wrap gap-1.5">
-                      {addons.map((addon) => (
-                        <span
-                          key={addon.id}
-                          className="inline-flex items-center gap-1 rounded-full border border-blue-200 bg-blue-50 pl-2.5 pr-1 py-0.5 text-xs font-medium text-blue-900"
-                        >
-                          + {addon.name}
-                          <span className="font-semibold ml-0.5 tabular-nums">{formatUAH(addon.price)}</span>
-                          {/* 🆕 Червоний хрестик */}
-                          <button
-                            type="button"
-                            aria-label={`Видалити ${addon.name}`}
-                            onClick={() => onRemoveAddon(cartItemId, addon.id)}
-                            className="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full text-red-500 hover:bg-red-500 transition shrink-0"
+                      {addons.map((addon) => {
+                        const addonKey = addon.id || addon.name;
+                        return (
+                          <span
+                            key={addonKey}
+                            className="inline-flex items-center gap-1 rounded-full border border-blue-200 bg-blue-50 pl-1 pr-1 py-0.5 text-xs font-medium text-blue-900"
                           >
-                           X <X className="h-2.5 w-2.5" />
-                          </button>
-                        </span>
-                      ))}
+                            {addon.imageUrl && (
+                              <img
+                                src={addon.imageUrl}
+                                alt={addon.name}
+                                className="w-5 h-5 rounded-full object-cover border border-white shrink-0"
+                                loading="lazy"
+                              />
+                            )}
+                            <span className="pl-0.5">+ {addon.name}</span>
+                            <span className="font-semibold ml-0.5 tabular-nums">{formatUAH(addon.price)}</span>
+                            <button
+                              type="button"
+                              aria-label={`Видалити ${addon.name}`}
+                              onClick={() => onRemoveAddon(cartItemId, addonKey)}
+                              className="ml-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-red-500 !text-white hover:bg-red-600 active:scale-95 transition shrink-0"
+                            >
+                              <X className="h-3 w-3" />
+                            </button>
+                          </span>
+                        );
+                      })}
                     </div>
                   )}
 
@@ -274,24 +284,23 @@ export default function Cart({ freeShippingFrom = 0 }) {
                     <button
                       type="button"
                       onClick={() => setArmedId(cartItemId)}
-                      className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-red-200 bg-red-50 mt-5 h-10 px-2.5 py-1.5 text-sm text-red-600 hover:bg-red-100 transition whitespace-nowrap"
+                      className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-red-200 bg-red-50 mt-2 sm:mt-5 h-10 px-3 text-sm text-red-600 hover:bg-red-100 active:scale-95 transition whitespace-nowrap"
                     >
                       🗑️ <span className="font-medium">Видалити</span>
                     </button>
                   ) : (
-                    // 🔑 Ключова зміна: flex-col + w-full щоб обидві кнопки поміщались
-                    <div className="flex flex-col gap-1.5 w-35 sm:w-auto">
+                    <div className="flex flex-col gap-1.5 w-35 h-15 sm:w-36 " >
                       <button
                         type="button"
                         onClick={() => { onRemove(cartItemId); setArmedId(null); }}
-                        className="inline-flex items-center justify-center h-8 w-36 px-2 rounded-lg bg-red-600 text-red-500 text-xs font-medium hover:bg-red-700 transition "
+                        className="inline-flex items-center justify-center h-14 w-35 px-2 rounded-lg bg-black !text-white text-xs font-semibold hover:bg-gray-900 active:scale-95 transition"
                       >
-                        Видалити
+                        Підтвердити
                       </button>
                       <button
                         type="button"
                         onClick={() => setArmedId(null)}
-                        className="inline-flex items-center justify-center h-8 w-36 px-2 rounded-lg border text-xs text-white hover:bg-gray-50 transition "
+                        className="inline-flex items-center justify-center h-14 w-35 px-2 rounded-lg bg-black !text-white text-xs font-semibold hover:bg-gray-900 active:scale-95 transition"
                       >
                         Скасувати
                       </button>
@@ -387,9 +396,9 @@ export default function Cart({ freeShippingFrom = 0 }) {
                     inline-flex items-center justify-center
                     h-10 sm:h-11
                     px-2.5 sm:px-3
-                    rounded-xl border border-gray-300
-                    text-xs sm:text-sm font-medium text-white
-                    hover:bg-gray-50 active:scale-95
+                    rounded-xl bg-black !text-white
+                    text-xs sm:text-sm font-semibold
+                    hover:bg-gray-900 active:scale-95
                     transition shrink-0
                   "
                 >
@@ -404,9 +413,9 @@ export default function Cart({ freeShippingFrom = 0 }) {
                     inline-flex items-center justify-center
                     h-10 sm:h-11
                     px-3 sm:px-5
-                    rounded-xl bg-black text-white
+                    rounded-xl bg-black !text-white
                     text-xs sm:text-sm font-semibold
-                    active:scale-[0.98] disabled:opacity-50
+                    hover:bg-gray-900 active:scale-[0.98] disabled:opacity-50
                     transition shrink-0
                   "
                 >
@@ -499,14 +508,13 @@ function Qty({ id, value, onChange, min = 1, max = 99, pending = false }) {
   };
 
   return (
-    <div className="inline-flex items-center gap-2 select-none">
+    <div className="inline-flex items-center gap-1.5 sm:gap-2 select-none">
       <button
         type="button"
         aria-label="Зменшити кількість"
         disabled={pending || value <= min}
         onClick={() => commit((value || min) - 1)}
-        // 🔧 h-11 w-11 = 44px — мінімум для зручного tap на мобільному
-        className="inline-flex h-8 w-11 items-center justify-center rounded-2xl bg-gray-100 text-white text-lg font-bold hover:bg-gray-200 active:scale-95 disabled:opacity-40 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
+        className="inline-flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-xl bg-black !text-white text-lg font-bold hover:bg-gray-900 active:scale-95 disabled:opacity-40 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
       >
         −
       </button>
@@ -518,8 +526,7 @@ function Qty({ id, value, onChange, min = 1, max = 99, pending = false }) {
         inputMode="numeric"
         min={min}
         max={max}
-        // 🔧 w-20 замість w-16 — ширше поле, зручніше вводити
-        className="w-15 h-8 text-center rounded-2xl border-2 border-gray-200 bg-white text-gray-900 tabular-nums font-semibold text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition"
+        className="w-12 sm:w-14 h-10 sm:h-11 text-center rounded-xl border-2 border-gray-200 bg-white text-gray-900 tabular-nums font-semibold text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition"
         value={draft}
         onChange={(e) => setDraft(e.target.value.replace(/[^0-9]/g, ""))}
         onBlur={() => commit(draft)}
@@ -532,7 +539,7 @@ function Qty({ id, value, onChange, min = 1, max = 99, pending = false }) {
         aria-label="Збільшити кількість"
         disabled={pending || value >= max}
         onClick={() => commit((value || min) + 1)}
-        className="inline-flex h-8 w-11 items-center justify-center rounded-2xl bg-gray-100 text-white text-lg font-bold hover:bg-gray-200 active:scale-95 disabled:opacity-40 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
+        className="inline-flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-xl bg-black !text-white text-lg font-bold hover:bg-gray-900 active:scale-95 disabled:opacity-40 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
       >
         +
       </button>

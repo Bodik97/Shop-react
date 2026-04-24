@@ -56,9 +56,9 @@ export default function Header() {
   );
 
   return (
-    <header className="sticky top-0 z-50 border-b bg-white shadow-md">
-      <div className="w-full px-4 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
+    <header className="sticky top-0 z-[70] border-b bg-white shadow-md">
+      <div className="w-full px-3 sm:px-4 lg:px-8">
+        <div className="flex h-16 items-center justify-between gap-2">
           {/* LEFT: Лого + Нав */}
           <div className="hidden lg:flex items-center">
             <Link to="/" onClick={() => setOpen(false)}>
@@ -96,17 +96,17 @@ export default function Header() {
           </div>
 
           {/* MOBILE: Лого */}
-          <Link to="/" className="lg:hidden" onClick={() => setOpen(false)}>
-            <img src={logo} alt="Airsoft Shop Logo" className="h-12 w-auto" />
+          <Link to="/" className="lg:hidden shrink-0" onClick={() => setOpen(false)}>
+            <img src={logo} alt="Airsoft Shop Logo" className="h-10 sm:h-12 w-auto" />
           </Link>
 
           {/* RIGHT: Замовлення + Кошик + бургер */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5 sm:gap-3">
             {/* КНОПКА ЗАМОВЛЕННЯ — тільки десктоп */}
             <Link
               to="/history-orders"
               onClick={() => setOpen(false)}
-              className="hidden lg:inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-4 py-2.5 text-xl text-white font-semibold hover:bg-white/20 transition"
+              className="hidden lg:inline-flex items-center gap-2 rounded-xl bg-black px-4 py-2.5 text-base !text-white font-semibold hover:bg-gray-900 transition"
               aria-label="Мої замовлення"
             >
               📋 Замовлення
@@ -116,12 +116,12 @@ export default function Header() {
             <Link
               to="/cart"
               onClick={() => setOpen(false)}
-              className="relative inline-flex items-center gap-2 rounded-xl bg-black px-5 py-3 text-lg text-white font-bold uppercase tracking-wide hover:bg-blue-700 transition"
+              className="relative inline-flex items-center gap-1.5 rounded-xl bg-black px-3 sm:px-5 h-11 sm:h-12 !text-white font-bold uppercase tracking-wide hover:bg-gray-900 active:scale-95 transition"
               aria-label="Перейти до кошика"
             >
-              <ShoppingCartIcon className="h-6 w-9 text-white" />
+              <ShoppingCartIcon className="h-6.5 w-8 sm:h-6 sm:w-6 text-white" />
               {cartCount > 0 && (
-                <span className="absolute -top-2 -right-2 rounded-full bg-red-600 px-2 py-0.5 text-xs text-white">
+                <span className="absolute -top-1.5 -right-1.5 min-w-5 h-5 grid place-items-center rounded-full bg-red-600 px-1 text-[11px] font-bold text-white">
                   {cartCount}
                 </span>
               )}
@@ -133,11 +133,11 @@ export default function Header() {
               onClick={() => setOpen((v) => !v)}
               aria-label="Відкрити меню"
               aria-expanded={open}
-              className="relative lg:hidden h-12 w-18 rounded-2xl border bg-blue-950 shadow hover:bg-blue-800 active:scale-95 transition-all duration-200 grid place-items-center"
+              className="relative lg:hidden h-11 w-14 sm:h-12 sm:w-14 rounded-xl bg-black shadow hover:bg-blue-800 active:scale-95 transition flex flex-col items-center justify-center gap-2 shrink-0"
             >
-              <span className={`block h-0.5 w-8 bg-white rounded origin-center transition-transform duration-300 ${open ? "translate-y-2 rotate-45" : ""}`} />
-              <span className={`block h-0.5 w-8 bg-white rounded my-1 transition-all duration-300 ${open ? "opacity-0" : "opacity-100"}`} />
-              <span className={`block h-0.5 w-8 bg-white rounded origin-center transition-transform duration-300 ${open ? "-translate-y-2 -rotate-45" : ""}`} />
+              <span className={`block h-0.5 w-7 bg-white rounded origin-center transition-transform duration-300 ${open ? "translate-y-1 rotate-45" : ""}`} />
+              <span className={`block h-0.5 w-7 bg-white rounded transition-all duration-300 ${open ? "opacity-0" : "opacity-100"}`} />
+              <span className={`block h-0.5 w-7 bg-white rounded origin-center transition-transform duration-300 ${open ? "-translate-y-1 -rotate-45" : ""}`} />
             </button>
           </div>
         </div>
@@ -145,13 +145,13 @@ export default function Header() {
 
       {/* Backdrop */}
       {open && (
-        <div className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm" onClick={() => setOpen(false)} />
+        <div className="fixed inset-0 z-[80] bg-black/50 backdrop-blur-sm" onClick={() => setOpen(false)} />
       )}
 
       {/* Drawer */}
       <aside
         ref={drawerRef}
-        className={`fixed left-0 top-0 z-50 h-full w-80 max-w-[85vw] bg-white shadow-3xl border-r transition-transform duration-400
+        className={`fixed left-0 top-0 z-[90] h-full w-80 max-w-[85vw] bg-white shadow-3xl border-r transition-transform duration-400
           ${open ? "translate-x-0" : "-translate-x-full"}`}
         aria-label="Мобільне меню"
       >
@@ -241,7 +241,7 @@ export default function Header() {
           <Link
             to="/history-orders"
             onClick={() => setOpen(false)}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border px-4 py-3 text-2xl font-semibold text-gray-800 hover:bg-gray-50 transition"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-black px-4 py-3 text-base !text-white font-semibold hover:bg-gray-900 active:scale-95 transition"
             aria-label="Мої замовлення"
           >
             📋 Мої замовлення
