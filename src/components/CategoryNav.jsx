@@ -12,10 +12,10 @@ import bgImg from "../img/background-img.webp";
 
 const categories = [
   { id: "air_rifles", name: "Пневматичні гвинтівки", image: pnevmoImg },
-  { id: "psp-rifles", name: "ПСП гвинтівки", image: pnevmoImg },
-  { id: "flobers", name: "Флобери", image: pnevmoImg },
-  { id: "pistols", name: "Пістолети", image: pistImg },
-  { id: "knives", name: "Ножі", image: knifesImg },
+  { id: "psp-rifles", name: "PCP гвинтівки", image: pnevmoImg },
+  { id: "flobers", name: "Револьвери флобера", image: pnevmoImg },
+  { id: "pvevmo-pistols", name: "Пневматичні пістолети", image: pistImg },
+  { id: "start-pistols", name: "Стартові пістолети", image: knifesImg },
   { id: "accessories", name: "Аксесуари", image: acsesoryImg }
 ];
 

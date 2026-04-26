@@ -8,7 +8,6 @@ export default function PopularSlider({
   onBuy,
   title = "Популярні товари",
 }) {
-  // Фільтрація та сортування списку популярних товарів
   const list = useMemo(() => {
     const popular = (products || [])
       .filter(
@@ -25,16 +24,16 @@ export default function PopularSlider({
   if (!list.length) return null;
 
   return (
-    <section className="py-6 sm:py-8">
+    <section className="py-6 sm:py-8 px-2 sm:px-0"> {/* Додав невеликий відступ для всієї секції */}
       {/* Заголовок */}
-      <div className="mb-4 sm:mb-6 px-1 sm:px-0">
-        <h2 className="text-xl sm:text-2xl font-stencil uppercase tracking-[0.2em] sm:tracking-[0.25em] text-white">
+      <div className="mb-4 sm:mb-6 px-1">
+        <h2 className="text-lg sm:text-2xl font-stencil uppercase tracking-[0.15em] sm:tracking-[0.25em] text-white">
           {title}
         </h2>
       </div>
 
-      {/* Адаптивна сітка */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
+      {/* Адаптивна сітка: тепер grid-cols-2 за замовчуванням (для мобільних) */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-6">
         {list.map((p) => (
           <div key={p.id || p._id} className="flex justify-center w-full">
             <ProductCard

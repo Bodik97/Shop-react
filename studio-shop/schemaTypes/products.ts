@@ -57,10 +57,10 @@ export const product = defineType({
       options: {
         list: [
           { title: 'Пневматичні гвинтівки', value: 'air_rifles' },
-          { title: 'ПСП гвинтівки', value: 'psp-rifles' },
-          { title: 'Флобери', value: 'flobers' },
-          { title: 'Пістолети', value: 'pistols' },
-          { title: 'Ножі', value: 'knives' },
+          { title: 'PCP гвинтівки', value: 'psp-rifles' },
+          { title: 'Револьвери флобера', value: 'flobers' },
+          { title: 'Пневматичні пістолети', value: 'pvevmo-pistols' },
+          { title: 'Стартові пістолети', value: 'start-pistols' },
           { title: 'Аксесуари', value: 'accessories' },
         ]
       }
@@ -69,7 +69,7 @@ export const product = defineType({
       name: 'popularityScore',
       title: 'Рейтинг популярності (для сортування)',
       type: 'number',
-      description: 'Чим більше — тим вище в сортуванні "Популярні"'
+      description: 'Чим більше число — тим вище в списку Товари Популярні '
     }),
     // Характеристики (specs)
     defineField({

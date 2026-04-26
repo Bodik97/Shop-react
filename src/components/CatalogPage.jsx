@@ -1,55 +1,64 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import ProductCard from "./ProductCard";
-import { ArrowUpDown, ChevronDown, SlidersHorizontal, Loader2 } from "lucide-react";
-import { client } from "../sanityClient"; // Клієнт Sanity
+// Додав ChevronUp для кнопки розгортання
+import { ArrowUpDown, ChevronDown, ChevronUp, SlidersHorizontal, Loader2 } from "lucide-react";
+import { client } from "../sanityClient";
 
-// Список категорій (залишаємо тут, щоб не було помилок імпорту)
 const categories = [
-  { id: "air_rifles", name: "Пневматичні гвинтівки" },
-  { id: "psp-rifles", name: "ПСП гвинтівки" },
-  { id: "flobers", name: "Флобери" },
-  { id: "pistols", name: "Пістолети" },
-  { id: "knives", name: "Ножі" },
-  { id: "accessories", name: "Аксесуари" }
+  { 
+    id: "air_rifles", 
+    name: "Пневматичні гвинтівки", 
+    description: "У цій групі Ви можете знайти безліч пневматичних гвинтівок для активного відпочинку та розваги, або підібрати чудовий подарунок близькій Вам людині. У групі представлена продукція різних світових брендів, різних моделей, на будь-який смак і гаманець. Ну а якщо Ви не знайшли в каталозі нашого сайту то, що хотіли, Ви завжди можете замовити товар, що Вас цікавить оформивши заявку на сайті нашої компанії або по телефону." 
+  },
+  { 
+    id: "psp-rifles", 
+    name: "ПСП гвинтівки", 
+    description: "Гвинтівки PCP - пневматичні гвинтівки із попереднім закачуванням повітря. Висока точність та потужність для професійної стрільби."
+  },
+  { 
+    id: "flobers", 
+    name: "Револьвери флобера", 
+    description: "У цій групі Ви знайдете багато револьверів під патрон флоберт, для активного відпочинку і розваг, або оберіть чудовий подарунок близькій Вам людині. У групі представлена продукція різних світових брендів, різні моделі, на будь-який смак і крок. Ну а якщо Ви не знайшли в каталозі нашого сайта те, що хотіли, Ви завжди можете замовити той, хто вас цікавить оформив заявку на сайті нашої компанії або по телефону." 
+  },
+  { 
+    id: "pvevmo-pistols", 
+    name: "Пневматичні пістолети", 
+    description: "У цій групі товарів Ви можете знайти безліч пневматичних пістолетів для активного відпочинку та розваги, або підібрати відмінний подарунок близькій Вам людині. У групі представлена ​​продукція різних світових брендів, різних моделей, на будь-який смак і гаманець."
+  },
+  { 
+    id: "start-pistols", 
+    name: "Стартові пістолети", 
+    description: "У цій групі Ви знайдете безліч стартових пістолетів, для активного відпочинку та розваги, або підібрати відмінний подарунок близькій Вам людині. У групі представлена ​​продукція різних світових брендів, різних моделей, на будь-який смак і гаманець." 
+  },
+  { 
+    id: "accessories", 
+    name: "Аксесуари", 
+    description: "Все необхідне для вашої зброї: оптика, чохли, засоби для чищення, кулі та балончики CO2." 
+  }
 ];
 
 export default function CategoryPage() {
   const { id } = useParams();
 
-  // --- Стейт ---
   const [sanityProducts, setSanityProducts] = useState([]); 
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
   const [sort, setSort] = useState("default");
   const [showSortMobile, setShowSortMobile] = useState(false);
+  
+  // --- НОВИЙ СТЕЙТ ДЛЯ РОЗГОРТАННЯ ТЕКСТУ ---
+  const [isExpanded, setIsExpanded] = useState(false);
+  
   const sortWrapRef = useRef(null);
 
-  // --- Завантаження даних із Sanity ---
   useEffect(() => {
     async function fetchProducts() {
       setLoading(true);
       try {
-        // Отримуємо дані. Важливо: витягуємо URL картинки через asset->url
         const query = `*[_type == "product"] {
-          _id,
-          "id": _id,
-          _createdAt,
-          title,
-          price,
-          oldPrice,
-          category,
-          popularityScore,
-          popular,
-          giftBadge,
-          giftText,
-          stock,
-          mainImage,
-          "mainImageUrl": mainImage.asset->url,
-          videoUrl,
-          "gallery": images[].asset->url
+          _id, "id": _id, _createdAt, title, price, oldPrice, category, popularityScore, popular, giftBadge, giftText, stock, "mainImageUrl": mainImage.asset->url
         }`;
-
         const data = await client.fetch(query);
         setSanityProducts(data || []);
       } catch (err) {
@@ -59,32 +68,29 @@ export default function CategoryPage() {
       }
     }
     fetchProducts();
-    window.scrollTo(0, 0); // Прокрутка вгору при зміні категорії
+    window.scrollTo(0, 0);
+    // Згортати текст при зміні категорії
+    setIsExpanded(false);
   }, [id]);
 
-  // --- Логіка фільтрації та сортування ---
   const isAll = !id || id === "all";
   const cat = categories.find((c) => String(c.id) === String(id));
   const pageTitle = isAll ? "Каталог товарів" : (cat?.name ?? id);
+  const categoryDescription = isAll 
+    ? "У нашому каталозі представлено повний асортимент товарів для стрільби та активного відпочинку. Обирайте найкраще спорядження від перевірених брендів." 
+    : cat?.description;
 
-  // 1. Фільтр за категорією
   const base = useMemo(
     () => (isAll ? sanityProducts : sanityProducts.filter((p) => p.category === id)),
     [isAll, id, sanityProducts]
   );
 
-  // 2. Фільтр за пошуковим запитом
   const term = q.trim().toLowerCase();
   const filtered = useMemo(() => {
     if (!term) return base;
-    return base.filter((p) => {
-      const titleMatch = p.title?.toLowerCase().includes(term);
-      const priceMatch = String(p.price).includes(term);
-      return titleMatch || priceMatch;
-    });
+    return base.filter((p) => p.title?.toLowerCase().includes(term) || String(p.price).includes(term));
   }, [base, term]);
 
-  // 3. Сортування
   const items = useMemo(() => {
     const list = [...filtered];
     switch (sort) {
@@ -115,29 +121,56 @@ export default function CategoryPage() {
     { id: "popular",    label: "Популярні" },
     { id: "new",        label: "Нові надходження" },
   ];
-  const currentSortLabel = sortOptions.find(o => o.id === sort)?.label;
 
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
         <Loader2 className="w-10 h-10 animate-spin text-blue-500" />
-        <p className="text-white animate-pulse">Завантаження товарів із Sanity...</p>
+        <p className="text-white animate-pulse">Завантаження...</p>
       </div>
     );
   }
 
   return (
     <main className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
-      {/* Хлібні крихти */}
       <nav className="text-xs sm:text-sm text-white/70 mb-3 sm:mb-4">
         <Link to="/" className="hover:underline">Головна</Link>
         <span className="mx-1">/</span>
         <span className="text-white">{pageTitle}</span>
       </nav>
 
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4 sm:mb-5">
-        <h1 className="text-white font-extrabold text-2xl sm:text-3xl md:text-4xl">{pageTitle}</h1>
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-white font-extrabold text-2xl sm:text-3xl md:text-4xl mb-3">
+          {pageTitle}
+        </h1>
         
+        {/* БЛОК ОПИСУ З КНОПКОЮ РОЗГОРТАННЯ */}
+        {categoryDescription && (
+  /* Прибираємо h-30 (фіксована висота заважає тексту розгортатися) */
+          <div className="max-w-3xl"> 
+            <div className={`text-white/70 text-sm sm:text-base leading-relaxed border-l-2 border-orange-500 pl-4 py-1 transition-all duration-300 
+              ${isExpanded ? "line-clamp-none" : "line-clamp-4" /* ЗМІНИЛИ ТУТ на 4 рядки */}`}>
+              {categoryDescription}
+            </div>
+
+            {/* Збільшуємо поріг, наприклад до 500 символів, щоб кнопка була доречною */}
+            {categoryDescription.length > 200 && ( 
+              <button 
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="mt-4 ml-4 flex items-center gap-1 text-xs font-bold uppercase tracking-widest text-orange-500 hover:text-orange-400 transition-colors"
+              >
+                {isExpanded ? (
+                  <>Згорнути <ChevronUp className="w-3 h-3" /></>
+                ) : (
+                  <>Показати все <ChevronDown className="w-3 h-3" /></>
+                )}
+              </button>
+            )}
+          </div>
+        )}
+      </div>
+
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4 sm:mb-5">
         {/* МОБІЛЬНЕ СОРТУВАННЯ */}
         <div ref={sortWrapRef} className="relative sm:hidden w-full z-[60]">
           <button
@@ -146,7 +179,7 @@ export default function CategoryPage() {
           >
             <span className="flex items-center gap-3 text-gray-900">
               <SlidersHorizontal className="h-5 w-5" />
-              <span className="text-sm font-medium">{currentSortLabel}</span>
+              <span className="text-sm font-medium">{sortOptions.find(o => o.id === sort)?.label}</span>
             </span>
             <ChevronDown className={`h-5 w-5 transition-transform ${showSortMobile ? "rotate-180" : ""}`} />
           </button>
@@ -190,23 +223,20 @@ export default function CategoryPage() {
         </div>
       </div>
 
-      {/* Пошук */}
       <div className="flex items-center gap-2 border border-white/20 rounded-2xl px-4 py-3 w-full sm:w-80 bg-white shadow-sm mb-6">
         <input
           type="search"
-          placeholder="Пошук моделі або ціни..."
+          placeholder="Пошук моделі..."
           value={q}
           onChange={(e) => setQ(e.target.value)}
           className="outline-none bg-transparent text-sm flex-1 text-gray-900"
         />
-        {q && <button onClick={() => setQ("")} className="text-xs text-gray-500 hover:text-gray-900">Очистити</button>}
       </div>
 
       <div className="text-sm text-white/70 mb-6">
         Знайдено результатів: <span className="font-bold text-white">{items.length}</span>
       </div>
 
-      {/* Сітка товарів */}
       {items.length ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {items.map(p => (
@@ -216,9 +246,6 @@ export default function CategoryPage() {
       ) : (
         <div className="rounded-3xl border border-white/10 bg-white/5 p-6 sm:p-12 text-center backdrop-blur-sm">
           <p className="text-white/70 text-base sm:text-lg">За запитом "{q}" нічого не знайдено.</p>
-          <button onClick={() => setQ("")} className="mt-4 text-blue-400 hover:text-blue-300 font-bold underline transition">
-            Скинути пошук
-          </button>
         </div>
       )}
     </main>
