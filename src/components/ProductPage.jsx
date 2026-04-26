@@ -378,14 +378,14 @@ export default function ProductPage() {
                   <div className="space-y-3 mb-6">
                     <p className="font-bold text-gray-900">Додати до комплекту:</p>
                     {addons.map((addon) => (
-                      <label key={addon.name} className={`flex items-center justify-between gap-2 p-2.5 sm:p-3 rounded-xl border-2 transition cursor-pointer ${selectedAddons.includes(addon.name) ? "border-blue-600 bg-blue-50" : "border-gray-100 bg-gray-50 hover:border-gray-200"}`}>
+                      <label key={addon.name} className={`flex items-center justify-between gap-4 p-1 sm:p-1.5 rounded-xl border-2 transition cursor-pointer ${selectedAddons.includes(addon.name) ? "border-blue-600 bg-blue-50" : "border-gray-100 bg-gray-50 hover:border-gray-200"}`}>
                         <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
                             <input type="checkbox" checked={selectedAddons.includes(addon.name)} onChange={() => toggleAddon(addon.name)} className="w-5 h-5 accent-blue-600 shrink-0" />
                             {addon.imageUrl && (
                               <img
                                 src={addon.imageUrl}
                                 alt={addon.name}
-                                className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg object-cover border border-gray-200 bg-white shrink-0"
+                                className="w-13 h-13 sm:w-14 sm:h-14 rounded-lg object-cover border border-gray-200 bg-white shrink-0"
                                 loading="lazy"
                               />
                             )}
