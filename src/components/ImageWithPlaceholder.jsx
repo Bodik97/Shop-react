@@ -31,7 +31,7 @@ export default function ImageWithPlaceholder({
         height={height}
         loading={loading}
         decoding={decoding}
-        fetchpriority={fetchPriority}
+        fetchPriority={fetchPriority}
         sizes={sizes}
         srcSet={srcSet}
         className={`${className} ${loaded ? "opacity-100" : "opacity-0"} transition-opacity duration-300`}

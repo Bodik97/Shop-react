@@ -1,5 +1,5 @@
 import { createClient } from '@sanity/client';
-import imageUrlBuilder from '@sanity/image-url';
+import { createImageUrlBuilder } from '@sanity/image-url';
 
 export const client = createClient({
   projectId: 'xzcx3aim', // Ваш ID з терміналу
@@ -8,8 +8,7 @@ export const client = createClient({
   apiVersion: '2024-01-01', // Дата поточної версії API
 });
 
-// Допоміжна функція для роботи з картинками
-const builder = imageUrlBuilder(client);
-
+// Допоміжна функція для роботи з картинками (named import замість deprecated default)
+const builder = createImageUrlBuilder(client);
 
 export const urlFor = (source) => builder.image(source);

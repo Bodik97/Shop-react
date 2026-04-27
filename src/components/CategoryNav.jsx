@@ -1,7 +1,5 @@
 // src/components/CategoryNav.jsx
 import { useMemo } from "react";
-// eslint-disable-next-line
-import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 
 import pistImg from "../img/pist.webp";
@@ -50,7 +48,7 @@ function CategoryNav() {
         aria-hidden="true"
         width={1600}
         height={400}
-        fetchpriority="high"
+        fetchPriority="high"
         decoding="async"
         className="absolute inset-0 w-full h-full object-cover"
       />
@@ -61,18 +59,15 @@ function CategoryNav() {
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-          {catsWithImages.map((cat) => (
-            <motion.div
+          {catsWithImages.map((cat, i) => (
+            <div
               key={cat.id}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-              whileTap={{ scale: 0.95 }}
+              className="animate-fadeUp active:scale-95 transition-transform"
+              style={{ animationDelay: `${i * 80}ms` }}
             >
               <Link
                 to={`/category/${cat.id}`}
-                className="group block rounded-2xl bg-white/90 backdrop-blur border border-white/60 
+                className="group block rounded-2xl bg-white/90 backdrop-blur border border-white/60
                            shadow hover:shadow-lg hover:-translate-y-0.5 transition overflow-hidden
                            sm:hover:scale-105 sm:transition-transform h-full"
               >
@@ -107,7 +102,7 @@ function CategoryNav() {
                   </div>
                 </div>
               </Link>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>
