@@ -57,7 +57,7 @@ export default function CategoryPage() {
       setLoading(true);
       try {
         const query = `*[_type == "product"] {
-          _id, "id": _id, _createdAt, title, price, oldPrice, category, popularityScore, order, popular, giftBadge, giftText, stock, "mainImageUrl": mainImage.asset->url
+          _id, "id": _id, _createdAt, title, price, oldPrice, category, order, popular, giftBadge, giftText, stock, "mainImageUrl": mainImage.asset->url
         }`;
         const data = await client.fetch(query);
         setSanityProducts(data || []);
@@ -93,20 +93,22 @@ export default function CategoryPage() {
 
   const items = useMemo(() => {
     const list = [...filtered];
-    const byOrder = (a, b) => {
+    const byNewest = (a, b) => new Date(b._createdAt) - new Date(a._createdAt);
+    // Пріоритет `order` має сенс лише в межах однієї категорії,
+    // інакше товари з order=1 з різних категорій сплутуються.
+    const byCategoryOrder = (a, b) => {
       const ao = Number.isFinite(a.order) ? a.order : Number.POSITIVE_INFINITY;
       const bo = Number.isFinite(b.order) ? b.order : Number.POSITIVE_INFINITY;
       if (ao !== bo) return ao - bo;
-      return new Date(b._createdAt) - new Date(a._createdAt);
+      return byNewest(a, b);
     };
     switch (sort) {
       case "price-asc":  return list.sort((a, b) => (a.price || 0) - (b.price || 0));
       case "price-desc": return list.sort((a, b) => (b.price || 0) - (a.price || 0));
-      case "popular":    return list.sort((a, b) => (b.popularityScore || 0) - (a.popularityScore || 0));
-      case "new":        return list.sort((a, b) => new Date(b._createdAt) - new Date(a._createdAt));
-      default:           return list.sort(byOrder);
+      case "new":        return list.sort(byNewest);
+      default:           return isAll ? list.sort(byNewest) : list.sort(byCategoryOrder);
     }
-  }, [filtered, sort]);
+  }, [filtered, sort, isAll]);
 
   // Закриття мобільного сортування при кліку зовні
   useEffect(() => {
@@ -121,10 +123,9 @@ export default function CategoryPage() {
   }, [showSortMobile]);
 
   const sortOptions = [
-    { id: "default",    label: "Без сортування" },
+    { id: "default",    label: "За замовчуванням" },
     { id: "price-asc",  label: "Ціна — від дешевих" },
     { id: "price-desc", label: "Ціна — від дорогих" },
-    { id: "popular",    label: "Популярні" },
     { id: "new",        label: "Нові надходження" },
   ];
 

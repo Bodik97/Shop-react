@@ -281,7 +281,12 @@ export default function ProductPage() {
             <button onClick={() => navigate(-1)} className="w-fit px-4 h-10 bg-black !text-white rounded-xl font-semibold hover:bg-gray-900 active:scale-95 transition text-sm">
               ← Назад
             </button>
-            <h1 className="text-xl sm:text-2xl md:text-4xl font-extrabold text-white break-words">{product.title}</h1>
+            <h1
+              lang="uk"
+              className="font-extrabold text-white leading-tight text-pretty hyphens-auto [overflow-wrap:anywhere] text-[clamp(1.25rem,5vw,2.5rem)] max-w-full"
+            >
+              {product.title}
+            </h1>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 lg:gap-8">
