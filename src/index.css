@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Stardos+Stencil:wght@700&display=swap');
+/* Шрифт Stardos Stencil уже підвантажується через <link> в index.html
+   — дублюючий @import тут зайвий і робить CSS render-blocking. */
 @import "tailwindcss";
 
 /* ═══════════════════════════════════════════════════
@@ -14,7 +15,11 @@
     color-scheme: light;
 
     font-synthesis: none;
-    text-rendering: optimizeLegibility;
+    /* text-rendering: optimizeLegibility — НЕ глобально.
+       Воно вмикає важкий керінг + ліґатури і сповільнює layout
+       на сторінках з великою кількістю тексту. Лишаємо
+       optimizeLegibility лише на великих заголовках нижче. */
+    text-rendering: auto;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
@@ -22,7 +27,8 @@
   body {
     margin: 0;
     min-width: 320px;
-    min-height: 100vh;
+    /* dvh замість vh — без стрибків при появі/зникненні адресного рядка */
+    min-height: 100dvh;
     background-color: #344b5b;
     color: #1a202c;
   }
@@ -42,10 +48,21 @@
     color: inherit;
     cursor: pointer;
   }
+
+  /* Великі заголовки — тут якість шрифту важливіша за швидкість */
+  h1,
+  h2,
+  .heading-title,
+  .policy-title,
+  .header-title {
+    text-rendering: optimizeLegibility;
+  }
 }
 
 /* ═══════════════════════════════════════════════════
    АНІМАЦІЇ
+   Усі — лише на composited властивостях (transform/opacity),
+   крім buyFlash (background-color, спрацьовує одноразово).
    ═══════════════════════════════════════════════════ */
 
 @keyframes slideUpFade {
@@ -60,7 +77,12 @@
   60%  { transform: translateX(200%) skewX(-12deg); }
   100% { transform: translateX(200%) skewX(-12deg); }
 }
-.animate-shine { animation: shine 3s ease-in-out infinite; }
+/* Було: infinite (тримало GPU-композитор активним 24/7).
+   Стало: 4 проходи — користувач помічає ефект, потім система розслабляється. */
+.animate-shine {
+  animation: shine 3s ease-in-out 4;
+  animation-fill-mode: forwards;
+}
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-4px); }
@@ -73,20 +95,6 @@
   to { opacity: 1; transform: translateY(0); }
 }
 .animate-fadeInUp { animation: fadeInUp 0.3s ease-out; }
-
-@keyframes subtlePulse {
-  0%, 100% {
-    opacity: 1;
-    transform: scale(1);
-    text-shadow: 0 0 0 transparent;
-  }
-  50% {
-    opacity: 0.85;
-    transform: scale(1.04);
-    text-shadow: 0 0 8px rgba(255, 0, 0, 0.25);
-  }
-}
-.animate-subtlePulse { animation: subtlePulse 2.5s ease-in-out infinite; }
 
 @keyframes buyFlash {
   0%   { background-color: transparent; }
@@ -105,6 +113,18 @@
   @media (min-width: 640px) {
     .animate-rise { animation: none; }
   }
+
+  /* Staggered fade-up для карток категорій (без framer-motion). */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fadeUp {
+    animation: fadeUp 0.6s ease-out both;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-fadeUp { animation: none; }
 }
 
 /* ═══════════════════════════════════════════════════
@@ -115,9 +135,6 @@
 
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-.scrollbar-hide::-webkit-scrollbar { display: none; }
-.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
 /* ═══════════════════════════════════════════════════
    КОМПОНЕНТНІ КЛАСИ
@@ -146,12 +163,13 @@
   word-break: break-word;
   margin: 0 auto;
   text-shadow: 0 2px 6px rgba(75, 59, 59, 0.2);
-  transition: transform 0.3s ease, text-shadow 0.3s ease;
+  /* Прибрали text-shadow з transition — він викликає paint всього
+     елемента, тоді як transform-only — composited і безкоштовний. */
+  transition: transform 0.3s ease;
 }
 
 .header-title:hover {
   transform: scale(1.03);
-  text-shadow: 0 4px 10px rgba(6, 5, 4, 0.5);
 }
 
 @media (min-width: 640px) {
