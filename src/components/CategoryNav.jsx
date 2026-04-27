@@ -8,7 +8,10 @@ import pistImg from "../img/pist.webp";
 import pnevmoImg from "../img/pnevmo.webp";
 import knifesImg from "../img/knifes.webp";
 import acsesoryImg from "../img/acsesory.webp";
-import bgImg from "../img/background-img.webp";
+
+// Фон беремо зі стабільного публічного шляху, а не з bundle —
+// щоб preload-link в index.html міг його знайти.
+const BG_IMAGE = "/img/background-img.webp";
 
 const categories = [
   { id: "air_rifles", name: "Пневматичні гвинтівки", image: pnevmoImg },
@@ -18,8 +21,6 @@ const categories = [
   { id: "start-pistols", name: "Стартові пістолети", image: knifesImg },
   { id: "accessories", name: "Аксесуари", image: acsesoryImg }
 ];
-
-const bgImage = bgImg;
 
 const FALLBACK_IMG =
   "data:image/svg+xml;utf8," +
@@ -39,14 +40,20 @@ function CategoryNav() {
   }, []);
 
   return (
-    <section
-      className="relative py-6 sm:py-10 rounded-2xl overflow-hidden"
-      style={{
-        backgroundImage: `url(${bgImage})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
-    >
+    <section className="relative py-6 sm:py-10 rounded-2xl overflow-hidden">
+      {/* LCP-зображення: реальний <img> із fetchpriority=high.
+          Це дає браузеру змогу знайти картинку в HTML і завантажити її
+          з найвищим пріоритетом. */}
+      <img
+        src={BG_IMAGE}
+        alt=""
+        aria-hidden="true"
+        width={1600}
+        height={400}
+        fetchpriority="high"
+        decoding="async"
+        className="absolute inset-0 w-full h-full object-cover"
+      />
       <div className="absolute inset-0 bg-black/40" aria-hidden />
       <div className="relative max-w-7xl mx-auto px-3 sm:px-4">
         <h2 className="text-center text-xl sm:text-2xl md:text-3xl font-extrabold text-white mb-4 sm:mb-6">
