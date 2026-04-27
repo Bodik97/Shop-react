@@ -117,7 +117,9 @@ const ProductCard = memo(function ProductCard({ product }) {
           </span>
         )}
 
-        {/* Бейдж знижки */}
+        {/* Бейдж знижки — без animate-pulse, бо на сторінці категорії
+            12+ карток, і 12 нескінченних анімацій одночасно жорстко
+            навантажують мобільний GPU. */}
         {hasDiscount && (
           <span className="
             absolute top-2 right-2 z-10
@@ -127,7 +129,6 @@ const ProductCard = memo(function ProductCard({ product }) {
             shadow-lg ring-2 ring-white
             px-2 sm:px-3 py-0.5 sm:py-1
             text-xs sm:text-sm font-extrabold
-            animate-pulse
           ">
             −{discountPercent}%
           </span>

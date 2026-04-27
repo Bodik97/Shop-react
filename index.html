@@ -30,22 +30,23 @@
 
     <base href="/" />
     <link rel="icon" href="/img/Logo.svg" type="image/svg+xml" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <!-- Лише 3 дійсно критичні preconnect-и:
+         fonts.gstatic.com — файли шрифтів (cross-origin),
+         cdn.sanity.io — зображення товарів,
+         xzcx3aim.apicdn.sanity.io — GROQ API цього проєкту. -->
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://cdn.sanity.io" crossorigin />
-    <link rel="preconnect" href="https://apicdn.sanity.io" crossorigin />
     <link rel="preconnect" href="https://xzcx3aim.apicdn.sanity.io" crossorigin />
-    <link rel="dns-prefetch" href="https://cdn.sanity.io" />
-    <link rel="dns-prefetch" href="https://apicdn.sanity.io" />
-    <link rel="dns-prefetch" href="https://xzcx3aim.apicdn.sanity.io" />
 
-    <!-- LCP-фон головної: вантажимо з найвищим пріоритетом одразу з HTML -->
+    <!-- LCP-фон головної: preload лише для десктопу.
+         На мобільному ця картинка краде канал у критичних JS/шрифтів,
+         і виграш від high-priority перетворюється на втрату. -->
     <link
       rel="preload"
       as="image"
       href="/img/background-img.webp"
       type="image/webp"
-      fetchpriority="high"
+      media="(min-width: 768px)"
     />
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Stardos+Stencil:wght@700&display=swap" />
     <link href="https://fonts.googleapis.com/css2?family=Stardos+Stencil:wght@700&display=swap" rel="stylesheet" />

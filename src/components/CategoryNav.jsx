@@ -48,8 +48,8 @@ function CategoryNav() {
         aria-hidden="true"
         width={1600}
         height={400}
-        fetchPriority="high"
         decoding="async"
+        loading="eager"
         className="absolute inset-0 w-full h-full object-cover"
       />
       <div className="absolute inset-0 bg-black/40" aria-hidden />
@@ -67,9 +67,9 @@ function CategoryNav() {
             >
               <Link
                 to={`/category/${cat.id}`}
-                className="group block rounded-2xl bg-white/90 backdrop-blur border border-white/60
-                           shadow hover:shadow-lg hover:-translate-y-0.5 transition overflow-hidden
-                           sm:hover:scale-105 sm:transition-transform h-full"
+                className="group block rounded-2xl bg-white border border-white/60
+                           shadow hover:shadow-lg hover:-translate-y-0.5 transition-transform overflow-hidden
+                           sm:hover:scale-105 h-full"
               >
                 <div className="relative aspect-[16/9] bg-gray-100">
                   <img
@@ -93,12 +93,10 @@ function CategoryNav() {
                     <svg viewBox="0 0 24 24" className="h-6 w-6 opacity-80 transition-transform group-hover:translate-x-0.5">
                       <path fill="currentColor" d="M10 6l6 6-6 6v-4H4v-4h6V6z" />
                     </svg>
-                    <div className="sm:hidden">
-                      <span className="relative flex h-3 w-3">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-500 opacity-75" />
-                        <span className="relative inline-flex rounded-full h-3 w-3 bg-pink-600" />
-                      </span>
-                    </div>
+                    {/* Прибрали animate-ping × 6 — нескінченна анімація на
+                        мобільному GPU тримала композитор завжди зайнятим.
+                        Залишив статичну точку — той самий візуальний натяк. */}
+                    <span aria-hidden className="sm:hidden h-2.5 w-2.5 rounded-full bg-pink-600 shadow-[0_0_4px_rgba(236,72,153,0.6)]" />
                   </div>
                 </div>
               </Link>
