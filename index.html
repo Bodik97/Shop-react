@@ -35,28 +35,46 @@
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Stardos+Stencil:wght@700&display=swap" />
     <link href="https://fonts.googleapis.com/css2?family=Stardos+Stencil:wght@700&display=swap" rel="stylesheet" />
 
-    <!-- Meta Pixel Code (safe for SSR) -->
+    <!-- Meta Pixel Code (deferred to keep critical path light) -->
     <script>
-      if (typeof window !== 'undefined') {
-        !(function(f,b,e,v,n,t,s){
-          if(f.fbq)return;n=f.fbq=function(){
-            n.callMethod ? n.callMethod.apply(n,arguments) : n.queue.push(arguments);
-          };
-          if(!f._fbq)f._fbq=n;
-          n.push=n;
-          n.loaded=!0;
-          n.version='2.0';
-          n.queue=[];
-          t=b.createElement(e);
-          t.async=!0;
-          t.src=v;
-          s=b.getElementsByTagName(e)[0];
-          s.parentNode.insertBefore(t,s);
-        })(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
-
-        fbq('init', '1368446248336392');
-        fbq('track', 'PageView');
-      }
+      (function () {
+        if (typeof window === 'undefined') return;
+        var loaded = false;
+        function loadPixel() {
+          if (loaded) return;
+          loaded = true;
+          !(function (f, b, e, v, n, t, s) {
+            if (f.fbq) return;
+            n = f.fbq = function () {
+              n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+            };
+            if (!f._fbq) f._fbq = n;
+            n.push = n; n.loaded = !0; n.version = '2.0'; n.queue = [];
+            t = b.createElement(e); t.async = !0; t.src = v;
+            s = b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t, s);
+          })(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
+          window.fbq('init', '1368446248336392');
+          window.fbq('track', 'PageView');
+        }
+        // Стартуємо Pixel ПІСЛЯ завантаження сторінки або при першій взаємодії —
+        // що настане раніше. Так він не блокує LCP/FCP.
+        var trigger = function () {
+          ['scroll', 'click', 'keydown', 'touchstart', 'mousemove'].forEach(function (ev) {
+            window.removeEventListener(ev, trigger);
+          });
+          loadPixel();
+        };
+        ['scroll', 'click', 'keydown', 'touchstart', 'mousemove'].forEach(function (ev) {
+          window.addEventListener(ev, trigger, { once: true, passive: true });
+        });
+        var onLoad = function () {
+          var idle = window.requestIdleCallback || function (cb) { return setTimeout(cb, 1500); };
+          idle(loadPixel, { timeout: 4000 });
+        };
+        if (document.readyState === 'complete') onLoad();
+        else window.addEventListener('load', onLoad, { once: true });
+      })();
     </script>
     <!-- End Meta Pixel Code -->
   </head>
