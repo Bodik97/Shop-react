@@ -71,6 +71,13 @@ export const product = defineType({
       type: 'number',
       description: 'Чим більше число — тим вище в списку Товари Популярні '
     }),
+    defineField({
+      name: 'order',
+      title: 'Пріоритет на сторінці категорії',
+      type: 'number',
+      description: 'Чим менше число — тим вище товар у своїй категорії. Залиште порожнім, щоб відобразити в кінці списку.',
+      validation: Rule => Rule.integer().min(0)
+    }),
     // Характеристики (specs)
     defineField({
       name: 'specs',

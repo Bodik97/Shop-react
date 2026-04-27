@@ -215,13 +215,12 @@ export default function ProductPage() {
   const onFSPointerUp = (e) => { pointers.current.delete(e.pointerId); endDrag(); };
 
   // --- Обробка даних (Specs & Addons) ---
+  // Зберігаємо оригінальний порядок з CMS і фільтруємо порожні рядки.
   const specs = useMemo(() => {
-    if (!product?.specs) return {};
-    // Конвертуємо масив [{label, value}] з Sanity назад в об'єкт для рендеру
-    return product.specs.reduce((acc, curr) => {
-      acc[curr.label] = curr.value;
-      return acc;
-    }, {});
+    if (!Array.isArray(product?.specs)) return [];
+    return product.specs.filter(
+      (s) => s && s.label && (s.value || s.value === 0)
+    );
   }, [product?.specs]);
 
   const addons = product?.addons ?? [];
@@ -435,17 +434,24 @@ export default function ProductPage() {
               </section>
             )}
 
-            {Object.keys(specs).length > 0 && (
-                <section className="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-gray-100">
-                    <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-6">Характеристики</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4">
-                        {Object.entries(specs).map(([label, value]) => (
-                            <div key={label} className="flex justify-between border-b border-gray-50 pb-2">
-                                <span className="text-gray-500 text-sm md:text-base">{label}</span>
-                                <span className="text-gray-900 font-semibold text-sm md:text-base">{value}</span>
+            {specs.length > 0 && (
+                <section className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-sm border border-gray-100">
+                    <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">Характеристики</h2>
+                    <dl className="grid grid-cols-1 md:grid-cols-2 md:gap-x-8 lg:gap-x-12">
+                        {specs.map((spec, i) => (
+                            <div
+                                key={`${spec.label}-${i}`}
+                                className="flex items-start justify-between gap-3 sm:gap-4 py-2.5 border-b border-gray-100 last:border-b-0 odd:md:border-b md:[&:nth-last-child(-n+2)]:border-b-0"
+                            >
+                                <dt className="text-gray-500 text-sm md:text-base shrink-0 max-w-[55%] break-words leading-snug">
+                                    {spec.label}
+                                </dt>
+                                <dd className="text-gray-900 font-semibold text-sm md:text-base text-right break-words min-w-0 leading-snug">
+                                    {spec.value}
+                                </dd>
                             </div>
                         ))}
-                    </div>
+                    </dl>
                 </section>
             )}
           </div>
