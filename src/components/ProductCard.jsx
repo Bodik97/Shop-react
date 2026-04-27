@@ -43,9 +43,23 @@ const ProductCard = memo(function ProductCard({ product }) {
   const productId = product.id || product._id;
 
   // ─── Image Logic ─────────────────────────────────────────────────────────
-  const imageUrl =
+  // Якщо це Sanity-CDN URL — додаємо параметри ?w=&auto=format&fit=max
+  // для швидкої доставки потрібного розміру у webp/avif (Sanity обирає сам).
+  const withSanityParams = (url, w) => {
+    if (!url || typeof url !== "string") return url;
+    if (!url.includes("cdn.sanity.io")) return url;
+    const sep = url.includes("?") ? "&" : "?";
+    return `${url}${sep}w=${w}&auto=format&fit=max&q=75`;
+  };
+
+  const baseUrl =
     product.mainImageUrl ||
     (product.mainImage ? urlFor(product.mainImage).width(600).url() : product.image);
+
+  const imageUrl = withSanityParams(baseUrl, 600);
+  const imageSrcSet = baseUrl?.includes?.("cdn.sanity.io")
+    ? `${withSanityParams(baseUrl, 320)} 320w, ${withSanityParams(baseUrl, 480)} 480w, ${withSanityParams(baseUrl, 600)} 600w, ${withSanityParams(baseUrl, 800)} 800w`
+    : undefined;
 
   // ─── Actions ─────────────────────────────────────────────────────────────
   const go = () => navigate(`/product/${productId}`);
@@ -78,8 +92,13 @@ const ProductCard = memo(function ProductCard({ product }) {
       <div className="relative bg-gray-50 overflow-hidden aspect-[4/3] flex items-center justify-center">
         <ImageWithPlaceholder
           src={imageUrl}
+          srcSet={imageSrcSet}
+          sizes="(min-width:1024px) 25vw, (min-width:640px) 33vw, 50vw"
+          width={600}
+          height={450}
           alt={product.title}
           loading="lazy"
+          decoding="async"
           className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105"
         />
 

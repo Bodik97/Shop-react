@@ -1,5 +1,5 @@
 // src/components/ProductPage.jsx
-import { useEffect, useMemo, useRef, useState, useCallback } from "react";
+import { lazy, Suspense, useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 // 1. Імпортуємо клієнт Sanity
@@ -7,7 +7,9 @@ import { client } from "../sanityClient";
 import { useCart } from "../context/CartContext";
 import { formatUAH } from "../utils/format";
 import { ShoppingCart, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
-import ModalBuy from "./ModalBuy";
+
+// Lazy: модалка покупки потрібна тільки після кліку
+const ModalBuy = lazy(() => import("./ModalBuy"));
 
 // ─── Хелпер для YouTube/Vimeo embed URL ─────────────────────────────────────
 function getVideoEmbedUrl(url) {
@@ -502,7 +504,9 @@ export default function ProductPage() {
       )}
 
       {buyProduct && (
-        <ModalBuy open product={buyProduct} onClose={() => setBuyProduct(null)} />
+        <Suspense fallback={null}>
+          <ModalBuy open product={buyProduct} onClose={() => setBuyProduct(null)} />
+        </Suspense>
       )}
     </main>
   );

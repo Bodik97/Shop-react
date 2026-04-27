@@ -1,10 +1,12 @@
 // src/components/Cart.jsx
-import { useCallback, useEffect, useId, useMemo, useState, useTransition } from "react";
+import { lazy, Suspense, useCallback, useEffect, useId, useMemo, useState, useTransition } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import ModalBuy from "./ModalBuy";
 import { ShieldCheck, RotateCcw, CreditCard, Truck, X } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { formatUAH } from "../utils/format";
+
+// Модалку оформлення тягнемо лише коли користувач натиснув "Купити"
+const ModalBuy = lazy(() => import("./ModalBuy"));
 
 /* helpers */
 const clamp = (n, a, b) => Math.min(b, Math.max(a, n));
@@ -453,19 +455,21 @@ export default function Cart({ freeShippingFrom = 0 }) {
       </div>
 
       {showForm && (
-        <ModalBuy
-          open={showForm}
-          product={null}
-          cart={cart}
-          subtotal={subtotal}
-          discount={discount}
-          total={total}
-          onClose={() => setShowForm(false)}
-          onSuccess={() => {
-            setShowForm(false);
-            clearCart?.();
-          }}
-        />
+        <Suspense fallback={null}>
+          <ModalBuy
+            open={showForm}
+            product={null}
+            cart={cart}
+            subtotal={subtotal}
+            discount={discount}
+            total={total}
+            onClose={() => setShowForm(false)}
+            onSuccess={() => {
+              setShowForm(false);
+              clearCart?.();
+            }}
+          />
+        </Suspense>
       )}
     </main>
   );
