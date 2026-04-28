@@ -61,7 +61,7 @@ export const product = defineType({
           { title: 'Револьвери флобера', value: 'flobers' },
           { title: 'Пневматичні пістолети', value: 'pvevmo-pistols' },
           { title: 'Стартові пістолети', value: 'start-pistols' },
-          { title: 'Аксесуари', value: 'accessories' },
+          { title: 'Перцеві балончики', value: 'pepper-sprays' },
         ]
       }
     }),

@@ -14,7 +14,7 @@ const clamp = (n, a, b) => Math.min(b, Math.max(a, n));
 
 // 🔧 FIX: перенесено поза компонент — не створюється заново кожен рендер
 const PERKS = [
-  { icon: ShieldCheck, text: "12 міс гарантія" },
+  { icon: ShieldCheck, text: "Гарантія" },
   { icon: RotateCcw,   text: "14 днів повернення" },
   { icon: CreditCard,  text: "Оплата при отриманні" },
   { icon: Truck,       text: "Швидка доставка" },

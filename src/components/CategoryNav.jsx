@@ -17,7 +17,7 @@ const categories = [
   { id: "flobers", name: "Револьвери флобера", image: pnevmoImg },
   { id: "pvevmo-pistols", name: "Пневматичні пістолети", image: pistImg },
   { id: "start-pistols", name: "Стартові пістолети", image: knifesImg },
-  { id: "accessories", name: "Аксесуари", image: acsesoryImg }
+  { id: "pepper-sprays", name: "Перцеві балончики", image: acsesoryImg }
 ];
 
 const FALLBACK_IMG =

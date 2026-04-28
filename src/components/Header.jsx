@@ -15,7 +15,7 @@ const CATEGORIES = [
   { id: "flobers",        name: "Револьвери флобера" },
   { id: "pvevmo-pistols", name: "Пневматичні пістолети" },
   { id: "start-pistols",  name: "Стартові пістолети" },
-  { id: "accessories",    name: "Аксесуари" },
+  { id: "pepper-sprays",    name: "Перцеві балончики" },
 ];
 
 export default function Header() {
