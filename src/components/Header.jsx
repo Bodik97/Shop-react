@@ -7,14 +7,15 @@ import { ShoppingCartIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import logo from "/img/Logo.svg";
 import { FaInstagram, FaTiktok, FaTelegram } from "react-icons/fa";
 
+// ID мають збігатися з Sanity-схемою (studio-shop/schemaTypes/products.ts).
+// Канонічний порядок такий же, як на сторінці категорії.
 const CATEGORIES = [
-  { id: "pistols", name: "Стартові пістолети" },
-  { id: "rifles", name: "Пневматичні гвинтівки",},
-  { id: "psp-rifles", name: "ПСП гвинтівки",},
-  { id: "flobers", name: "Флобери",},
-  { id: "knives", name: "Ножі",},
-  { id: "accessories", name: "Аксесуари",},
-  
+  { id: "air_rifles",     name: "Пневматичні гвинтівки" },
+  { id: "psp-rifles",     name: "PCP гвинтівки" },
+  { id: "flobers",        name: "Револьвери флобера" },
+  { id: "pvevmo-pistols", name: "Пневматичні пістолети" },
+  { id: "start-pistols",  name: "Стартові пістолети" },
+  { id: "accessories",    name: "Аксесуари" },
 ];
 
 export default function Header() {
@@ -82,9 +83,9 @@ export default function Header() {
                         key={c.id}
                         to={`/category/${c.id}`}
                         onClick={() => setOpen(false)}
-                        className="flex items-center gap-2 rounded-md px-3 py-2 hover:bg-blue-50 text-sm text-gray-700"
+                        className="rounded-md px-3 py-2 hover:bg-blue-50 text-sm text-gray-700"
                       >
-                        <span>{c.icon}</span> {c.name}
+                        {c.name}
                       </Link>
                     ))}
                   </div>
