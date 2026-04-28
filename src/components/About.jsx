@@ -163,14 +163,18 @@ function AnimatedButton({ to, children, color = "blue", adaptiveBorder = false }
     : "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500";
 
   useEffect(() => {
-    if (!ref.current) return;
+    const node = ref.current;
+    if (!node) return;
+    // ResizeObserver може викликати callback вже після того, як React
+    // від'єднав DOM-вузол (напр. на switch роуту). Захищаємо null.
     const update = () => {
+      if (!ref.current) return;
       const rect = ref.current.getBoundingClientRect();
       setSize({ w: rect.width, h: rect.height });
     };
     update();
     const ro = new ResizeObserver(update);
-    ro.observe(ref.current);
+    ro.observe(node);
     return () => ro.disconnect();
   }, []);
 
