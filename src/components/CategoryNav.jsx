@@ -2,22 +2,24 @@
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 
-import pistImg from "../img/pist.webp";
-import pnevmoImg from "../img/pnevmo.webp";
-import knifesImg from "../img/knifes.webp";
-import acsesoryImg from "../img/acsesory.webp";
+import pnevmoHvintivkaImg from "../img/pnevmo-hvintivka.webp";
+import pcpHvintivkaImg from "../img/pcp-hvintivka.webp";
+import flobersImg from "../img/flobers.webp";
+import pnevmoPistolImg from "../img/pnevmo-pistol.webp";
+import startPistolImg from "../img/start-pistol.webp";
+import pepperSprayImg from "../img/pepper-spray.webp";
 
 // Фон беремо зі стабільного публічного шляху, а не з bundle —
 // щоб preload-link в index.html міг його знайти.
 const BG_IMAGE = "/img/background-img.webp";
 
 const categories = [
-  { id: "air_rifles", name: "Пневматичні гвинтівки", image: pnevmoImg },
-  { id: "psp-rifles", name: "PCP гвинтівки", image: pnevmoImg },
-  { id: "flobers", name: "Револьвери флобера", image: pnevmoImg },
-  { id: "pvevmo-pistols", name: "Пневматичні пістолети", image: pistImg },
-  { id: "start-pistols", name: "Стартові пістолети", image: knifesImg },
-  { id: "pepper-sprays", name: "Перцеві балончики", image: acsesoryImg }
+  { id: "air_rifles", name: "Пневматичні гвинтівки", image: pnevmoHvintivkaImg },
+  { id: "psp-rifles", name: "PCP гвинтівки", image: pcpHvintivkaImg },
+  { id: "flobers", name: "Револьвери флобера", image: flobersImg },
+  { id: "pvevmo-pistols", name: "Пневматичні пістолети", image: pnevmoPistolImg },
+  { id: "start-pistols", name: "Стартові пістолети", image: startPistolImg },
+  { id: "pepper-sprays", name: "Перцеві балончики", image: pepperSprayImg }
 ];
 
 const FALLBACK_IMG =
