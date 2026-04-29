@@ -1,6 +1,7 @@
 // src/components/ModalBuy.jsx
 import { useEffect, useMemo, useRef, useState, useId } from "react";
 import { useNavigate } from "react-router-dom";
+import { trackBeginCheckout, trackPurchase } from "../utils/analytics";
 
 const API_URL = "/api/order";
 
@@ -71,12 +72,23 @@ export default function ModalBuy({
     setErrors({});
     setSending(false);
 
+    // GA4 begin_checkout — користувач відкрив форму оформлення
+    const checkoutItems = isCart
+      ? cart.map((i) => ({ ...i, qty: Math.max(1, Number(i.qty) || 1) }))
+      : product
+      ? [{ ...product, qty: 1 }]
+      : [];
+    if (checkoutItems.length) {
+      trackBeginCheckout(checkoutItems, isCart ? cartComputed : unitPrice);
+    }
+
     const t = setTimeout(() => closeBtnRef.current?.focus(), 0);
     document.documentElement.classList.add("overflow-hidden", "overscroll-none");
     return () => {
       clearTimeout(t);
       document.documentElement.classList.remove("overflow-hidden", "overscroll-none");
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, product?.id]);
 
   // esc close
@@ -224,6 +236,14 @@ export default function ModalBuy({
         items: summaryItems, // 🆕 для "чека" на ThankYou
       };
       localStorage.setItem("lastOrderSummary", JSON.stringify(summary));
+
+      // GA4 purchase — головна конверсійна подія
+      trackPurchase({
+        orderId,
+        items: summaryItems,
+        total: displayTotal,
+        shipping: shipping || 0,
+      });
 
       // Зберігаємо в історію замовлень
       try {

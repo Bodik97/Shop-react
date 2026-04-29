@@ -10,6 +10,7 @@ import {
   useState,
 } from "react";
 import { urlFor } from "../sanityClient";
+import { trackAddToCart } from "../utils/analytics";
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 const makeFingerprint = (id, addons = []) => {
@@ -90,6 +91,7 @@ export function CartProvider({ children, products = [] }) {
 
   // ─── Actions ──────────────────────────────────────────────────────────────
   const addToCart = useCallback((product) => {
+    trackAddToCart(product, 1);
     setCart((prev) => {
       const addons      = Array.isArray(product.addons) ? product.addons : [];
       const fingerprint = makeFingerprint(product.id, addons);

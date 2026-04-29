@@ -1,12 +1,22 @@
 // src/App.jsx
 import { useEffect, useState, lazy, Suspense } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { Loader2 } from "lucide-react";
 import { client } from "./sanityClient";
+import { trackPageView } from "./utils/analytics";
 
 import { CartProvider } from "./context/CartContext";
 import { useCart } from "./context/CartContext";
+
+// SPA page_view трекер для GA4 — спрацьовує на кожну зміну маршруту
+function PageViewTracker() {
+  const location = useLocation();
+  useEffect(() => {
+    trackPageView(location.pathname + location.search);
+  }, [location.pathname, location.search]);
+  return null;
+}
 
 // Eager: критичні для першого екрану
 import Header from "./components/Header";
@@ -89,6 +99,7 @@ function AppContent({ products }) {
   return (
     <>
       <ScrollToTop smooth />
+      <PageViewTracker />
 
       {/* Header тепер сам бере cartCount з useCart() — не передаємо prop */}
       <Header cartCount={cartCount} />

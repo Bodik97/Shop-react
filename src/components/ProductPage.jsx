@@ -8,6 +8,8 @@ import { useCart } from "../context/CartContext";
 import { formatUAH } from "../utils/format";
 import { ShoppingCart, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
 
+import { trackViewItem } from "../utils/analytics";
+
 // Lazy: модалка покупки потрібна тільки після кліку
 const ModalBuy = lazy(() => import("./ModalBuy"));
 
@@ -95,6 +97,12 @@ export default function ProductPage() {
     fetchProduct();
     window.scrollTo(0, 0);
   }, [id]);
+
+  // GA4 view_item — після успішного завантаження товару (один раз на товар)
+  useEffect(() => {
+    if (product?.id) trackViewItem(product);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [product?.id]);
 
   const isPopular = !!product?.popular;
 
