@@ -59,7 +59,7 @@ export const product = defineType({
           { title: 'Пневматичні гвинтівки', value: 'air_rifles' },
           { title: 'PCP гвинтівки', value: 'psp-rifles' },
           { title: 'Револьвери флобера', value: 'flobers' },
-          { title: 'Пневматичні пістолети', value: 'pvevmo-pistols' },
+          { title: 'Пневматичні пістолети', value: 'pnevmo-pistols' },
           { title: 'Стартові пістолети', value: 'start-pistols' },
           { title: 'Перцеві балончики', value: 'pepper-sprays' },
         ]
