@@ -323,11 +323,16 @@ export default function ProductPage() {
       ],
     };
 
+    // Динамічна OG-картинка з логотипом, ціною, фото — для шарингу в соцмережі.
+    // У Product schema (для Google) залишаємо сире фото товару — пошуковику зайвий бренд не треба.
+    const ogImage = `${SITE_URL}/api/og?slug=${encodeURIComponent(productSlug)}`;
+
     return {
       title,
       description,
       url: productUrl,
       ogTitle: `${product.title} — ${priceStr}`,
+      ogImage,
       image: product.mainImageUrl || null,
       price: product.price || 0,
       inStock,
@@ -361,7 +366,9 @@ export default function ProductPage() {
               <meta property="og:title" content={seo.ogTitle} />
               <meta property="og:description" content={seo.description} />
               <meta property="og:url" content={seo.url} />
-              {seo.image && <meta property="og:image" content={seo.image} />}
+              <meta property="og:image" content={seo.ogImage} />
+              <meta property="og:image:width" content="1200" />
+              <meta property="og:image:height" content="630" />
               <meta property="product:price:amount" content={String(seo.price)} />
               <meta property="product:price:currency" content="UAH" />
               <meta property="product:availability" content={seo.inStock ? "in stock" : "out of stock"} />
@@ -369,7 +376,8 @@ export default function ProductPage() {
               <meta name="twitter:card" content="summary_large_image" />
               <meta name="twitter:title" content={seo.ogTitle} />
               <meta name="twitter:description" content={seo.description} />
-              {seo.image && <meta name="twitter:image" content={seo.image} />}
+              <meta name="twitter:image" content={seo.ogImage} />
+              <meta name="twitter:image:alt" content={product.title} />
 
               <script type="application/ld+json">{seo.productSchemaJson}</script>
               <script type="application/ld+json">{seo.breadcrumbSchemaJson}</script>
