@@ -1,14 +1,123 @@
 <!doctype html>
-<html lang="en">
+<html lang="uk">
   <head>
     <meta charset="UTF-8" />
-    <!-- <link rel="icon" type="image/svg+xml" href="/vite.sv" /> -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React</title>
-    <script type="module" crossorigin src="/Shop-react/assets/index-CmCBXfkl.js"></script>
-    <link rel="stylesheet" crossorigin href="/Shop-react/assets/index-Bj2XPV2z.css">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="robots" content="index,follow" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="facebook-domain-verification" content="tb0f0whrk4ypeec9jb8u6q0qkq0xd3" />
+
+    <title>AirSoft-UA</title>
+    <meta name="description" content="Пневматичні товари та аксесуари для спорту й активного відпочинку. Купуйте онлайн з доставкою по Україні." />
+    <link rel="canonical" href="https://airsoft-ua.com/" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="uk_UA" />
+    <meta property="og:site_name" content="AirSoft-UA" />
+    <meta property="og:title" content="Пневматичні товари | AirSoft-UA" />
+    <meta property="og:description" content="Вибір пневматики для спорту та відпочинку. Доставка по Україні." />
+    <meta property="og:image" content="https://airsoft-ua.com/img/ogp-img.webp" />
+    <meta property="og:image:alt" content="Пневматичні товари для спорту та дозвілля" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:url" content="https://airsoft-ua.com/" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="AirSoft-UA" />
+    <meta name="twitter:description" content="Вибір пневматики для спорту та відпочинку. Доставка по Україні." />
+    <meta name="twitter:image" content="https://airsoft-ua.com/img/ogp-img.webp" />
+
+    <base href="/" />
+    <link rel="icon" href="/img/Logo.svg" type="image/svg+xml" />
+    <!-- Лише 3 дійсно критичні preconnect-и:
+         fonts.gstatic.com — файли шрифтів (cross-origin),
+         cdn.sanity.io — зображення товарів,
+         xzcx3aim.apicdn.sanity.io — GROQ API цього проєкту. -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://cdn.sanity.io" crossorigin />
+    <link rel="preconnect" href="https://xzcx3aim.apicdn.sanity.io" crossorigin />
+
+    <!-- LCP-фон головної: preload лише для десктопу.
+         На мобільному ця картинка краде канал у критичних JS/шрифтів,
+         і виграш від high-priority перетворюється на втрату. -->
+    <link
+      rel="preload"
+      as="image"
+      href="/img/background-img.webp"
+      type="image/webp"
+      media="(min-width: 768px)"
+    />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Stardos+Stencil:wght@700&display=swap" />
+    <link href="https://fonts.googleapis.com/css2?family=Stardos+Stencil:wght@700&display=swap" rel="stylesheet" />
+
+    <!-- Meta Pixel Code (deferred to keep critical path light) -->
+    <script>
+      (function () {
+        if (typeof window === 'undefined') return;
+        var loaded = false;
+        function loadPixel() {
+          if (loaded) return;
+          loaded = true;
+          !(function (f, b, e, v, n, t, s) {
+            if (f.fbq) return;
+            n = f.fbq = function () {
+              n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+            };
+            if (!f._fbq) f._fbq = n;
+            n.push = n; n.loaded = !0; n.version = '2.0'; n.queue = [];
+            t = b.createElement(e); t.async = !0; t.src = v;
+            s = b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t, s);
+          })(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
+          window.fbq('init', '1368446248336392');
+          window.fbq('track', 'PageView');
+        }
+        // Стартуємо Pixel ПІСЛЯ завантаження сторінки або при першій взаємодії —
+        // що настане раніше. Так він не блокує LCP/FCP.
+        var trigger = function () {
+          ['scroll', 'click', 'keydown', 'touchstart', 'mousemove'].forEach(function (ev) {
+            window.removeEventListener(ev, trigger);
+          });
+          loadPixel();
+        };
+        ['scroll', 'click', 'keydown', 'touchstart', 'mousemove'].forEach(function (ev) {
+          window.addEventListener(ev, trigger, { once: true, passive: true });
+        });
+        var onLoad = function () {
+          var idle = window.requestIdleCallback || function (cb) { return setTimeout(cb, 1500); };
+          idle(loadPixel, { timeout: 4000 });
+        };
+        if (document.readyState === 'complete') onLoad();
+        else window.addEventListener('load', onLoad, { once: true });
+      })();
+    </script>
+    <!-- End Meta Pixel Code -->
+    <script type="module" crossorigin src="/assets/index-BQ5GgI5Q.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-DfEsNcoi.css">
   </head>
+
   <body>
+    <noscript>
+      <img height="1" width="1" style="display:none"
+        src="https://www.facebook.com/tr?id=1368446248336392&ev=PageView&noscript=1"
+      />
+    </noscript>
     <div id="root"></div>
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "AirSoft-UA",
+        "url": "https://airsoft-ua.com/",
+        "description": "Магазин пневматичних товарів для спорту та дозвілля.",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://airsoft-ua.com/search?q={query}",
+          "query-input": "required name=query"
+        }
+      }
+    </script>
   </body>
 </html>
