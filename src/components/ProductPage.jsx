@@ -369,15 +369,23 @@ export default function ProductPage() {
                 </div>
 
                 {product.giftText && (
-                    <div className="bg-orange-50 border border-orange-100 rounded-2xl p-4 mb-6">
-                        <div className="flex gap-3 text-orange-800">
-                            <span className="text-xl">🎁</span>
-                            <div>
-                                <p className="font-bold text-sm">Подарунок до замовлення!</p>
-                                <p className="text-xs opacity-90">{product.giftText}</p>
+                    product.category === "pepper-sprays" ? (
+                        // Для перцевих балончиків це не подарунок —
+                        // показуємо просто текст без помаранчевої плашки і смайлика.
+                        <p className="text-sm text-gray-700 leading-snug mb-6">
+                            {product.giftText}
+                        </p>
+                    ) : (
+                        <div className="bg-orange-50 border border-orange-100 rounded-2xl p-4 mb-6">
+                            <div className="flex gap-3 text-orange-800">
+                                <span className="text-xl">🎁</span>
+                                <div>
+                                    <p className="font-bold text-sm">Подарунок до замовлення!</p>
+                                    <p className="text-xs opacity-90">{product.giftText}</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    )
                 )}
 
                 {addons.length > 0 && (
