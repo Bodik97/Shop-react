@@ -14,11 +14,11 @@ import pepperSprayImg from "../img/pepper-spray.webp";
 const BG_IMAGE = "/img/background-img.webp";
 
 const categories = [
-  { id: "air_rifles", name: "Пневматичні гвинтівки", image: pnevmoHvintivkaImg },
   { id: "psp-rifles", name: "PCP гвинтівки", image: pcpHvintivkaImg },
-  { id: "flobers", name: "Револьвери флобера", image: flobersImg },
-  { id: "pvevmo-pistols", name: "Пневматичні пістолети", image: pnevmoPistolImg },
+  { id: "air_rifles", name: "Пневматичні гвинтівки", image: pnevmoHvintivkaImg },
+  { id: "pnevmo-pistols", name: "Пневматичні пістолети", image: pnevmoPistolImg },
   { id: "start-pistols", name: "Стартові пістолети", image: startPistolImg },
+  { id: "flobers", name: "Револьвери флобера", image: flobersImg },
   { id: "pepper-sprays", name: "Перцеві балончики", image: pepperSprayImg }
 ];
 

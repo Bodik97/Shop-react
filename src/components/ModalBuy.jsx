@@ -340,9 +340,15 @@ export default function ModalBuy({
                     {product.title}
                   </div>
                   {product.giftText?.text && (
-                    <div className="text-xs text-emerald-700 flex items-center gap-1">
-                      🎁 {product.giftText.text}
-                    </div>
+                    product.category === "pepper-sprays" ? (
+                      <p className="text-xs text-red-600 font-semibold leading-snug">
+                        {product.giftText.text}
+                      </p>
+                    ) : (
+                      <div className="text-xs text-emerald-700 flex items-center gap-1">
+                        🎁 {product.giftText.text}
+                      </div>
+                    )
                   )}
                   <div className="space-y-0.5 pt-1">
                     <div className="flex justify-between items-center text-xs text-gray-500 gap-2">
@@ -472,7 +478,13 @@ export default function ModalBuy({
                             </div>
                           ))}
                           {i.giftText && (
-                            <div className="text-xs text-emerald-700">🎁 {i.giftText}</div>
+                            i.category === "pepper-sprays" ? (
+                              <p className="text-xs text-red-600 font-semibold leading-snug">
+                                {i.giftText}
+                              </p>
+                            ) : (
+                              <div className="text-xs text-emerald-700">🎁 {i.giftText}</div>
+                            )
                           )}
                           {(addons.length > 0 || q > 1) && (
                             <div className="flex justify-between gap-2 pt-1 border-t border-dashed border-gray-200">
