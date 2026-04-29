@@ -111,6 +111,20 @@ function AppContent({ products }) {
             path="/"
             element={
               <main className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
+                <Helmet>
+                  <title>AirSoft-UA — Пневматичні гвинтівки, пістолети та револьвери | Купити в Україні</title>
+                  <meta
+                    name="description"
+                    content="Магазин пневматичних товарів в Україні: гвинтівки, пістолети, PCP, револьвери флобера, перцеві балончики, стартові пістолети. Доставка по Україні, гарантія, оплата при отриманні."
+                  />
+                  <link rel="canonical" href="https://airsoft-ua.com/" />
+                  <meta property="og:title" content="AirSoft-UA — Пневматичні гвинтівки, пістолети та револьвери" />
+                  <meta
+                    property="og:description"
+                    content="Магазин пневматичних товарів. Доставка по Україні, гарантія, оплата при отриманні."
+                  />
+                  <meta property="og:url" content="https://airsoft-ua.com/" />
+                </Helmet>
                 <h1 className="relative text-center text-3xl sm:text-4xl md:text-6xl font-stencil uppercase tracking-[0.15em] sm:tracking-[0.2em] text-white mb-6 sm:mb-10 drop-shadow-[0_0_6px_rgba(255,255,255,0.7)]">
                   AIRSOFT
                   <span aria-hidden className="hidden md:block absolute -bottom-3 left-1/2 -translate-x-1/2 h-[3px] w-40 rounded-full bg-white/60 blur-[4px]" />

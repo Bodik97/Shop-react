@@ -1,9 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams, Link } from "react-router-dom";
+import { Helmet } from "react-helmet";
 import ProductCard from "./ProductCard";
 // Додав ChevronUp для кнопки розгортання
 import { ArrowUpDown, ChevronDown, ChevronUp, SlidersHorizontal, Loader2 } from "lucide-react";
 import { client } from "../sanityClient";
+
+const SITE_URL = "https://airsoft-ua.com";
 
 const categories = [
   { 
@@ -138,8 +141,57 @@ export default function CategoryPage() {
     );
   }
 
+  const seoTitle = isAll
+    ? "Каталог пневматики — гвинтівки, пістолети, револьвери | AirSoft-UA"
+    : `${pageTitle} — купити в Україні з доставкою | AirSoft-UA`;
+  const seoDescription = (categoryDescription || "").replace(/\s+/g, " ").slice(0, 160) ||
+    "Каталог пневматичних товарів: гвинтівки, пістолети, револьвери флобера, перцеві балончики. Доставка по Україні, гарантія, оплата при отриманні.";
+  const canonicalUrl = isAll ? `${SITE_URL}/catalog` : `${SITE_URL}/category/${id}`;
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Головна", item: `${SITE_URL}/` },
+      { "@type": "ListItem", position: 2, name: pageTitle, item: canonicalUrl },
+    ],
+  };
+
+  const itemListSchema = items.length
+    ? {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        itemListElement: items.slice(0, 30).map((p, i) => ({
+          "@type": "ListItem",
+          position: i + 1,
+          url: `${SITE_URL}/product/${p.id || p._id}`,
+          name: p.title,
+        })),
+      }
+    : null;
+
   return (
     <main className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
+      <Helmet>
+        <title>{seoTitle}</title>
+        <meta name="description" content={seoDescription} />
+        <link rel="canonical" href={canonicalUrl} />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={seoTitle} />
+        <meta property="og:description" content={seoDescription} />
+        <meta property="og:url" content={canonicalUrl} />
+
+        <script type="application/ld+json">
+          {JSON.stringify(breadcrumbSchema)}
+        </script>
+        {itemListSchema && (
+          <script type="application/ld+json">
+            {JSON.stringify(itemListSchema)}
+          </script>
+        )}
+      </Helmet>
+
       <nav className="text-xs sm:text-sm text-white/70 mb-3 sm:mb-4">
         <Link to="/" className="hover:underline">Головна</Link>
         <span className="mx-1">/</span>

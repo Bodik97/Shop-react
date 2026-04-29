@@ -11,6 +11,18 @@ import { ShoppingCart, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
 // Lazy: модалка покупки потрібна тільки після кліку
 const ModalBuy = lazy(() => import("./ModalBuy"));
 
+const SITE_URL = "https://airsoft-ua.com";
+
+// Назви категорій українською — для SEO мета-тегів і schema.org
+const CATEGORY_NAMES = {
+  air_rifles: "Пневматичні гвинтівки",
+  "psp-rifles": "PCP гвинтівки",
+  flobers: "Револьвери флобера",
+  "pnevmo-pistols": "Пневматичні пістолети",
+  "start-pistols": "Стартові пістолети",
+  "pepper-sprays": "Перцеві балончики",
+};
+
 // ─── Хелпер для YouTube/Vimeo embed URL ─────────────────────────────────────
 function getVideoEmbedUrl(url) {
   if (!url) return null;
@@ -243,6 +255,74 @@ export default function ProductPage() {
     );
   };
 
+  // --- SEO meta + schema.org ---
+  const seo = useMemo(() => {
+    if (!product) return null;
+    const productId = product.id || product._id;
+    const productUrl = `${SITE_URL}/product/${productId}`;
+    const priceStr = formatUAH(product.price || 0);
+    const categoryName = CATEGORY_NAMES[product.category] || product.category || "";
+    const title = `${product.title} — ${priceStr} | AirSoft-UA`;
+    const description = product.description?.trim()
+      ? product.description.replace(/\s+/g, " ").slice(0, 160)
+      : `${product.title} — купити в Україні. Ціна ${priceStr}. Швидка доставка, гарантія, оплата при отриманні.`;
+    const inStock = product.stock == null || product.stock > 0;
+    const images = [product.mainImageUrl, ...(product.gallery || [])].filter(Boolean);
+
+    const productSchema = {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      name: product.title,
+      image: images,
+      description: product.description || product.title,
+      sku: productId,
+      category: categoryName,
+      offers: {
+        "@type": "Offer",
+        url: productUrl,
+        priceCurrency: "UAH",
+        price: product.price || 0,
+        availability: inStock
+          ? "https://schema.org/InStock"
+          : "https://schema.org/OutOfStock",
+        itemCondition: "https://schema.org/NewCondition",
+      },
+    };
+
+    const breadcrumbSchema = {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Головна", item: `${SITE_URL}/` },
+        ...(product.category
+          ? [{
+              "@type": "ListItem",
+              position: 2,
+              name: categoryName,
+              item: `${SITE_URL}/category/${product.category}`,
+            }]
+          : []),
+        {
+          "@type": "ListItem",
+          position: product.category ? 3 : 2,
+          name: product.title,
+        },
+      ],
+    };
+
+    return {
+      title,
+      description,
+      url: productUrl,
+      ogTitle: `${product.title} — ${priceStr}`,
+      image: product.mainImageUrl || null,
+      price: product.price || 0,
+      inStock,
+      productSchemaJson: JSON.stringify(productSchema),
+      breadcrumbSchemaJson: JSON.stringify(breadcrumbSchema),
+    };
+  }, [product]);
+
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900">
       <Loader2 className="w-12 h-12 animate-spin text-blue-500" />
@@ -258,10 +338,30 @@ export default function ProductPage() {
         </div>
       ) : (
         <>
-        <Helmet>
-            <title>{product.title} | Мій Магазин</title>
-            <meta name="description" content={product.description?.slice(0, 160)} />
-          </Helmet>
+        {seo && (
+            <Helmet>
+              <title>{seo.title}</title>
+              <meta name="description" content={seo.description} />
+              <link rel="canonical" href={seo.url} />
+
+              <meta property="og:type" content="product" />
+              <meta property="og:title" content={seo.ogTitle} />
+              <meta property="og:description" content={seo.description} />
+              <meta property="og:url" content={seo.url} />
+              {seo.image && <meta property="og:image" content={seo.image} />}
+              <meta property="product:price:amount" content={String(seo.price)} />
+              <meta property="product:price:currency" content="UAH" />
+              <meta property="product:availability" content={seo.inStock ? "in stock" : "out of stock"} />
+
+              <meta name="twitter:card" content="summary_large_image" />
+              <meta name="twitter:title" content={seo.ogTitle} />
+              <meta name="twitter:description" content={seo.description} />
+              {seo.image && <meta name="twitter:image" content={seo.image} />}
+
+              <script type="application/ld+json">{seo.productSchemaJson}</script>
+              <script type="application/ld+json">{seo.breadcrumbSchemaJson}</script>
+            </Helmet>
+          )}
 
           {flashCart && (
             <div className="fixed left-1/2 -translate-x-1/2 bottom-24 z-[60] animate-slideUpFade">

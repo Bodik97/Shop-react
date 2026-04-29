@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+# Приватні / транзакційні сторінки — не для індексації
+Disallow: /cart
+Disallow: /thanks
+Disallow: /history-orders
+Disallow: /api/
+
+Sitemap: https://airsoft-ua.com/sitemap.xml
