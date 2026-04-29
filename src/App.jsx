@@ -49,7 +49,7 @@ function useSanityProducts() {
     // Беремо тільки популярні (для слайдера на головній), і тільки ті поля,
     // які реально потрібні в ProductCard. gallery/videoUrl/mainImage не тягнемо.
     const query = `*[_type == "product" && popular == true]
-      | order(popularityScore desc)[0...12] {
+      | order(popularityScore desc)[0...18] {
         _id,
         "id": _id,
         "slug": slug.current,
@@ -145,7 +145,7 @@ function AppContent({ products }) {
                 <CategoryNav />
                 <section className="mt-8">
                   {products.length ? (
-                    <PopularSlider products={products.slice(0, 10)} />
+                    <PopularSlider products={products.slice(0, 16)} />
                   ) : (
                     <div className="rounded-2xl border bg-white/60 p-4 text-sm text-gray-700">
                       Каталог оновлюється.
