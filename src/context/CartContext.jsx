@@ -53,7 +53,7 @@ export function CartProvider({ children, products = [] }) {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
-  // Синхронізація цін і картинок з каталогом
+  // Синхронізація цін, картинок і category з каталогом
   const refreshCartPrices = useCallback(() => {
     if (!products.length) return;
     setCart((prev) => {
@@ -62,15 +62,23 @@ export function CartProvider({ children, products = [] }) {
         const prod = products.find((p) => p.id === item.id);
         if (!prod) return item;
         const newOldPrice = Number(prod.oldPrice) || 0;
-        const newImage = resolveProductImage(prod) || item.image;
+        const newImage    = resolveProductImage(prod) || item.image;
+        const newCategory = prod.category || item.category || null;
         if (
           prod.price !== item.price ||
           newOldPrice !== item.oldPrice ||
-          newImage !== item.image
+          newImage !== item.image ||
+          newCategory !== item.category
         ) {
           changed = true;
         }
-        return { ...item, price: prod.price, oldPrice: newOldPrice, image: newImage };
+        return {
+          ...item,
+          price: prod.price,
+          oldPrice: newOldPrice,
+          image: newImage,
+          category: newCategory,
+        };
       });
       return changed ? next : prev;
     });
@@ -101,6 +109,9 @@ export function CartProvider({ children, products = [] }) {
             cartItemId: `${product.id}-${Date.now()}`,
             id:         product.id,
             title:      product.title,
+            // category потрібна для умовного рендеру giftText
+            // (напр. для pepper-sprays — без 🎁, червоний акцент).
+            category:   product.category || null,
             price,
             oldPrice:   Number(product.oldPrice) || 0,
             image:      resolveProductImage(product),

@@ -240,12 +240,20 @@ export default function Cart({ freeShippingFrom = 0 }) {
                     </div>
                   )}
 
-                  {/* Подарунок */}
+                  {/* Подарунок / попередження */}
                   {item.giftText && (
-                    <div className="text-sm text-emerald-600 font-medium flex items-center gap-1">
-                      <span>🎁</span>
-                      <span>{item.giftText}</span>
-                    </div>
+                    item.category === "pepper-sprays" ? (
+                      // Для перцевих балончиків це не подарунок — це
+                      // обов'язкова умова відправлення. Червоний акцент, без 🎁.
+                      <p className="text-sm text-red-600 font-semibold leading-snug">
+                        {item.giftText}
+                      </p>
+                    ) : (
+                      <div className="text-sm text-emerald-600 font-medium flex items-center gap-1">
+                        <span>🎁</span>
+                        <span>{item.giftText}</span>
+                      </div>
+                    )
                   )}
 
                   {/* Лічильник кількості */}
