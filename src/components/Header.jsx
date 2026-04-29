@@ -13,7 +13,7 @@ const CATEGORIES = [
   { id: "air_rifles",     name: "Пневматичні гвинтівки" },
   { id: "psp-rifles",     name: "PCP гвинтівки" },
   { id: "flobers",        name: "Револьвери флобера" },
-  { id: "pvevmo-pistols", name: "Пневматичні пістолети" },
+  { id: "pnevmo-pistols", name: "Пневматичні пістолети" },
   { id: "start-pistols",  name: "Стартові пістолети" },
   { id: "pepper-sprays",    name: "Перцеві балончики" },
 ];
