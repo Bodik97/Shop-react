@@ -6,6 +6,17 @@
     { "source": "/api/(.*)", "destination": "/api/$1" },
     { "source": "/sitemap.xml", "destination": "/api/sitemap" },
     { "source": "/feed.xml", "destination": "/api/feed" },
+    {
+      "source": "/product/:slug",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": ".*(facebookexternalhit|Facebot|Twitterbot|TelegramBot|WhatsApp|LinkedInBot|Slackbot|Slack-ImgProxy|Discordbot|Pinterest|redditbot|vkShare|Embedly|Viber|SkypeUriPreview).*"
+        }
+      ],
+      "destination": "/api/share?slug=:slug"
+    },
     { "source": "/(.*)", "destination": "/" }
   ],
   "headers": [
