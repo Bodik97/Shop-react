@@ -60,7 +60,7 @@ export default function CategoryPage() {
       setLoading(true);
       try {
         const query = `*[_type == "product"] {
-          _id, "id": _id, _createdAt, title, price, oldPrice, category, order, popular, giftBadge, giftText, stock, "mainImageUrl": mainImage.asset->url
+          _id, "id": _id, "slug": slug.current, _createdAt, title, price, oldPrice, category, order, popular, giftBadge, giftText, stock, "mainImageUrl": mainImage.asset->url
         }`;
         const data = await client.fetch(query);
         setSanityProducts(data || []);

@@ -71,13 +71,15 @@ export default function ProductPage() {
   const [buyProduct, setBuyProduct] = useState(null); 
 
   // --- Завантаження даних ---
+  // :id у URL може бути або slug.current, або _id (зворотна сумісність зі старими URL у Google).
   useEffect(() => {
     async function fetchProduct() {
       setLoading(true);
       try {
-        const query = `*[_type == "product" && _id == $id][0] {
+        const query = `*[_type == "product" && (slug.current == $idOrSlug || _id == $idOrSlug)][0] {
           ...,
           "id": _id,
+          "slug": slug.current,
           "gallery": images[].asset->url,
           "mainImageUrl": mainImage.asset->url,
           addons[]{
@@ -86,7 +88,7 @@ export default function ProductPage() {
             "imageUrl": image.asset->url
           }
         }`;
-        const data = await client.fetch(query, { id });
+        const data = await client.fetch(query, { idOrSlug: id });
         setProduct(data);
       } catch (err) {
         console.error("Sanity fetch error:", err);
@@ -267,7 +269,10 @@ export default function ProductPage() {
   const seo = useMemo(() => {
     if (!product) return null;
     const productId = product.id || product._id;
-    const productUrl = `${SITE_URL}/product/${productId}`;
+    // Канонічний URL — завжди через slug, якщо він є.
+    // Старі URL з _id залишаються робочими, але canonical веде Google на slug-варіант.
+    const productSlug = product.slug || productId;
+    const productUrl = `${SITE_URL}/product/${productSlug}`;
     const priceStr = formatUAH(product.price || 0);
     const categoryName = CATEGORY_NAMES[product.category] || product.category || "";
     const title = `${product.title} — ${priceStr} | AirSoft-UA`;

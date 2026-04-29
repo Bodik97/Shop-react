@@ -52,6 +52,7 @@ function useSanityProducts() {
       | order(popularityScore desc)[0...12] {
         _id,
         "id": _id,
+        "slug": slug.current,
         title,
         price,
         oldPrice,

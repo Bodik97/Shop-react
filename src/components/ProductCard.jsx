@@ -41,6 +41,12 @@ const ProductCard = memo(function ProductCard({ product }) {
   if (!product) return null;
 
   const productId = product.id || product._id;
+  // Slug — пріоритет: рядок > об'єкт {current} > _id (зворотна сумісність)
+  const productSlug =
+    (typeof product.slug === "string" && product.slug) ||
+    product.slug?.current ||
+    productId;
+  const productHref = `/product/${productSlug}`;
 
   // ─── Image Logic ─────────────────────────────────────────────────────────
   // Якщо це Sanity-CDN URL — додаємо параметри ?w=&auto=format&fit=max
@@ -62,7 +68,7 @@ const ProductCard = memo(function ProductCard({ product }) {
     : undefined;
 
   // ─── Actions ─────────────────────────────────────────────────────────────
-  const go = () => navigate(`/product/${productId}`);
+  const go = () => navigate(productHref);
   const stopPropagate = (e) => { e.preventDefault(); e.stopPropagation(); };
 
   const handleAddToCart = (e) => {
@@ -150,7 +156,7 @@ const ProductCard = memo(function ProductCard({ product }) {
       {/* ── Контент ── */}
       <div className="flex-1 flex flex-col p-3 sm:p-4 gap-1.5 sm:gap-2">
         <Link
-          to={`/product/${productId}`}
+          to={productHref}
           onClick={(e) => e.stopPropagation()}
           className="text-sm sm:text-base font-semibold text-gray-900 leading-snug line-clamp-2 hover:text-blue-700"
         >

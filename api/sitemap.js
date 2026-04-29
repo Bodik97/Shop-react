@@ -41,7 +41,7 @@ const escapeXml = (s) =>
 export default async function handler(req, res) {
   try {
     const products = await sanity.fetch(
-      `*[_type == "product"]{ "id": _id, _updatedAt }`
+      `*[_type == "product"]{ "id": _id, "slug": slug.current, _updatedAt }`
     );
 
     const now = new Date().toISOString();
@@ -67,8 +67,10 @@ export default async function handler(req, res) {
         const lastmod = p._updatedAt
           ? new Date(p._updatedAt).toISOString()
           : now;
+        // Slug пріоритетний; якщо ще не виставлений у Sanity — fallback на _id.
+        const slugOrId = p.slug || p.id;
         return `  <url>
-    <loc>${SITE_URL}/product/${escapeXml(p.id)}</loc>
+    <loc>${SITE_URL}/product/${escapeXml(slugOrId)}</loc>
     <lastmod>${lastmod}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
