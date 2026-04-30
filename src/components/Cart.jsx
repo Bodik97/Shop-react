@@ -294,23 +294,23 @@ export default function Cart({ freeShippingFrom = 0 }) {
                     <button
                       type="button"
                       onClick={() => setArmedId(cartItemId)}
-                      className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-red-200 bg-red-50 mt-2 sm:mt-5 h-10 px-3 text-sm text-red-600 hover:bg-red-100 active:scale-95 transition whitespace-nowrap"
+                      className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-black bg-slate-900 mt-2 sm:mt-5 h-10 px-3 text-sm text-white hover:bg-slate-800 active:scale-95 transition whitespace-nowrap"
                     >
-                      🗑️ <span className="font-medium">Видалити</span>
+                    <span className="font-medium">Видалити</span>
                     </button>
                   ) : (
-                    <div className="flex flex-col gap-1.5 w-35 h-15 sm:w-36 " >
+                    <div className="flex flex-col gap-1.5 w-30 h-15 sm:w-36 " >
                       <button
                         type="button"
                         onClick={() => { onRemove(cartItemId); setArmedId(null); }}
-                        className="inline-flex items-center justify-center h-14 w-35 px-2 rounded-lg bg-black !text-white text-xs font-semibold hover:bg-gray-900 active:scale-95 transition"
+                        className="inline-flex items-center justify-center h-14 w-30 px-2 rounded-lg bg-black !text-white text-xs font-semibold hover:bg-gray-900 active:scale-95 transition"
                       >
                         Підтвердити
                       </button>
                       <button
                         type="button"
                         onClick={() => setArmedId(null)}
-                        className="inline-flex items-center justify-center h-14 w-35 px-2 rounded-lg bg-black !text-white text-xs font-semibold hover:bg-gray-900 active:scale-95 transition"
+                        className="inline-flex items-center justify-center h-14 w-30 px-2 rounded-lg bg-black !text-white text-xs font-semibold hover:bg-gray-900 active:scale-95 transition"
                       >
                         Скасувати
                       </button>
