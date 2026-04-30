@@ -24,6 +24,7 @@ import Footer from "./components/Footer";
 import CategoryNav from "./components/CategoryNav";
 import PopularSlider from "./components/PopularSlider";
 import ScrollToTop from "./components/ScrollToTop";
+import ContactFAB from "./components/ContactFAB";
 
 // Lazy: завантажуються лише за переходом на маршрут
 const CatalogPage      = lazy(() => import("./components/CatalogPage"));
@@ -170,6 +171,7 @@ function AppContent({ products }) {
       </Suspense>
 
       <Footer />
+      <ContactFAB />
     </>
   );
 }
