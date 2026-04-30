@@ -13,18 +13,6 @@ if (typeof window !== "undefined" && "scrollRestoration" in window.history) {
   window.history.scrollRestoration = "manual";
 }
 
-// 🔬 DEBUG: трасуємо ВСІ виклики window.scrollTo щоб знайти хто скидає скрол
-if (typeof window !== "undefined") {
-  const origScrollTo = window.scrollTo.bind(window);
-  window.scrollTo = function (...args) {
-    const top = typeof args[0] === "object" ? args[0]?.top : args[1];
-    const behavior = typeof args[0] === "object" ? args[0]?.behavior : "auto";
-    console.warn("[scrollTo]", { top, behavior, currentY: window.scrollY });
-    console.trace("scrollTo called from");
-    return origScrollTo(...args);
-  };
-}
-
 // Блок pinch/zoom і дабл-тап зум
 (function () {
   document.addEventListener("gesturestart",  e => e.preventDefault(), { passive: false });

@@ -9,6 +9,7 @@ import { formatUAH } from "../utils/format";
 import { ShoppingCart, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
 
 import { trackViewItem } from "../utils/analytics";
+import { useScrollRestoration } from "../hooks/useScrollRestoration";
 
 // Lazy: модалка покупки потрібна тільки після кліку
 const ModalBuy = lazy(() => import("./ModalBuy"));
@@ -97,10 +98,12 @@ export default function ProductPage() {
       }
     }
     fetchProduct();
-    // Скрол вгору робить <ScrollToTop /> в App.jsx — на PUSH/REPLACE.
-    // Не дублюємо тут, інакше пере'їжджає поверх відновлення scrollRestoration
-    // якщо колись додамо restoration і на сторінку товару.
+    // Скрол керується через useScrollRestoration нижче:
+    // PUSH (новий товар) → top, POP (back з кошика на той самий товар) → restore.
   }, [id]);
+
+  // Скрол вгору на новий товар або відновлення при back-навігації
+  useScrollRestoration({ ready: !loading && !!product });
 
   // GA4 view_item — після успішного завантаження товару (один раз на товар)
   useEffect(() => {

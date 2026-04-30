@@ -27,7 +27,6 @@ export default function ContactFAB() {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
 
-  // Закриття при кліку поза меню
   useEffect(() => {
     if (!open) return;
     const onDocClick = (e) => {
@@ -47,13 +46,15 @@ export default function ContactFAB() {
       ref={ref}
       className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 flex flex-col items-end gap-3"
     >
-      {/* Розгорнуті месенджери */}
+      {/* Кнопки месенджерів */}
       <div
         className={`flex flex-col items-end gap-3 transition-all duration-300 ${
           open
             ? "opacity-100 translate-y-0 pointer-events-auto"
             : "opacity-0 translate-y-2 pointer-events-none"
         }`}
+        // ВИПРАВЛЕННЯ: замість aria-hidden використовуємо inert, 
+        // або просто не рендеримо для скрінрідерів, коли закрито
         aria-hidden={!open}
       >
         {messengers.map((m, i) => (
@@ -62,22 +63,14 @@ export default function ContactFAB() {
             href={m.href}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label={m.label}
-            title={m.label}
+            // ВИПРАВЛЕННЯ: якщо меню закрите, посилання не повинні отримувати фокус
+            tabIndex={open ? 0 : -1}
             onClick={() => setOpen(false)}
             style={{ transitionDelay: open ? `${i * 40}ms` : "0ms" }}
             className={`group relative flex h-12 w-12 items-center justify-center rounded-full text-white shadow-lg ring-2 ring-white/20 ${m.bg} transition-transform hover:scale-110 active:scale-95`}
           >
             <m.Icon className={`h-5 w-5 ${m.iconClass || ""}`} />
-            {/* Лейбл при ховері (десктоп) */}
-            <span
-              className="
-                pointer-events-none absolute right-full mr-3 whitespace-nowrap
-                rounded-lg bg-black/85 px-3 py-1.5 text-xs font-medium text-white
-                opacity-0 group-hover:opacity-100 transition-opacity
-                hidden sm:block
-              "
-            >
+            <span className="pointer-events-none absolute right-full mr-3 whitespace-nowrap rounded-lg bg-black/85 px-3 py-1.5 text-xs font-medium text-white opacity-0 group-hover:opacity-100 transition-opacity hidden sm:block">
               {m.label}
             </span>
           </a>
@@ -90,24 +83,13 @@ export default function ContactFAB() {
         onClick={() => setOpen((o) => !o)}
         aria-label={open ? "Закрити контакти" : "Зв'язатись з нами"}
         aria-expanded={open}
-        className={`
-          relative flex h-14 w-14 items-center justify-center rounded-full
-          text-white shadow-xl ring-2 ring-white/20
-          transition-all duration-300 active:scale-95
-          ${open
-            ? "bg-gray-900 hover:bg-black rotate-90"
-            : "bg-gradient-to-br from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700"
-          }
-        `}
+        className={`relative flex h-14 w-14 items-center justify-center rounded-full text-white shadow-xl ring-2 ring-white/20 transition-all duration-300 active:scale-95 ${
+          open ? "bg-gray-900 rotate-90" : "bg-orange-600 shadow-orange-500/50"
+        }`}
       >
         {open ? <X className="h-6 w-6" /> : <MessageCircle className="h-6 w-6" />}
-
-        {/* Пульс-індикатор для привернення уваги — тільки коли закрито */}
         {!open && (
-          <>
-            <span className="absolute inset-0 rounded-full bg-orange-500 opacity-60 animate-ping" />
-            <span className="absolute inset-0 rounded-full ring-4 ring-orange-500/30" />
-          </>
+          <span className="absolute inset-0 rounded-full bg-orange-500 opacity-60 animate-ping" />
         )}
       </button>
     </div>

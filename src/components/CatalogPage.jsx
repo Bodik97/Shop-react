@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
+import { useQuery } from "@tanstack/react-query";
 import ProductCard from "./ProductCard";
-// Додав ChevronUp для кнопки розгортання
 import { ArrowUpDown, ChevronDown, ChevronUp, SlidersHorizontal, Loader2 } from "lucide-react";
 import { client } from "../sanityClient";
 import { useScrollRestoration } from "../hooks/useScrollRestoration";
@@ -10,114 +10,47 @@ import { useScrollRestoration } from "../hooks/useScrollRestoration";
 const SITE_URL = "https://airsoft-ua.com";
 
 const categories = [
-  { 
-    id: "air_rifles", 
-    name: "Пневматичні гвинтівки", 
-    description: "У цій групі Ви можете знайти безліч пневматичних гвинтівок для активного відпочинку та розваги, або підібрати чудовий подарунок близькій Вам людині. У групі представлена продукція різних світових брендів, різних моделей, на будь-який смак і гаманець. Ну а якщо Ви не знайшли в каталозі нашого сайту то, що хотіли, Ви завжди можете замовити товар, що Вас цікавить оформивши заявку на сайті нашої компанії або по телефону." 
-  },
-  { 
-    id: "psp-rifles", 
-    name: "PCP гвинтівки", 
-    description: "Гвинтівки PCP - пневматичні гвинтівки із попереднім закачуванням повітря. Висока точність та потужність для професійної стрільби."
-  },
-  { 
-    id: "flobers", 
-    name: "Револьвери флобера", 
-    description: "У цій групі Ви знайдете багато револьверів під патрон флоберт, для активного відпочинку і розваг, або оберіть чудовий подарунок близькій Вам людині. У групі представлена продукція різних світових брендів, різні моделі, на будь-який смак і крок. Ну а якщо Ви не знайшли в каталозі нашого сайта те, що хотіли, Ви завжди можете замовити той, хто вас цікавить оформив заявку на сайті нашої компанії або по телефону." 
-  },
-  { 
-    id: "pnevmo-pistols", 
-    name: "Пневматичні пістолети", 
-    description: "У цій групі товарів Ви можете знайти безліч пневматичних пістолетів для активного відпочинку та розваги, або підібрати відмінний подарунок близькій Вам людині. У групі представлена ​​продукція різних світових брендів, різних моделей, на будь-який смак і гаманець."
-  },
-  { 
-    id: "start-pistols", 
-    name: "Стартові пістолети", 
-    description: "У цій групі Ви знайдете безліч стартових пістолетів, для активного відпочинку та розваги, або підібрати відмінний подарунок близькій Вам людині. У групі представлена ​​продукція різних світових брендів, різних моделей, на будь-який смак і гаманець." 
-  },
-  { 
-    id: "pepper-sprays", 
-    name: "Перцеві балончики", 
-    description: "У цій групі Ви знайдете безліч перцевих балончиків для активного відпочинку та розваги, або підібрати відмінний подарунок близькій Вам людині. У групі представлена ​​продукція різних світових брендів, різних моделей, на будь-який смак і гаманець." 
-  }
+  { id: "air_rifles", name: "Пневматичні гвинтівки", description: "Широкий вибір пневматичних гвинтівок для активного відпочинку та розваг..." },
+  { id: "psp-rifles", name: "PCP гвинтівки", description: "Гвинтівки PCP (Pre-Charged Pneumatics) — це пневматика із попереднім закачуванням повітря..." },
+  { id: "flobers", name: "Револьвери Флобера", description: "Револьвери під патрон Флобера призначені для тренувальної стрільби..." },
+  { id: "pnevmo-pistols", name: "Пневматичні пістолети", description: "У нас представлені пневматичні пістолети різних типів: CO2, мультикомпресійні та пружинні..." },
+  { id: "start-pistols", name: "Стартові пістолети", description: "Стартові (сигнальні) пістолети призначені для подачі звукового сигналу..." },
+  { id: "pepper-sprays", name: "Перцеві балончики", description: "Ефективні та компактні засоби для самооборони..." }
 ];
 
-export default function CategoryPage() {
-  const { id } = useParams();
+const sortOptions = [
+  { id: "default",    label: "За замовчуванням" },
+  { id: "price-asc",  label: "Ціна — від дешевих" },
+  { id: "price-desc", label: "Ціна — від дорогих" },
+  { id: "new",        label: "Нові надходження" },
+];
 
-  const [sanityProducts, setSanityProducts] = useState([]); 
-  const [loading, setLoading] = useState(true);
+// Функція завантаження для React Query
+const fetchAllProducts = async () => {
+  const query = `*[_type == "product"] {
+    _id, "id": _id, "slug": slug.current, _createdAt, title, price, oldPrice, category, order, popular, giftBadge, giftText, stock, "mainImageUrl": mainImage.asset->url
+  }`;
+  return await client.fetch(query);
+};
+
+export default function CatalogPage() {
+  const { id } = useParams();
   const [q, setQ] = useState("");
   const [sort, setSort] = useState("default");
   const [showSortMobile, setShowSortMobile] = useState(false);
-  
-  // --- НОВИЙ СТЕЙТ ДЛЯ РОЗГОРТАННЯ ТЕКСТУ ---
   const [isExpanded, setIsExpanded] = useState(false);
-  
   const sortWrapRef = useRef(null);
 
+  // --- REACT QUERY ---
+  const { data: sanityProducts = [], isLoading } = useQuery({
+    queryKey: ['products'],
+    queryFn: fetchAllProducts,
+  });
+
+  // Закриття опису при зміні категорії
   useEffect(() => {
-    async function fetchProducts() {
-      setLoading(true);
-      try {
-        const query = `*[_type == "product"] {
-          _id, "id": _id, "slug": slug.current, _createdAt, title, price, oldPrice, category, order, popular, giftBadge, giftText, stock, "mainImageUrl": mainImage.asset->url
-        }`;
-        const data = await client.fetch(query);
-        setSanityProducts(data || []);
-      } catch (err) {
-        console.error("Помилка завантаження товарів:", err);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchProducts();
-    // Згортати текст при зміні категорії
     setIsExpanded(false);
-    // Скрол вгору на нову категорію тільки на PUSH/REPLACE (форвардна навігація).
-    // На back/forward — useScrollRestoration відновлює попередню позицію.
   }, [id]);
-
-  const isAll = !id || id === "all";
-  const cat = categories.find((c) => String(c.id) === String(id));
-  const pageTitle = isAll ? "Каталог товарів" : (cat?.name ?? id);
-  const categoryDescription = isAll 
-    ? "У нашому каталозі представлено повний асортимент товарів для стрільби та активного відпочинку. Обирайте найкраще спорядження від перевірених брендів." 
-    : cat?.description;
-
-  const base = useMemo(
-    () => (isAll ? sanityProducts : sanityProducts.filter((p) => p.category === id)),
-    [isAll, id, sanityProducts]
-  );
-
-  const term = q.trim().toLowerCase();
-  const filtered = useMemo(() => {
-    if (!term) return base;
-    return base.filter((p) => p.title?.toLowerCase().includes(term) || String(p.price).includes(term));
-  }, [base, term]);
-
-  const items = useMemo(() => {
-    const list = [...filtered];
-    const byNewest = (a, b) => new Date(b._createdAt) - new Date(a._createdAt);
-    // Пріоритет `order` має сенс лише в межах однієї категорії,
-    // інакше товари з order=1 з різних категорій сплутуються.
-    const byCategoryOrder = (a, b) => {
-      const ao = Number.isFinite(a.order) ? a.order : Number.POSITIVE_INFINITY;
-      const bo = Number.isFinite(b.order) ? b.order : Number.POSITIVE_INFINITY;
-      if (ao !== bo) return ao - bo;
-      return byNewest(a, b);
-    };
-    switch (sort) {
-      case "price-asc":  return list.sort((a, b) => (a.price || 0) - (b.price || 0));
-      case "price-desc": return list.sort((a, b) => (b.price || 0) - (a.price || 0));
-      case "new":        return list.sort(byNewest);
-      default:           return isAll ? list.sort(byNewest) : list.sort(byCategoryOrder);
-    }
-  }, [filtered, sort, isAll]);
-
-  // Відновлення позиції скролу при back/forward — після того як товари відрендерились,
-  // інакше сторінка коротка і scrollTo не дасть ефекту.
-  useScrollRestoration({ ready: !loading && items.length > 0 });
 
   // Закриття мобільного сортування при кліку зовні
   useEffect(() => {
@@ -131,186 +64,159 @@ export default function CategoryPage() {
     return () => document.removeEventListener("mousedown", onDocClick);
   }, [showSortMobile]);
 
-  const sortOptions = [
-    { id: "default",    label: "За замовчуванням" },
-    { id: "price-asc",  label: "Ціна — від дешевих" },
-    { id: "price-desc", label: "Ціна — від дорогих" },
-    { id: "new",        label: "Нові надходження" },
-  ];
+  // Логіка фільтрації
+  const isAll = !id || id === "all";
+  const cat = categories.find((c) => String(c.id) === String(id));
+  const pageTitle = isAll ? "Каталог товарів" : (cat?.name ?? id);
+  const categoryDescription = isAll ? "Повний асортимент товарів для стрільби." : cat?.description;
 
-  if (loading) {
+  const base = useMemo(
+    () => (isAll ? sanityProducts : sanityProducts.filter((p) => p.category === id)),
+    [isAll, id, sanityProducts]
+  );
+
+  const filtered = useMemo(() => {
+    const term = q.trim().toLowerCase();
+    if (!term) return base;
+    return base.filter((p) => p.title?.toLowerCase().includes(term) || String(p.price).includes(term));
+  }, [base, q]);
+
+  const items = useMemo(() => {
+    const list = [...filtered];
+    const byNewest = (a, b) => new Date(b._createdAt) - new Date(a._createdAt);
+    const byCategoryOrder = (a, b) => {
+      const ao = Number.isFinite(a.order) ? a.order : Number.POSITIVE_INFINITY;
+      const bo = Number.isFinite(b.order) ? b.order : Number.POSITIVE_INFINITY;
+      if (ao !== bo) return ao - bo;
+      return byNewest(a, b);
+    };
+
+    switch (sort) {
+      case "price-asc":  return list.sort((a, b) => a.price - b.price);
+      case "price-desc": return list.sort((a, b) => b.price - a.price);
+      case "new":        return list.sort(byNewest);
+      default:           return isAll ? list.sort(byNewest) : list.sort(byCategoryOrder);
+    }
+  }, [filtered, sort, isAll]);
+
+  // Відновлення скролу
+  useScrollRestoration({ ready: !isLoading && items.length > 0 });
+
+  if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
-        <Loader2 className="w-10 h-10 animate-spin text-blue-500" />
-        <p className="text-white animate-pulse">Завантаження...</p>
+      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+        <Loader2 className="w-12 h-12 animate-spin text-orange-500" />
+        <p className="text-white/40 font-black uppercase text-[10px] tracking-widest">Завантаження...</p>
       </div>
     );
   }
 
-  const seoTitle = isAll
-    ? "Каталог пневматики — гвинтівки, пістолети, револьвери | AirSoft-UA"
-    : `${pageTitle} — купити в Україні з доставкою | AirSoft-UA`;
-  const seoDescription = (categoryDescription || "").replace(/\s+/g, " ").slice(0, 160) ||
-    "Каталог пневматичних товарів: гвинтівки, пістолети, револьвери флобера, перцеві балончики. Доставка по Україні, гарантія, оплата при отриманні.";
-  const canonicalUrl = isAll ? `${SITE_URL}/catalog` : `${SITE_URL}/category/${id}`;
-
-  const breadcrumbSchema = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Головна", item: `${SITE_URL}/` },
-      { "@type": "ListItem", position: 2, name: pageTitle, item: canonicalUrl },
-    ],
-  };
-
-  const itemListSchema = items.length
-    ? {
-        "@context": "https://schema.org",
-        "@type": "ItemList",
-        itemListElement: items.slice(0, 30).map((p, i) => ({
-          "@type": "ListItem",
-          position: i + 1,
-          url: `${SITE_URL}/product/${p.id || p._id}`,
-          name: p.title,
-        })),
-      }
-    : null;
-
   return (
     <main className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
       <Helmet>
-        <title>{seoTitle}</title>
-        <meta name="description" content={seoDescription} />
-        <link rel="canonical" href={canonicalUrl} />
-
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content={seoTitle} />
-        <meta property="og:description" content={seoDescription} />
-        <meta property="og:url" content={canonicalUrl} />
-
-        <script type="application/ld+json">
-          {JSON.stringify(breadcrumbSchema)}
-        </script>
-        {itemListSchema && (
-          <script type="application/ld+json">
-            {JSON.stringify(itemListSchema)}
-          </script>
-        )}
+        <title>{pageTitle} | AirSoft-UA</title>
+        <meta name="description" content={categoryDescription?.slice(0, 160)} />
       </Helmet>
 
-      <nav className="text-xs sm:text-sm text-white/70 mb-3 sm:mb-4">
-        <Link to="/" className="hover:underline">Головна</Link>
-        <span className="mx-1">/</span>
-        <span className="text-white">{pageTitle}</span>
+      {/* Хлібні крихти */}
+      <nav className="text-[10px] text-white/40 mb-4 uppercase tracking-widest">
+        <Link to="/" className="hover:text-orange-500">Головна</Link>
+        <span className="mx-2">/</span>
+        <span className="text-white/80">{pageTitle}</span>
       </nav>
 
-      <div className="mb-6 sm:mb-8">
-        <h1 className="text-white font-extrabold text-2xl sm:text-3xl md:text-4xl mb-3">
+      {/* Заголовок та Опис */}
+      <div className="mb-8">
+        <h1 className="text-white font-black text-3xl sm:text-5xl uppercase italic mb-4 tracking-tighter">
           {pageTitle}
         </h1>
-        
-        {/* БЛОК ОПИСУ З КНОПКОЮ РОЗГОРТАННЯ */}
         {categoryDescription && (
-  /* Прибираємо h-30 (фіксована висота заважає тексту розгортатися) */
-          <div className="max-w-3xl"> 
-            <div className={`text-white/70 text-sm sm:text-base leading-relaxed border-l-2 border-orange-500 pl-4 py-1 transition-all duration-300 
-              ${isExpanded ? "line-clamp-none" : "line-clamp-4" /* ЗМІНИЛИ ТУТ на 4 рядки */}`}>
+          <div className="max-w-4xl border-l-2 border-orange-500 pl-4 py-1">
+            <div className={`text-white/50 text-sm sm:text-base leading-relaxed transition-all ${isExpanded ? "line-clamp-none" : "line-clamp-4"}`}>
               {categoryDescription}
             </div>
-
-            {/* Збільшуємо поріг, наприклад до 500 символів, щоб кнопка була доречною */}
-            {categoryDescription.length > 200 && ( 
+            {categoryDescription.length > 450 && (
               <button 
-                onClick={() => setIsExpanded(!isExpanded)}
-                className="mt-4 ml-4 flex items-center gap-1 text-xs font-bold uppercase tracking-widest text-orange-500 hover:text-orange-400 transition-colors"
+                onClick={() => setIsExpanded(!isExpanded)} 
+                className="text-orange-500 font-black text-[10px] uppercase mt-3 flex items-center gap-1 tracking-widest"
               >
-                {isExpanded ? (
-                  <>Згорнути <ChevronUp className="w-3 h-3" /></>
-                ) : (
-                  <>Показати все <ChevronDown className="w-3 h-3" /></>
-                )}
+                {isExpanded ? <>Згорнути <ChevronUp className="w-3 h-3"/></> : <>Показати все <ChevronDown className="w-3 h-3"/></>}
               </button>
             )}
           </div>
         )}
       </div>
 
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4 sm:mb-5">
-        {/* МОБІЛЬНЕ СОРТУВАННЯ */}
-        <div ref={sortWrapRef} className="relative sm:hidden w-full z-[60]">
-          <button
-            onClick={() => setShowSortMobile(!showSortMobile)}
-            className="w-full h-12 rounded-xl border bg-white px-4 flex items-center justify-between shadow-sm"
-          >
-            <span className="flex items-center gap-3 text-gray-900">
-              <SlidersHorizontal className="h-5 w-5" />
-              <span className="text-sm font-medium">{sortOptions.find(o => o.id === sort)?.label}</span>
-            </span>
-            <ChevronDown className={`h-5 w-5 transition-transform ${showSortMobile ? "rotate-180" : ""}`} />
-          </button>
-          {showSortMobile && (
-            <div className="absolute left-0 right-0 mt-2 rounded-xl border bg-white shadow-xl p-2 animate-in fade-in zoom-in duration-200">
-              {sortOptions.map(opt => (
-                <button
-                  key={opt.id}
-                  onClick={() => { setSort(opt.id); setShowSortMobile(false); }}
-                  className={`w-full text-left px-3 py-2.5 rounded-lg text-sm transition ${
-                    sort === opt.id ? "bg-blue-600 text-white" : "hover:bg-gray-100 text-gray-900"
-                  }`}
-                >
-                  {opt.label}
-                </button>
-              ))}
-            </div>
-          )}
+      {/* Керування (Пошук + Сортування) */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
+        {/* Пошук */}
+        <div className="bg-white rounded-xl px-4 py-2.5 w-full sm:w-80 shadow-lg">
+          <input 
+            type="search" 
+            placeholder="Пошук моделі..." 
+            value={q} 
+            onChange={(e) => setQ(e.target.value)}
+            className="w-full bg-transparent text-gray-900 font-bold outline-none text-sm"
+          />
         </div>
 
-        {/* ДЕСКТОП СОРТУВАННЯ */}
+        {/* Мобільне сортування (ВИКОРИСТОВУЄМО showSortMobile та sortWrapRef) */}
+        <div ref={sortWrapRef} className="sm:hidden w-full relative z-40">
+           <button 
+             onClick={() => setShowSortMobile(!showSortMobile)} 
+             className="w-full h-12 bg-white rounded-xl flex items-center justify-between px-4 text-gray-900 font-black uppercase text-xs shadow-md"
+           >
+              <span className="flex items-center gap-2">
+                <SlidersHorizontal className="w-4 h-4" /> 
+                {sortOptions.find(o => o.id === sort)?.label}
+              </span>
+              <ChevronDown className={`w-4 h-4 transition-transform ${showSortMobile ? "rotate-180" : ""}`} />
+           </button>
+           {showSortMobile && (
+             <div className="absolute top-14 left-0 right-0 bg-white rounded-xl shadow-2xl p-2 z-50 border border-gray-100 animate-in fade-in slide-in-from-top-2">
+                {sortOptions.map(opt => (
+                  <button 
+                    key={opt.id} 
+                    onClick={() => { setSort(opt.id); setShowSortMobile(false); }} 
+                    className={`w-full text-left p-3.5 rounded-lg text-sm font-bold transition-colors ${sort === opt.id ? "bg-orange-500 text-white" : "text-gray-900 hover:bg-gray-100"}`}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+             </div>
+           )}
+        </div>
+
+        {/* Десктоп сортування */}
         <div className="hidden sm:flex items-center gap-2">
-          <span className="text-sm font-medium text-white/80 flex items-center gap-1">
-            <ArrowUpDown className="h-4 w-4" /> Сортування:
-          </span>
-          <div className="flex gap-2">
-            {sortOptions.map(opt => (
-              <button
-                key={opt.id}
-                onClick={() => setSort(opt.id)}
-                className={`px-3 py-1.5 rounded-full text-sm font-semibold transition ${
-                  sort === opt.id 
-                    ? "bg-gradient-to-r from-orange-500 to-pink-500 text-white shadow-md" 
-                    : "bg-white/10 text-white hover:bg-white/20 border border-white/20"
-                }`}
-              >
-                {opt.label}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <div className="flex items-center gap-2 border border-white/20 rounded-2xl px-4 py-3 w-full sm:w-80 bg-white shadow-sm mb-6">
-        <input
-          type="search"
-          placeholder="Пошук моделі..."
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          className="outline-none bg-transparent text-sm flex-1 text-gray-900"
-        />
-      </div>
-
-      <div className="text-sm text-white/70 mb-6">
-        Знайдено результатів: <span className="font-bold text-white">{items.length}</span>
-      </div>
-
-      {items.length ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-          {items.map(p => (
-            <ProductCard key={p._id} product={p} />
+          <span className="text-[10px] font-black text-white/30 uppercase tracking-widest mr-2">Сортування:</span>
+          {sortOptions.map(opt => (
+            <button 
+              key={opt.id} 
+              onClick={() => setSort(opt.id)} 
+              className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${sort === opt.id ? "bg-orange-500 text-white shadow-lg shadow-orange-500/30" : "bg-white/5 text-white/50 border border-white/10 hover:bg-white/10"}`}
+            >
+              {opt.label}
+            </button>
           ))}
         </div>
-      ) : (
-        <div className="rounded-3xl border border-white/10 bg-white/5 p-6 sm:p-12 text-center backdrop-blur-sm">
-          <p className="text-white/70 text-base sm:text-lg">За запитом "{q}" нічого не знайдено.</p>
+      </div>
+
+      {/* Результати */}
+      <div className="text-[10px] text-white/30 mb-6 uppercase tracking-widest font-black pb-2 border-b border-white/5">
+        Знайдено: <span className="text-orange-500">{items.length}</span> товарів
+      </div>
+
+      {/* СІТКА ТОВАРІВ */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-6">
+        {items.map(p => (
+          <ProductCard key={p._id} product={p} />
+        ))}
+      </div>
+
+      {items.length === 0 && (
+        <div className="py-20 text-center rounded-3xl border border-white/5 bg-white/5">
+          <p className="text-white/30 font-bold uppercase tracking-widest">Нічого не знайдено</p>
         </div>
       )}
     </main>
