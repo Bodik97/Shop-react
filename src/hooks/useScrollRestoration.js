@@ -13,6 +13,11 @@ import { useEffect, useRef } from "react";
 import { useLocation, useNavigationType } from "react-router-dom";
 
 const STORAGE_KEY = "scrollPositions";
+const DEBUG = true; // ⚠️ debug логи в консолі — прибрати коли все працює
+
+const log = (...args) => {
+  if (DEBUG) console.log("[scroll]", ...args);
+};
 
 const readAll = () => {
   try {
@@ -27,6 +32,7 @@ const writeOne = (key, y) => {
     const all = readAll();
     all[key] = y;
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+    log("save", key, "→", y);
   } catch {
     /* sessionStorage недоступний — мовчки ігноруємо */
   }
@@ -37,6 +43,8 @@ export function useScrollRestoration({ ready = true } = {}) {
   const navType = useNavigationType();
   const restoredRef = useRef(false);
   const key = location.pathname + location.search;
+
+  log("hook called", { key, navType, ready, restored: restoredRef.current });
 
   // Зберігаємо позицію періодично під час скролу і при unmount маршруту
   useEffect(() => {
@@ -49,36 +57,52 @@ export function useScrollRestoration({ ready = true } = {}) {
     };
 
     window.addEventListener("scroll", onScroll, { passive: true });
+    log("save listener registered for", key);
     return () => {
       clearTimeout(timer);
       save(); // фінальне збереження при відході зі сторінки
       window.removeEventListener("scroll", onScroll);
+      log("save listener removed for", key, "final scrollY:", window.scrollY);
     };
   }, [key]);
 
   // Скидаємо флаг при зміні маршруту, щоб дозволити відновлення на новій сторінці
   useEffect(() => {
     restoredRef.current = false;
+    log("restored flag reset for", key);
   }, [key]);
 
   // Відновлюємо позицію тільки на POP (back/forward) і коли контент готовий
   useEffect(() => {
-    if (restoredRef.current) return;
-    if (navType !== "POP") return;
-    if (!ready) return;
+    log("restore effect", { navType, ready, restored: restoredRef.current, key });
+    if (restoredRef.current) {
+      log("restore SKIP: already restored");
+      return;
+    }
+    if (navType !== "POP") {
+      log("restore SKIP: navType is", navType, "(not POP)");
+      return;
+    }
+    if (!ready) {
+      log("restore SKIP: not ready");
+      return;
+    }
 
     const all = readAll();
     const y = all[key];
+    log("restore CHECK storage", { key, y, allKeys: Object.keys(all) });
+
     if (typeof y === "number" && y > 0) {
-      // Подвійний rAF — даємо React домалювати DOM перед скролом
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           window.scrollTo(0, y);
           restoredRef.current = true;
+          log("restore DONE → scrollTo", y, "after rAFx2");
         });
       });
     } else {
       restoredRef.current = true;
+      log("restore SKIP: no saved position");
     }
   }, [navType, ready, key]);
 }
