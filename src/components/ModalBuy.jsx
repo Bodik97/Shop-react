@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useRef, useState, useId } from "react";
 import { useNavigate } from "react-router-dom";
 import { trackBeginCheckout, trackPurchase } from "../utils/analytics";
+import { formatPhoneUA, isValidPhoneUA, phoneToE164UA } from "../utils/format";
 
 const API_URL = "/api/order";
 
@@ -24,7 +25,7 @@ export default function ModalBuy({
 
   // form state
   const [name, setName] = useState("");
-  const [phone, setPhone] = useState("+380");
+  const [phone, setPhone] = useState("+380 ");
   const [qty, setQty] = useState(1);
   const [agree, setAgree] = useState(true);
   const [errors, setErrors] = useState({});
@@ -66,7 +67,7 @@ export default function ModalBuy({
   useEffect(() => {
     if (!open) return;
     setName("");
-    setPhone("+380");
+    setPhone("+380 ");
     setQty(1);
     setAgree(true);
     setErrors({});
@@ -103,7 +104,7 @@ export default function ModalBuy({
   function validateLocal() {
     const err = {};
     if (!name.trim() || name.trim().length < 2) err.name = "Вкажіть ім'я";
-    if (!/^\+380\d{9}$/.test(phone)) err.phone = "Формат: +380XXXXXXXXX";
+    if (!isValidPhoneUA(phone)) err.phone = "Формат: +380 XX XXX XX XX";
     if (!agree) err.agree = "Потрібна згода на обробку даних";
     setErrors(err);
     return Object.keys(err).length === 0;
@@ -188,7 +189,8 @@ export default function ModalBuy({
     const payload = {
       orderId,
       name: name.trim(),
-      phone: phone.trim(),
+      // Чистий E.164: "+380XXXXXXXXX" — для відправки. UI показує маску.
+      phone: phoneToE164UA(phone),
       order: buildOrderPayload(),
       createdAt: new Date().toISOString(),
     };
@@ -555,16 +557,12 @@ export default function ModalBuy({
                 />
                 <Field
                   id={phoneId} name="phone" type="tel" label="Телефон"
-                  placeholder="+380XXXXXXXXX" autoComplete="tel"
+                  placeholder="+380 XX XXX XX XX" autoComplete="tel"
                   value={phone}
-                  onChange={(e) => {
-                    const digits = e.target.value.replace(/\D/g, "");
-                    const tail = (digits.startsWith("380") ? digits.slice(3) : digits).slice(0, 9);
-                    setPhone("+380" + tail);
-                  }}
-                  error={errors.phone} help="Введіть 9 цифр"
+                  onChange={(e) => setPhone(formatPhoneUA(e.target.value))}
+                  error={errors.phone} help="Формат: +380 12 345 67 89"
                   inputMode="numeric" required
-                  pattern="^\+380\d{9}$" maxLength={13}
+                  maxLength={19}
                   disabled={sending}
                 />
               </div>

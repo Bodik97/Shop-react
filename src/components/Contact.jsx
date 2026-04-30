@@ -3,18 +3,7 @@ import { useState, useRef } from "react";
 import { Phone, Mail, Clock, MapPin, Send, ShieldCheck, MessageSquare, Headphones } from "lucide-react";
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
-
-/** Допоміжні */
-const digits = (s) => String(s || "").replace(/\D+/g, "");
-const asE164UA = (s) => {
-  let d = digits(s);
-  if (d.startsWith("380")) d = d.slice(3);
-  else if (d.startsWith("80")) d = d.slice(2);
-  else if (d.startsWith("0")) d = d.slice(1);
-  d = d.slice(0, 9);
-  const pretty = d.replace(/(\d{2})(\d{3})(\d{2})(\d{2})?/, (_, a, b, c, d4) => [a, b, c, d4].filter(Boolean).join(" "));
-  return "+380 " + pretty.trimEnd();
-};
+import { onlyDigits as digits, formatPhoneUA as asE164UA } from "../utils/format";
 
 export default function Contact() {
   // const PHONE_DISPLAY = "+38 (096) 000-00-00";
