@@ -97,7 +97,9 @@ export default function ProductPage() {
       }
     }
     fetchProduct();
-    window.scrollTo(0, 0);
+    // Скрол вгору робить <ScrollToTop /> в App.jsx — на PUSH/REPLACE.
+    // Не дублюємо тут, інакше пере'їжджає поверх відновлення scrollRestoration
+    // якщо колись додамо restoration і на сторінку товару.
   }, [id]);
 
   // GA4 view_item — після успішного завантаження товару (один раз на товар)
