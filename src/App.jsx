@@ -1,30 +1,15 @@
 // src/App.jsx
-import { useEffect, lazy, Suspense } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { Loader2 } from "lucide-react";
-import { 
-  QueryClient, 
-  QueryClientProvider, 
-  useQuery 
-} from "@tanstack/react-query"; // Додано React Query
 import { client } from "./sanityClient";
 import { trackPageView } from "./utils/analytics";
 
 import { CartProvider } from "./context/CartContext";
 import { useCart } from "./context/CartContext";
 
-// Створюємо клієнт для кешування
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 1000 * 60 * 10, // Дані вважаються "свіжими" 10 хвилин
-      gcTime: 1000 * 60 * 30,    // Тримати в пам'яті 30 хвилин
-      refetchOnWindowFocus: false, // Не перекачувати при зміні вкладок
-    },
-  },
-});
-
+// SPA page_view трекер для GA4 — спрацьовує на кожну зміну маршруту
 function PageViewTracker() {
   const location = useLocation();
   useEffect(() => {
@@ -33,14 +18,15 @@ function PageViewTracker() {
   return null;
 }
 
-// Компоненти
+// Eager: критичні для першого екрану
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import CategoryNav from "./components/CategoryNav";
 import PopularSlider from "./components/PopularSlider";
-// ScrollToTop ВИДАЛЕНО, бо він конфліктує з відновленням скролу на кнопці "Назад"
+import ScrollToTop from "./components/ScrollToTop";
 import ContactFAB from "./components/ContactFAB";
 
+// Lazy: завантажуються лише за переходом на маршрут
 const CatalogPage      = lazy(() => import("./components/CatalogPage"));
 const ProductPage      = lazy(() => import("./components/ProductPage"));
 const Cart             = lazy(() => import("./components/Cart"));
@@ -53,46 +39,71 @@ const TermsOfService   = lazy(() => import("./components/TermsOfService"));
 
 const RouteFallback = () => (
   <div className="flex items-center justify-center min-h-[50vh]">
-    <Loader2 className="w-10 h-10 animate-spin text-orange-500" />
+    <Loader2 className="w-10 h-10 animate-spin text-blue-500" />
   </div>
 );
 
-// ─── Функція завантаження для React Query ───
-const fetchPopularProducts = async () => {
-  const query = `*[_type == "product" && popular == true]
-    | order(popularityScore desc)[0...18] {
-      _id, "id": _id, "slug": slug.current, title, price, oldPrice, category, popular, popularityScore, giftText, stock, "mainImageUrl": mainImage.asset->url
-    }`;
-  return await client.fetch(query);
-};
+// ─── Завантаження продуктів для головної (тільки популярні, мінімальні поля) ──
+function useSanityProducts() {
+  const [products, setProducts] = useState([]);
+  useEffect(() => {
+    // Беремо тільки популярні (для слайдера на головній), і тільки ті поля,
+    // які реально потрібні в ProductCard. gallery/videoUrl/mainImage не тягнемо.
+    const query = `*[_type == "product" && popular == true]
+      | order(popularityScore desc)[0...18] {
+        _id,
+        "id": _id,
+        "slug": slug.current,
+        title,
+        price,
+        oldPrice,
+        category,
+        popular,
+        popularityScore,
+        giftText,
+        stock,
+        "mainImageUrl": mainImage.asset->url
+      }`;
+    client
+      .fetch(query)
+      .then((data) => setProducts(data || []))
+      .catch((err) => console.error("Помилка завантаження товарів:", err));
+  }, []);
+  return products;
+}
 
-// ─── AppContent ───
-function AppContent() {
+// ─── AppContent — внутрішній компонент ──────────────────────────────────────
+// Живе ВСЕРЕДИНІ CartProvider, тому може викликати useCart()
+function AppContent({ products }) {
   const { cartCount } = useCart();
-  
-  // Використовуємо React Query замість useEffect/useState
-  const { data: products = [], isLoading } = useQuery({
-    queryKey: ['popularProducts'],
-    queryFn: fetchPopularProducts,
-  });
 
-  // Блокування zoom
+  // Блокування zoom (Ctrl+колесо, iOS pinch, тощо)
   useEffect(() => {
     const opts = { passive: false };
-    const onWheel = (e) => { if (e.ctrlKey) e.preventDefault(); };
-    const onGesture = (e) => e.preventDefault();
-    window.addEventListener("wheel", onWheel, opts);
-    window.addEventListener("gesturestart", onGesture, opts);
+    const onWheel      = (e) => { if (e.ctrlKey) e.preventDefault(); };
+    const onGesture    = (e) => e.preventDefault();
+    const onDblClick   = (e) => e.preventDefault();
+    const onTouchStart = (e) => { if (e.touches?.length > 1) e.preventDefault(); };
+
+    window.addEventListener("wheel",        onWheel,      opts);
+    window.addEventListener("gesturestart", onGesture,    opts);
+    window.addEventListener("dblclick",     onDblClick,   opts);
+    window.addEventListener("touchstart",   onTouchStart, opts);
+
     return () => {
-      window.removeEventListener("wheel", onWheel);
+      window.removeEventListener("wheel",        onWheel);
       window.removeEventListener("gesturestart", onGesture);
+      window.removeEventListener("dblclick",     onDblClick);
+      window.removeEventListener("touchstart",   onTouchStart);
     };
   }, []);
 
   return (
     <>
-      {/* ScrollToTop тут більше не потрібен! Скрол керується всередині сторінок */}
+      <ScrollToTop smooth />
       <PageViewTracker />
+
+      {/* Header тепер сам бере cartCount з useCart() — не передаємо prop */}
       <Header cartCount={cartCount} />
 
       <Helmet>
@@ -100,8 +111,9 @@ function AppContent() {
           {
             "@context": "https://schema.org",
             "@type": "WebSite",
-            "name": "AirSoft-UA",
-            "url": "https://airsoft-ua.com/"
+            "name": "AirSoft",
+            "url": "https://airsoft-ua.com/",
+            "description": "Магазин пневматичних товарів для спорту та дозвілля."
           }
         `}</script>
       </Helmet>
@@ -113,22 +125,32 @@ function AppContent() {
             element={
               <main className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
                 <Helmet>
-                  <title>AirSoft-UA — Пневматична зброя в Україні</title>
+                  <title>AirSoft-UA — Пневматичні гвинтівки, пістолети та револьвери | Купити в Україні</title>
+                  <meta
+                    name="description"
+                    content="Магазин пневматичних товарів в Україні: гвинтівки, пістолети, PCP, револьвери флобера, перцеві балончики, стартові пістолети. Доставка по Україні, гарантія, оплата при отриманні."
+                  />
+                  <link rel="canonical" href="https://airsoft-ua.com/" />
+                  <meta property="og:title" content="AirSoft-UA — Пневматичні гвинтівки, пістолети та револьвери" />
+                  <meta
+                    property="og:description"
+                    content="Магазин пневматичних товарів. Доставка по Україні, гарантія, оплата при отриманні."
+                  />
+                  <meta property="og:url" content="https://airsoft-ua.com/" />
                 </Helmet>
-                
-                <h1 className="relative text-center text-4xl md:text-6xl font-black uppercase tracking-tighter text-white mb-10">
-                  AIRSOFT-UA
+                <h1 className="relative text-center text-3xl sm:text-4xl md:text-6xl font-stencil uppercase tracking-[0.15em] sm:tracking-[0.2em] text-white mb-6 sm:mb-10 drop-shadow-[0_0_6px_rgba(255,255,255,0.7)]">
+                  AIRSOFT
+                  <span aria-hidden className="hidden md:block absolute -bottom-3 left-1/2 -translate-x-1/2 h-[3px] w-40 rounded-full bg-white/60 blur-[4px]" />
+                  <span aria-hidden className="hidden md:block absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent skew-x-12 translate-x-[-200%] animate-shine" />
                 </h1>
-
                 <CategoryNav />
-                
                 <section className="mt-8">
-                  {isLoading ? (
-                    <div className="flex justify-center py-10"><Loader2 className="animate-spin text-orange-500" /></div>
-                  ) : products.length ? (
-                    <PopularSlider products={products} />
+                  {products.length ? (
+                    <PopularSlider products={products.slice(0, 16)} />
                   ) : (
-                    <div className="text-white/30 text-center py-10">Товари оновлюються...</div>
+                    <div className="rounded-2xl border bg-white/60 p-4 text-sm text-gray-700">
+                      Каталог оновлюється.
+                    </div>
                   )}
                 </section>
               </main>
@@ -154,13 +176,14 @@ function AppContent() {
   );
 }
 
-// ─── Main App Provider Wrapper ───
+// ─── App — головний компонент ────────────────────────────────────────────────
+// Його єдина задача: завантажити products і огорнути все в CartProvider
 export default function App() {
+  const products = useSanityProducts();
+
   return (
-    <QueryClientProvider client={queryClient}>
-      <CartProvider>
-        <AppContent />
-      </CartProvider>
-    </QueryClientProvider>
+    <CartProvider products={products}>
+      <AppContent products={products} />
+    </CartProvider>
   );
 }
