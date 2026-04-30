@@ -5,6 +5,14 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import "./index.css";
 
+// Вимикаємо нативне відновлення скролу — у SPA воно перебиває наше:
+// браузер пробує scrollTo одразу при back-навігації, поки сторінка ще
+// порожня (loading), і скрол губиться. useScrollRestoration робить це
+// правильно — після рендеру даних.
+if (typeof window !== "undefined" && "scrollRestoration" in window.history) {
+  window.history.scrollRestoration = "manual";
+}
+
 // Блок pinch/zoom і дабл-тап зум
 (function () {
   document.addEventListener("gesturestart",  e => e.preventDefault(), { passive: false });

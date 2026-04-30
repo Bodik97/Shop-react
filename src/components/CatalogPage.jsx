@@ -5,6 +5,7 @@ import ProductCard from "./ProductCard";
 // Додав ChevronUp для кнопки розгортання
 import { ArrowUpDown, ChevronDown, ChevronUp, SlidersHorizontal, Loader2 } from "lucide-react";
 import { client } from "../sanityClient";
+import { useScrollRestoration } from "../hooks/useScrollRestoration";
 
 const SITE_URL = "https://airsoft-ua.com";
 
@@ -71,9 +72,10 @@ export default function CategoryPage() {
       }
     }
     fetchProducts();
-    window.scrollTo(0, 0);
     // Згортати текст при зміні категорії
     setIsExpanded(false);
+    // Скрол вгору на нову категорію тільки на PUSH/REPLACE (форвардна навігація).
+    // На back/forward — useScrollRestoration відновлює попередню позицію.
   }, [id]);
 
   const isAll = !id || id === "all";
@@ -112,6 +114,10 @@ export default function CategoryPage() {
       default:           return isAll ? list.sort(byNewest) : list.sort(byCategoryOrder);
     }
   }, [filtered, sort, isAll]);
+
+  // Відновлення позиції скролу при back/forward — після того як товари відрендерились,
+  // інакше сторінка коротка і scrollTo не дасть ефекту.
+  useScrollRestoration({ ready: !loading && items.length > 0 });
 
   // Закриття мобільного сортування при кліку зовні
   useEffect(() => {
