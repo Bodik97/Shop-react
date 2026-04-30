@@ -44,7 +44,7 @@ export default function ContactFAB() {
   return (
     <div
       ref={ref}
-      className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 flex flex-col items-end gap-3"
+      className="fixed bottom-25 right-4 sm:bottom-6 sm:right-6 z-40 flex flex-col items-end gap-3"
     >
       {/* Кнопки месенджерів */}
       <div
