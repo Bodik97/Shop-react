@@ -4,21 +4,20 @@
 import { useEffect, useRef, useState } from "react";
 import { MessageCircle, X } from "lucide-react";
 import { FaTelegramPlane, FaViber } from "react-icons/fa";
-import { links } from "../utils/contacts";
 
 const messengers = [
   {
     id: "telegram",
     label: "Telegram",
-    href: links.telegram,
+    href: "https://t.me/AirGunShopManager", // ВАШЕ ПОСИЛАННЯ ТУТ
     bg: "bg-[#229ED9] hover:bg-[#1a87bd]",
     Icon: FaTelegramPlane,
-    iconClass: "translate-x-[-1px]", // оптично центруємо стрілку
+    iconClass: "translate-x-[-1px]",
   },
   {
     id: "viber",
     label: "Viber",
-    href: links.viber,
+    href: "viber://chat?number=%2B380961595130", // ВАШ НОМЕР ТУТ (замість 38093...)
     bg: "bg-[#7360F2] hover:bg-[#5d4cd9]",
     Icon: FaViber,
   },
