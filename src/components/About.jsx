@@ -1,37 +1,13 @@
 // src/pages/About.jsx
-import { useEffect, useMemo, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
+import ReviewsSlider from "../components/ReviewsSlider";
 import Faq from "./Faq";
-
-/* ——— helpers ——— */
-const clamp = (n, min, max) => Math.min(max, Math.max(min, n));
-const AVG = (arr) => (arr.length ? arr.reduce((s, r) => s + r.rating, 0) / arr.length : 0);
-
-/* ——— demo reviews ——— */
-const SEED = [
-  { id: 1, name: "Олександр", rating: 5, message: "Швидка відправка і якісна консультація." },
-  { id: 2, name: "Марія", rating: 5, message: "Дуже охайно запаковано, сервіс приємно здивував." },
-  { id: 3, name: "Ігор", rating: 4, message: "Все добре, доставка трохи затрималась, але підтримка працює відмінно." },
-];
 
 /* ——— main page ——— */
 export default function About() {
-  const STORE_KEY = "about_reviews_v1";
-  const [reviews, setReviews] = useState([]);
-  const avg = useMemo(() => AVG(reviews), [reviews]);
-  const total = reviews.length;
-
-  useEffect(() => {
-    const raw = localStorage.getItem(STORE_KEY);
-    if (raw) setReviews(JSON.parse(raw));
-    else {
-      localStorage.setItem(STORE_KEY, JSON.stringify(SEED));
-      setReviews(SEED);
-    }
-  }, []);
-
   return (
     <main className="relative overflow-hidden min-h-screen bg-slate-950 text-white">
       {/* BACKGROUND */}
@@ -103,35 +79,10 @@ export default function About() {
       {/* PURCHASE STEPS */}
       <StepsCarousel />
 
-      {/* REVIEWS */}
-      <motion.section
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        viewport={{ amount: 0.3 }}
-        className="relative z-10 max-w-4xl mx-auto mt-16 px-4"
-      >
-        <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-center">Відгуки клієнтів</h2>
-        <div className="grid gap-3">
-          {reviews.map((r) => (
-            <motion.div
-              key={r.id}
-              whileHover={{ scale: 1.02 }}
-              className="rounded-2xl border border-slate-800 bg-slate-900/60 p-4 text-left shadow-lg"
-            >
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-[15px] font-semibold">{r.name}</span>
-                <Stars value={r.rating} />
-              </div>
-              <p className="text-slate-300 text-[14px] leading-relaxed">{r.message}</p>
-            </motion.div>
-          ))}
-        </div>
-        <div className="mt-5 text-center text-white/70 text-sm">
-          Середня оцінка:{" "}
-          <span className="font-semibold text-blue-400">{avg.toFixed(1)}</span> / 5 ({total})
-        </div>
-      </motion.section>
+      {/* REVIEWS SLIDER */}
+      <div className="relative z-10 mt-16">
+        <ReviewsSlider />
+      </div>
 
       {/* FAQ */}
       <motion.section
@@ -165,8 +116,6 @@ function AnimatedButton({ to, children, color = "blue", adaptiveBorder = false }
   useEffect(() => {
     const node = ref.current;
     if (!node) return;
-    // ResizeObserver може викликати callback вже після того, як React
-    // від'єднав DOM-вузол (напр. на switch роуту). Захищаємо null.
     const update = () => {
       if (!ref.current) return;
       const rect = ref.current.getBoundingClientRect();
@@ -206,21 +155,18 @@ function AnimatedButton({ to, children, color = "blue", adaptiveBorder = false }
         />
       )}
 
-      <motion.div whileHover={{ scale: 1.3 }} whileTap={{ scale: 1.97 }} className="relative z-10">
+      <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }} className="relative z-10">
         <Link
           ref={ref}
           to={to}
-          style={{ color: "#fff" }} // <- гарантовано білий текст
-          className={`inline-flex items-center justify-center h-11 px-8 rounded-2xl font-semibold transition ${base}`}
+          className={`inline-flex items-center justify-center h-11 px-8 rounded-2xl font-semibold text-white transition ${base}`}
         >
           {children}
         </Link>
-
       </motion.div>
     </div>
   );
 }
-
 
 /* ——— UI components ——— */
 function Feature({ title, icon }) {
@@ -236,7 +182,6 @@ function StepsCarousel() {
   return (
     <section className="relative z-10 max-w-6xl mx-auto mt-16 px-4">
       <h2 className="text-2xl sm:text-3xl font-bold mb-8 text-center">Як проходить покупка</h2>
-
       <div className="flex flex-col items-center gap-6">
         <Step
           num="1"
@@ -260,7 +205,6 @@ function StepsCarousel() {
   );
 }
 
-
 function Step({ num, title, text }) {
   return (
     <motion.div
@@ -276,7 +220,6 @@ function Step({ num, title, text }) {
   );
 }
 
-/* ——— стрілки ↓ тепер видимі завжди ——— */
 function ArrowAll() {
   return (
     <motion.div
@@ -286,21 +229,5 @@ function ArrowAll() {
     >
       ↓
     </motion.div>
-  );
-}
-
-function Stars({ value = 0 }) {
-  const full = Math.round(clamp(value, 0, 5));
-  return (
-    <div className="inline-flex" aria-label={`Оцінка ${full} з 5`}>
-      {Array.from({ length: 5 }).map((_, i) => (
-        <svg key={i} width="16" height="16" viewBox="0 0 20 20">
-          <path
-            d="M10 1.5l2.7 5.46 6.03.88-4.36 4.25 1.03 6.01L10 15.9l-5.37 2.2 1.03-6.01L1.3 7.84l6.03-.88L10 1.5z"
-            fill={i < full ? "#fbbf24" : "#475569"}
-          />
-        </svg>
-      ))}
-    </div>
   );
 }

@@ -40,6 +40,7 @@ import Footer from "./components/Footer";
 import CategoryNav from "./components/CategoryNav";
 import PopularSlider from "./components/PopularSlider";
 import ContactFAB from "./components/ContactFAB";
+import ReviewsSlider from "./components/ReviewsSlider";
 
 // Lazy сторінки
 const CatalogPage      = lazy(() => import("./components/CatalogPage"));
@@ -149,6 +150,7 @@ function AppContent() {
                     </div>
                   )}
                 </section>
+                <ReviewsSlider />
               </main>
             }
           />
@@ -163,6 +165,7 @@ function AppContent() {
           <Route path="/privacy-policy"   element={<PrivacyPolicy />} />
           <Route path="/terms-of-service" element={<TermsOfService />} />
           <Route path="/history-orders"   element={<HistoryOrders />} />
+          <Route path="/reviews"         element={<ReviewsSlider />} />
         </Routes>
       </Suspense>
 
