@@ -126,7 +126,7 @@ export default function HistoryOrders() {
       </div>
 
       {/* Список */}
-      <div className="space-y-3 sm:space-y-3">
+      <div className="space-y-4">
         {orders.map((order) => {
           const isOpen        = expandedId === order.orderId;
           const items         = Array.isArray(order.items) ? order.items : [];
@@ -135,59 +135,71 @@ export default function HistoryOrders() {
           return (
             <div
               key={order.orderId}
-              className="rounded-xl sm:rounded-2xl border   bg-gray-500 shadow-sm"
+              className={` transition-all ${
+                isOpen ? " shadow-md" : "border-transparent "
+              }`}
             >
               {/* ── Шапка замовлення ── */}
               <button
                 type="button"
                 onClick={() => toggle(order.orderId)}
-                className="w-full  flex items-center justify-between gap-2 sm:gap-4 px-3 sm:px-5 py-3 sm:py-4 text-left"
+                className={`w-full flex items-center justify-between gap-2 rounded-lg border-transparent sm:gap-4 px-3 sm:px-5 py-4 text-left transition-colors ${
+                  isOpen ? "bg-black text-white" : "bg-white text-black hover:bg-gray-50"
+                }`}
               >
                 <div className="flex-1 min-w-0">
                   {/* Номер + дата */}
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-mono text-xs sm:text-sm font-semibold text-blue-600 break-all">
-                      {order.orderId}
+                    <span className="font-bold text-xs sm:text-sm uppercase tracking-tighter">
+                      № {order.orderId}
                     </span>
-                    <span className="text-[10px] sm:text-xs text-white/80">
+                    <span className={`text-[10px] sm:text-xs font-medium uppercase ${
+                      isOpen ? "text-gray-400" : "text-gray-500"
+                    }`}>
                       {formatDate(order.createdAt)}
                     </span>
                   </div>
                   {/* Ім'я + телефон */}
-                  <div className="mt-0.5 text-xs sm:text-sm text-white truncate">
+                  <div className={`mt-1 text-xs sm:text-sm font-bold uppercase truncate ${
+                    isOpen ? "text-white" : "text-black"
+                  }`}>
                     {order.name && <span>{order.name}</span>}
-                    {order.name && order.phone && <span className="mx-1 sm:mx-1.5 text-gray-300">·</span>}
-                    {order.phone && <span>{order.phone}</span>}
+                    {order.name && order.phone && <span className="mx-1.5 opacity-40">|</span>}
+                    {order.phone && <span className="opacity-80">{order.phone}</span>}
                   </div>
-                  {/* 🆕 Мітка "зі знижкою" якщо була економія */}
+                  {/* Мітка "зі знижкою" */}
                   {orderSavings > 0 && (
-                    <div className="mt-1 text-[10px] sm:text-xs text-emerald-700 font-medium">
-                      💚 Економія: {formatUAH(orderSavings)}
+                    <div className={`mt-1 text-[10px] sm:text-xs font-black uppercase ${
+                      isOpen ? "text-red-400" : "text-[#e30613]"
+                    }`}>
+                      Знижка: {formatUAH(orderSavings)}
                     </div>
                   )}
                 </div>
 
                 {/* Сума + іконка */}
                 <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-                  <span className="text-sm sm:text-lg font-extrabold text-red-600 tabular-nums">
+                  <span className={`text-base sm:text-xl font-black tabular-nums ${
+                    isOpen ? "text-white" : "text-[#e30613]"
+                  }`}>
                     {formatUAH(order.total)}
                   </span>
                   {isOpen
-                    ? <ChevronUp className="h-4 w-4 text-gray-400" />
-                    : <ChevronDown className="h-4 w-4 text-gray-400" />
+                    ? <ChevronUp className="h-5 w-5 text-white" />
+                    : <ChevronDown className="h-5 w-5 text-gray-400" />
                   }
                 </div>
               </button>
 
               {/* ── Деталі ── */}
               {isOpen && (
-                <div className="border-s-black px-3 sm:px-5 pb-4 sm:pb-5 pt-3 sm:pt-4 bg-gray-200 xs:bg-gray-200">
+                <div className="px-3 sm:px-5 pb-5 pt-4 bg-[#f9f9f9]">
                   {items.length > 0 ? (
                     <>
-                      <div className="text-[11px] sm:text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2 sm:mb-3">
-                        Склад замовлення
+                      <div className="text-[10px] font-black text-black uppercase tracking-widest mb-3 border-b border-gray-300 pb-1">
+                        Товари у замовленні
                       </div>
-                      <ul className="space-y-2 sm:space-y-3">
+                      <ul className="space-y-2">
                         {items.map((item, idx) => {
                           const qty         = Math.max(1, Number(item.qty) || 1);
                           const basePrice   = Number(item.price) || 0;
@@ -202,53 +214,45 @@ export default function HistoryOrders() {
                           return (
                             <li
                               key={`${item.id ?? idx}-${idx}`}
-                              className="rounded-2xl sm:rounded-xl border bg-white p-2.5 sm:p-3"
+                              className="border border-gray-200 bg-white p-3"
                             >
                               {/* Назва + ціна */}
-                              <div className="flex items-start justify-between gap-2">
-                                <span className="text-xs sm:text-sm font-medium text-gray-900 leading-snug break-words flex-1">
+                              <div className="flex items-start justify-between gap-3">
+                                <span className="text-xs sm:text-sm font-bold text-black uppercase leading-tight flex-1">
                                   {item.title}
                                   {qty > 1 && (
-                                    <span className="ml-1 text-gray-400 font-normal">× {qty}</span>
+                                    <span className="ml-2 text-lime-400 font-black">[{qty} шт.]</span>
                                   )}
                                 </span>
-                                <span className="text-xs sm:text-sm font-semibold text-gray-900 tabular-nums shrink-0">
+                                <span className="text-xs sm:text-sm font-black text-black tabular-nums shrink-0">
                                   {formatUAH(lineTotal)}
                                 </span>
                               </div>
 
                               {/* Знижка */}
                               {hasDiscount && (
-                                <div className="mt-1 flex items-center gap-1.5 flex-wrap">
-                                  <span className="text-[10px] sm:text-xs text-gray-400 line-through tabular-nums">
+                                <div className="mt-1 flex items-center gap-2 flex-wrap">
+                                  <span className="text-[10px] sm:text-xs text-gray-400 line-through">
                                     {formatUAH(oldPrice)}
                                   </span>
-                                  <span className="inline-flex items-center rounded-full bg-red-600 text-white text-[9px] sm:text-[10px] font-extrabold tabular-nums px-1.5 py-0.5">
-                                    −{Math.round((1 - basePrice / oldPrice) * 100)}%
+                                  <span className="bg-lime-400 text-white text-[9px] font-bold uppercase px-1.5 py-0.5">
+                                    Акція
                                   </span>
-                                  <span className="text-[10px] sm:text-xs text-emerald-700 font-medium">
-                                    🔥 −{formatUAH(itemSavings)}
+                                  <span className="text-[10px] sm:text-xs text-lime-400 font-bold">
+                                    −{formatUAH(itemSavings)}
                                   </span>
-                                </div>
-                              )}
-
-                              {/* Базова ціна якщо є addons */}
-                              {addons.length > 0 && (
-                                <div className="mt-1 text-[11px] sm:text-xs text-gray-500 tabular-nums">
-                                  Товар: {formatUAH(basePrice)}
                                 </div>
                               )}
 
                               {/* Addons */}
                               {addons.length > 0 && (
-                                <div className="mt-1.5 flex flex-wrap gap-1">
+                                <div className="mt-2 flex flex-wrap gap-1">
                                   {addons.map((a) => (
                                     <span
                                       key={a.id}
-                                      className="inline-flex items-center gap-1 rounded-full border border-blue-200 bg-blue-50 px-1.5 sm:px-2 py-0.5 text-[10px] sm:text-xs font-medium text-blue-700"
+                                      className="inline-flex items-center bg-blue-200 border border-gray-200 rounded-2xl px-2 py-0.5 text-[9px] sm:text-[10px] font-medium text-gray-900 "
                                     >
-                                      + {a.name}
-                                      <span className="font-semibold">{formatUAH(a.price)}</span>
+                                      + {a.name} ({formatUAH(a.price)})
                                     </span>
                                   ))}
                                 </div>
@@ -256,9 +260,8 @@ export default function HistoryOrders() {
 
                               {/* Подарунок */}
                               {item.giftText && (
-                                <div className="mt-1 text-[11px] sm:text-xs text-emerald-700 flex items-start gap-1">
-                                  <span className="shrink-0">🎁</span>
-                                  <span className="break-words">{item.giftText}</span>
+                                <div className="mt-2 text-[10px] sm:text-xs text-[#e30613] font-bold uppercase flex items-center gap-1">
+                                  <span className="text-lg"></span> Подарунок: {item.giftText}
                                 </div>
                               )}
                             </li>
@@ -267,22 +270,22 @@ export default function HistoryOrders() {
                       </ul>
                     </>
                   ) : (
-                    <p className="text-xs sm:text-sm text-gray-400 text-center py-2">
-                      Деталі товарів недоступні
+                    <p className="text-xs text-gray-400 uppercase text-center py-4">
+                      Інформація про товари відсутня
                     </p>
                   )}
 
                   {/* Підсумок */}
-                  <div className="mt-3 sm:mt-4 pt-2.5 sm:pt-3 border-t space-y-1">
+                  <div className="mt-5 pt-4 border-t-2 border-black space-y-1">
                     {orderSavings > 0 && (
-                      <div className="flex items-center justify-between text-xs sm:text-sm text-emerald-700 font-medium">
-                        <span>💚 Ваша економія:</span>
+                      <div className="flex items-center justify-between text-xs font-bold text-lime-400 uppercase">
+                        <span>Загальна знижка:</span>
                         <span className="tabular-nums">{formatUAH(orderSavings)}</span>
                       </div>
                     )}
                     <div className="flex items-center justify-between">
-                      <span className="text-xs sm:text-sm text-gray-600">Разом:</span>
-                      <span className="text-base sm:text-xl font-extrabold text-red-600 tabular-nums">
+                      <span className="text-xs sm:text-sm font-bold uppercase text-gray-600">Разом до сплати:</span>
+                      <span className="text-xl sm:text-2xl font-black text-[#e30613] tabular-nums">
                         {formatUAH(order.total)}
                       </span>
                     </div>
