@@ -1,78 +1,21 @@
 // src/components/Contact.jsx
-import { useState, useRef } from "react";
-import { Phone, Mail, Clock, MapPin, Send, ShieldCheck, MessageSquare, Headphones } from "lucide-react";
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
-import { onlyDigits as digits, formatPhoneUA as asE164UA } from "../utils/format";
+import {
+  Headphones,
+  Mail,
+  Clock,
+  MapPin,
+  ShieldCheck,
+  Send,
+  MessageSquare,
+} from "lucide-react";
 
 export default function Contact() {
-  // const PHONE_DISPLAY = "+38 (096) 000-00-00";
-  // const PHONE_TEL = "+380960000000";
   const EMAIL = "support@airsoft.shop";
   const HOURS = "Пн–Пт 10:00–19:00, Сб 11:00–16:00";
-  const ADDRESS_LINES = [
-    "Київ, вул. Бориспільська, 9 (Дарницький р-н)",
-    "Київ, вул. Новокостянтинівська, 2А (Подільський р-н)",
-  ];
+  const ADDRESS_LINES = ["Україна, Харківська область, м. Харків"];
 
-  /** Стан форми */
-  const [form, setForm] = useState({ name: "", phone: "+380 ", message: "", website: "" });
-  const [err, setErr] = useState({ name: "", phone: "", message: "" });
-  const [notice, setNotice] = useState({ type: "", text: "" });
-  const [loading, setLoading] = useState(false);
-  const hideTimer = useRef(null);
-
-  /** Валідація */
-  const validate = () => {
-    const e = { name: "", phone: "", message: "" };
-    if (form.name.trim().length < 2) e.name = "Вкажіть ім’я від 2 символів.";
-    const d = digits(form.phone);
-    if (!(d.length === 12 && d.startsWith("380"))) e.phone = "Телефон у форматі +380XXXXXXXXX.";
-    if (form.message.trim().length < 3) e.message = "Короткий коментар обов’язковий.";
-    setErr(e);
-    const bad = Object.values(e).some(Boolean);
-    if (bad) setNotice({ type: "error", text: "Перевірте виділені поля і спробуйте ще раз." });
-    else setNotice({ type: "", text: "" });
-    return !bad;
-  };
-
-  /** Сабміт */
-  const submitConsult = async (ev) => {
-    ev.preventDefault();
-    if (!validate()) return;
-    setLoading(true);
-    setNotice({ type: "", text: "" });
-    if (hideTimer.current) clearTimeout(hideTimer.current);
-
-    const payload = {
-      type: "consult",
-      name: form.name.trim(),
-      phone: "+380" + digits(form.phone).slice(-9),
-      comment: form.message.trim(),
-      website: form.website, // honeypot
-    };
-
-    try {
-      const r = await fetch("/api/order", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      const j = await r.json().catch(() => null);
-      if (j?.ok) {
-        setForm({ name: "", phone: "+380 ", message: "", website: "" });
-        setErr({ name: "", phone: "", message: "" });
-        setNotice({ type: "success", text: "Форму прийнято. Очікуйте дзвінка від менеджера." });
-        hideTimer.current = setTimeout(() => setNotice({ type: "", text: "" }), 3000);
-      } else {
-        setNotice({ type: "error", text: "Не вдалося надіслати. Спробуйте пізніше." });
-      }
-    } catch {
-      setNotice({ type: "error", text: "Мережева помилка. Спробуйте знову." });
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <main className="relative overflow-hidden bg-gradient-to-b from-gray-50 via-white to-slate-100">
@@ -103,7 +46,7 @@ export default function Contact() {
       </section>
 
       {/* CONTACT CARDS */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* <InfoCard
           icon={<Phone className="h-5 w-5 text-slate-900" />}
           label="Телефон"
@@ -116,122 +59,7 @@ export default function Contact() {
         />
         <InfoCard icon={<Clock className="h-5 w-5 text-slate-900" />} label="Графік" value={HOURS} />
         <InfoCard icon={<MapPin className="h-5 w-5 text-slate-900" />} label="Адреса" value={ADDRESS_LINES} />
-      </section>
-
-      {/* FORM */}
-      <motion.section
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="max-w-4xl mx-auto mt-12 mb-8 px-4 sm:px-6"
-      >
-        <div className="rounded-3xl border bg-white shadow-lg overflow-hidden">
-          <div className="p-6 sm:p-10 md:p-12 flex flex-col lg:flex-row items-center gap-8">
-            <div className="flex-1 text-center lg:text-left">
-              <h3 className="text-2xl font-bold text-slate-900">Залиште заявку 📩</h3>
-              <p className="mt-2 text-gray-600 text-sm sm:text-base">
-                Напишіть, що вас цікавить — і наш менеджер зв’яжеться з вами найближчим часом.
-              </p>
-            </div>
-                          {/* бейдж під формою */}
-              {notice.text ? (
-                <div className="pt-3">
-                  <Banner type={notice.type}>{notice.text}</Banner>
-                </div>
-              ) : null}
-
-            <form onSubmit={submitConsult} className="flex-1 w-full max-w-md space-y-4">
-{/* honeypot */}
-              <input
-                type="text"
-                id="website"
-                name="website"
-                value={form.website}
-                onChange={(e) => setForm((s) => ({ ...s, website: e.target.value }))}
-                className="hidden"
-                tabIndex={-1}
-                autoComplete="off"
-              />
-
-{/* Ім’я */}
-              <label htmlFor="name" className="block">
-                <span className="mb-1 block text-sm font-medium text-slate-700">Ім’я</span>
-                <input
-                  id="name"
-                  name="name"
-                  type="text"
-                  value={form.name}
-                  onChange={(e) => setForm((s) => ({ ...s, name: e.target.value }))}
-                  className={`w-full rounded-xl border p-3 text-[15px] text-slate-900 placeholder-slate-400 bg-white
-                              focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30 outline-none
-                              ${err.name ? "border-red-400" : "border-gray-300"}`}
-                  placeholder="Ваше ім’я"
-                  autoComplete="name"
-                  aria-invalid={!!err.name}
-                  aria-describedby={err.name ? "err-name" : undefined}
-                  required
-                />
-                {err.name && <div id="err-name" className="mt-1 text-xs text-red-600">{err.name}</div>}
-              </label>
-
-{/* Телефон */}
-              <label htmlFor="phone" className="block">
-                <span className="mb-1 block text-sm font-medium text-slate-700">Телефон</span>
-                <input
-                  id="phone"
-                  name="phone"
-                  type="tel"
-                  inputMode="numeric"
-                  value={form.phone}
-                  onFocus={() => {
-                    if (!form.phone.trim()) setForm((s) => ({ ...s, phone: "+380 " }));
-                  }}
-                  onChange={(e) => setForm((s) => ({ ...s, phone: asE164UA(e.target.value) }))}
-                  className={`w-full rounded-xl border p-3 text-[15px] text-slate-900 placeholder-slate-400 bg-white
-                              focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30 outline-none
-                              ${err.phone ? "border-red-400" : "border-gray-300"}`}
-                  placeholder="+380 __ ___ __ __"
-                  autoComplete="tel"
-                  aria-invalid={!!err.phone}
-                  aria-describedby={err.phone ? "err-phone" : undefined}
-                  required
-                />
-                <div className="mt-1 text-xs text-slate-500">Формат: +380 12 345 67 89</div>
-                {err.phone && <div id="err-phone" className="mt-1 text-xs text-red-600">{err.phone}</div>}
-              </label>
-{/* Коментар */}
-              <label htmlFor="message" className="block">
-                <span className="mb-1 block text-sm font-medium text-slate-700">Коментар</span>
-                <textarea
-                  id="message"
-                  name="message"
-                  rows={4}
-                  value={form.message}
-                  onChange={(e) => setForm((s) => ({ ...s, message: e.target.value }))}
-                  className={`w-full rounded-xl border p-3 text-[15px] text-slate-900 placeholder-slate-400 bg-white
-                              focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30 outline-none resize-y
-                              ${err.message ? "border-red-400" : "border-gray-300"}`}
-                  placeholder="Коротко опишіть запит"
-                  aria-invalid={!!err.message}
-                  aria-describedby={err.message ? "err-message" : undefined}
-                  required
-                />
-                {err.message && <div id="err-message" className="mt-1 text-xs text-red-600">{err.message}</div>}
-              </label>
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold py-3
-                          hover:from-blue-500 hover:to-indigo-500 transition shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
-              >
-                {loading ? "Надсилаємо…" : "Відправити"}
-              </button>
-            </form>
-
-          </div>
-        </div>
-      </motion.section>
+      </section> 
 
       {/* WHY CHOOSE US */}
       <motion.section
@@ -267,7 +95,7 @@ export default function Contact() {
         <div className="relative overflow-hidden rounded-3xl border shadow-md">
           <iframe
             title="Мапа"
-            src="https://maps.google.com/maps?q=Kyiv&t=&z=12&ie=UTF8&iwloc=&output=embed"
+            src="https://maps.google.com/maps?q=Kharkiv&t=&z=12&ie=UTF8&iwloc=&output=embed"
             className="w-full h-[280px] sm:h-[340px] md:h-[420px]"
             loading="lazy"
           />
@@ -279,7 +107,7 @@ export default function Contact() {
       </motion.section>
     </main>
   );
-}
+};
 
 /** Підкомпоненти */
 function InfoCard({ icon, label, value }) {
@@ -304,16 +132,3 @@ function InfoCard({ icon, label, value }) {
   );
 }
 
-function Banner({ type = "info", children }) {
-  const color =
-    type === "success"
-      ? "bg-green-50 text-green-800 border-green-200"
-      : type === "error"
-      ? "bg-red-50 text-red-800 border-red-200"
-      : "bg-slate-50 text-slate-800 border-slate-200";
-  return (
-    <div role="status" aria-live="polite" className={`rounded-xl border px-3 py-2 text-sm ${color}`}>
-      {children}
-    </div>
-  );
-}
