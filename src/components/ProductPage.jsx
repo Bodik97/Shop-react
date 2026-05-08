@@ -6,7 +6,7 @@ import { Helmet } from "react-helmet";
 import { client } from "../sanityClient";
 import { useCart } from "../context/CartContext";
 import { formatUAH } from "../utils/format";
-import { ShoppingCart, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
+import { ShoppingCart, Loader2, ChevronLeft, ChevronRight, ShieldCheck, RotateCcw, CreditCard, Star, Zap } from "lucide-react";
 
 import { trackViewItem } from "../utils/analytics";
 import { useScrollRestoration } from "../hooks/useScrollRestoration";
@@ -352,8 +352,25 @@ export default function ProductPage() {
     </div>
   );
 
+  // Stock-стан: "залишилось N шт" якщо ≤5, інакше просто "В наявності"
+  const stockNum = Number(product?.stock);
+  const hasStock = product?.stock == null || stockNum > 0;
+  const lowStock = Number.isFinite(stockNum) && stockNum > 0 && stockNum <= 5;
+
+  // Хендлери для sticky CTA (щоб не дублювати інлайнові колбеки)
+  const onBuyNow = () =>
+    setBuyProduct({ ...product, addons: addons.filter((a) => selectedAddons.includes(a.name)) });
+
+  const onAddToCart = () => {
+    const chosen = addons.filter((a) => selectedAddons.includes(a.name));
+    addToCart({ ...product, addons: chosen });
+    if (timerRef.current) clearTimeout(timerRef.current);
+    setFlashCart(true);
+    timerRef.current = setTimeout(() => setFlashCart(false), 2000);
+  };
+
   return (
-    <main className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8 overflow-x-hidden">
+    <main className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8 pb-28 lg:pb-8 overflow-x-hidden">
       {!product ? (
         <div className="text-center py-20">
           <p className="text-white text-xl">Товар не знайдено.</p>
@@ -390,7 +407,7 @@ export default function ProductPage() {
           )}
 
           {flashCart && (
-            <div className="fixed left-1/2 -translate-x-1/2 bottom-24 z-[60] animate-slideUpFade">
+            <div className="fixed left-1/2 -translate-x-1/2 top-20 lg:top-24 z-[80] animate-slideUpFade">
               <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-600 text-white text-xs font-semibold px-3 py-1.5 shadow-lg">
                 ✅ Додано в кошик
               </span>
@@ -406,8 +423,14 @@ export default function ProductPage() {
           </nav>
 
           <div className="header-flex mb-4 sm:mb-6 flex flex-col gap-3 sm:gap-4">
-            <button onClick={() => navigate(-1)} className="w-fit px-4 h-10 bg-black !text-white rounded-xl font-semibold hover:bg-gray-900 active:scale-95 transition text-sm">
-              ← Назад
+            <button
+              type="button"
+              onClick={() => navigate(-1)}
+              aria-label="Назад"
+              className="inline-flex items-center justify-center gap-1.5 w-fit h-12 sm:h-13 px-5 sm:px-6 rounded-xl bg-white text-gray-900 ring-2 ring-gray-300 text-base font-semibold shadow-sm hover:bg-gray-50 hover:ring-gray-400 active:scale-[0.98] transition"
+            >
+              <ChevronLeft className="h-5 w-5" aria-hidden="true" />
+              Назад
             </button>
             <h1
               lang="uk"
@@ -415,6 +438,22 @@ export default function ProductPage() {
             >
               {product.title}
             </h1>
+
+            {/* Соцдоказ біля заголовка: зірки + бейдж популярності */}
+            <div className="flex items-center gap-2 sm:gap-3 flex-wrap text-sm text-white/85">
+              <span className="inline-flex items-center gap-0.5 text-amber-400" aria-label="Рейтинг 5 з 5">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Star key={i} className="h-4 w-4 fill-amber-400 stroke-amber-400" aria-hidden="true" />
+                ))}
+              </span>
+              <span className="text-white/60">за відгуками покупців</span>
+              {isPopular && (
+                <span className="inline-flex items-center gap-1 rounded-full bg-orange-500/15 text-orange-300 ring-1 ring-orange-500/40 px-2 py-0.5 text-xs font-semibold">
+                  <Zap className="h-3.5 w-3.5" aria-hidden="true" />
+                  Хіт продажів
+                </span>
+              )}
+            </div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 lg:gap-8">
@@ -477,10 +516,22 @@ export default function ProductPage() {
               <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-xl border border-gray-100">
                 <div className="flex items-center gap-2 mb-3 sm:mb-4 flex-wrap">
                     {isPopular && <Badge variant="popular" />}
-                    <Badge variant="green">В наявності</Badge>
+                    {hasStock ? (
+                      lowStock ? (
+                        <span className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold bg-amber-50 text-amber-700 ring-1 ring-amber-200">
+                          🔥 Залишилось {stockNum} шт
+                        </span>
+                      ) : (
+                        <Badge variant="green">В наявності</Badge>
+                      )
+                    ) : (
+                      <span className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold bg-gray-100 text-gray-600">
+                        Під замовлення
+                      </span>
+                    )}
                 </div>
 
-                <div className="space-y-1 mb-4 sm:mb-6">
+                <div className="space-y-1 mb-4">
                   <div className="text-2xl sm:text-3xl md:text-4xl font-black text-red-600 tabular-nums">
                     {formatUAH(finalPrice)}
                   </div>
@@ -492,6 +543,14 @@ export default function ProductPage() {
                         </span>
                     </div>
                   )}
+                </div>
+
+                {/* Trust-бейджі: 4 ключові переваги магазину одразу під ціною */}
+                <div className="grid grid-cols-2 gap-2 mb-4 sm:mb-6">
+                  <TrustItem icon={<ShieldCheck className="h-4 w-4" aria-hidden="true" />} text="Перевірка перед відправкою" />
+                  <NovaPoshtaItem />
+                  <TrustItem icon={<RotateCcw className="h-4 w-4" aria-hidden="true" />}   text="14 днів повернення" />
+                  <TrustItem icon={<CreditCard className="h-4 w-4" aria-hidden="true" />}  text="Оплата при отриманні" />
                 </div>
 
                 {product.giftText && (
@@ -543,20 +602,14 @@ export default function ProductPage() {
                 )}
 
                 <div className="grid grid-cols-1 gap-3">
-                  <button onClick={() => setBuyProduct({...product, addons: addons.filter(a => selectedAddons.includes(a.name))})} className="h-12 sm:h-14 bg-black !text-white rounded-2xl font-bold text-base sm:text-lg hover:bg-gray-900 active:scale-[0.98] transition shadow-lg">
+                  <button onClick={onBuyNow} className="h-12 sm:h-14 bg-orange-600 !text-white rounded-2xl font-bold text-base sm:text-lg hover:bg-orange-700 active:scale-[0.98] transition shadow-lg">
                     Купити зараз
                   </button>
                   <button
-                    onClick={() => {
-                        const chosen = addons.filter(a => selectedAddons.includes(a.name));
-                        addToCart({...product, addons: chosen});
-                        if (timerRef.current) clearTimeout(timerRef.current);
-                        setFlashCart(true);
-                        timerRef.current = setTimeout(() => setFlashCart(false), 2000);
-                    }}
-                    className="h-12 sm:h-14 bg-black !text-white rounded-2xl font-bold text-base sm:text-lg flex items-center justify-center gap-2 hover:bg-gray-900 active:scale-[0.98] transition"
+                    onClick={onAddToCart}
+                    className="h-12 sm:h-14 bg-black !text-white rounded-2xl font-bold text-base sm:text-lg hover:bg-gray-900 active:scale-[0.98] transition"
                   >
-                    <ShoppingCart size={20} /> Додати в кошик
+                    Додати в кошик
                   </button>
                 </div>
               </div>
@@ -604,6 +657,41 @@ export default function ProductPage() {
         </>
       )}
 
+      {/* МОБІЛЬНИЙ STICKY CTA: ціна + Купити + В кошик. Lg+ ховаємо. */}
+      {product && (
+        <div className="fixed inset-x-0 bottom-0 z-40 lg:hidden">
+          <div className="border-t bg-white shadow-[0_-8px_24px_rgba(0,0,0,0.15)] pb-[max(env(safe-area-inset-bottom),8px)]">
+            <div className="flex items-center gap-2 px-3 py-2">
+              <div className="min-w-0 flex-1 leading-tight">
+                <div className="text-red-600 font-extrabold tabular-nums text-lg sm:text-xl">
+                  {formatUAH(finalPrice)}
+                </div>
+                {product.oldPrice && (
+                  <div className="text-[11px] text-gray-400 line-through tabular-nums">
+                    {formatUAH(product.oldPrice)}
+                  </div>
+                )}
+              </div>
+              <button
+                type="button"
+                onClick={onAddToCart}
+                aria-label="Додати в кошик"
+                className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gray-900 !text-white hover:bg-black active:scale-95 transition shrink-0"
+              >
+                <ShoppingCart size={20} />
+              </button>
+              <button
+                type="button"
+                onClick={onBuyNow}
+                className="inline-flex h-12 px-4 items-center justify-center rounded-xl bg-orange-600 !text-white font-bold text-sm hover:bg-orange-700 active:scale-95 transition shrink-0"
+              >
+                Купити
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ФУЛСКРІН ГАЛЕРЕЯ */}
       {openFS && (
           <div className="fixed inset-0 z-[100] bg-white flex flex-col" style={{ touchAction: "none" }}>
@@ -648,5 +736,34 @@ export default function ProductPage() {
         </Suspense>
       )}
     </main>
+  );
+}
+
+// Компактний trust-блок під ціною: іконка + короткий текст
+function TrustItem({ icon, text }) {
+  return (
+    <div className="flex items-center gap-2 rounded-xl bg-gray-50 ring-1 ring-black/5 px-2.5 py-2">
+      <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-emerald-50 text-emerald-600">
+        {icon}
+      </span>
+      <span className="text-[12px] sm:text-[13px] text-gray-800 leading-snug">{text}</span>
+    </div>
+  );
+}
+
+// Окремий бейдж під лого "НОВА ПОШТА": лого широке (210×75), тому
+// показуємо логотип + слово "Доставка" поряд, без дублювання назви перевізника.
+function NovaPoshtaItem() {
+  return (
+    <div className="flex items-center gap-2 rounded-xl bg-gray-50 ring-1 ring-black/5 px-2.5 py-2">
+      <img
+        src="/img/nova-poshta.svg"
+        alt="Нова Пошта"
+        className="h-4 w-auto shrink-0"
+        loading="lazy"
+        decoding="async"
+      />
+      <span className="text-[12px] sm:text-[13px] text-gray-800 leading-snug">Доставка</span>
+    </div>
   );
 }

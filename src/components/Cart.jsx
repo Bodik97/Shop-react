@@ -1,7 +1,7 @@
 // src/components/Cart.jsx
 import { lazy, Suspense, useCallback, useEffect, useId, useMemo, useState, useTransition } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ShieldCheck, RotateCcw, CreditCard, Truck, X } from "lucide-react";
+import { ShieldCheck, RotateCcw, CreditCard, Truck, X, ChevronLeft } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { formatUAH } from "../utils/format";
 
@@ -19,6 +19,18 @@ const PERKS = [
   { icon: CreditCard,  text: "Оплата при отриманні" },
   { icon: Truck,       text: "Швидка доставка" },
 ];
+
+// Inline SVG-плейсхолдер для зламаних зображень.
+// Не залежить від файлу в /public — щоб onError не давав 404.
+const IMG_PLACEHOLDER =
+  "data:image/svg+xml;utf8," +
+  encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" fill="none">
+       <rect width="96" height="96" fill="#F3F4F6"/>
+       <path d="M28 64l14-18 12 14 6-7 12 13H22z" fill="#D1D5DB"/>
+       <circle cx="60" cy="34" r="6" fill="#D1D5DB"/>
+     </svg>`
+  );
 
 export default function Cart({ freeShippingFrom = 0 }) {
   const {
@@ -168,11 +180,15 @@ export default function Cart({ freeShippingFrom = 0 }) {
                 <div className="sm:self-start sm:mt-1">
                   <div className="w-full sm:w-24 md:w-28 aspect-square sm:aspect-square max-h-[200px] sm:max-h-none overflow-hidden rounded-xl bg-gray-50 relative shrink-0">
                     <img
-                      src={item.image}
+                      src={item.image || IMG_PLACEHOLDER}
                       alt={item.title}
-                      className="h-full w-full object-cover"
+                      className="h-full w-full object-contain p-1"
                       loading="lazy"
-                      onError={(e) => { e.currentTarget.src = "/placeholder.png"; }}
+                      onError={(e) => {
+                        if (e.currentTarget.src !== IMG_PLACEHOLDER) {
+                          e.currentTarget.src = IMG_PLACEHOLDER;
+                        }
+                      }}
                     />
                     {low && (
                       <span className="absolute left-2 top-2 rounded-full bg-amber-100 text-amber-800 text-[11px] font-bold px-2 py-0.5">
@@ -397,17 +413,17 @@ export default function Cart({ freeShippingFrom = 0 }) {
               </div>
 
               {/* ── Кнопки ── */}
-              <div className="flex items-center gap-1.5 shrink-0">
+              <div className="flex items-center gap-2 shrink-0">
                 <button
                   type="button"
                   onClick={() => setMobileDetails((v) => !v)}
                   aria-label={mobileDetails ? "Сховати деталі" : "Показати деталі"}
                   className="
                     inline-flex items-center justify-center
-                    h-10 sm:h-11
-                    px-2.5 sm:px-3
+                    h-14 sm:h-16
+                    px-4 sm:px-6
                     rounded-xl bg-black !text-white
-                    text-xs sm:text-sm font-semibold
+                    text-base sm:text-lg font-semibold
                     hover:bg-gray-900 active:scale-95
                     transition shrink-0
                   "
@@ -421,12 +437,12 @@ export default function Cart({ freeShippingFrom = 0 }) {
                   disabled={!itemsCount}
                   className="
                     inline-flex items-center justify-center
-                    h-10 sm:h-11
-                    px-3 sm:px-5
-                    rounded-xl bg-black !text-white
-                    text-xs sm:text-sm font-semibold
-                    hover:bg-gray-900 active:scale-[0.98] disabled:opacity-50
-                    transition shrink-0
+                    h-14 sm:h-16
+                    px-5 sm:px-8
+                    rounded-xl bg-orange-600 !text-white
+                    text-base sm:text-lg font-bold
+                    hover:bg-orange-700 active:scale-[0.98] disabled:opacity-50
+                    transition shrink-0 shadow-lg
                   "
                 >
                   Купити
@@ -492,10 +508,11 @@ function BackButton() {
     <button
       type="button"
       onClick={() => (canGoBack ? nav(-1) : nav("/"))}
-      className="inline-flex items-center justify-center gap-2 h-11 px-4 rounded-2xl bg-black !text-white font-semibold hover:bg-gray-800 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-blue-600 transition"
+      className="inline-flex items-center justify-center gap-1.5 h-12 sm:h-13 px-5 sm:px-6 rounded-xl bg-white text-gray-900 ring-2 ring-gray-300 text-base font-semibold shadow-sm hover:bg-gray-50 hover:ring-gray-400 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-blue-600 transition"
       aria-label="Назад"
     >
-      ← Назад
+      <ChevronLeft className="h-5 w-5" aria-hidden="true" />
+      Назад
     </button>
   );
 }

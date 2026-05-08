@@ -353,9 +353,8 @@ export default function ModalBuy({
                 <img
                   src={product.image || product.mainImageUrl}
                   alt={product.title}
-                  className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl object-cover border shrink-0"
+                  className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl object-contain bg-gray-50 p-1 border shrink-0"
                   loading="lazy"
-                  onError={(e) => { e.currentTarget.src = "/placeholder.png"; }}
                 />
                 <div className="flex-1 min-w-0 space-y-1">
                   <div className="font-semibold text-gray-900 text-sm sm:text-base line-clamp-2">
@@ -425,14 +424,14 @@ export default function ModalBuy({
                     type="button"
                     onClick={() => setQty((q) => Math.max(1, q - 1))}
                     disabled={qty <= 1 || sending}
-                    className="flex justify-center items-center h-10 w-10 rounded-xl bg-black !text-white font-bold text-lg hover:bg-gray-900 active:scale-95 disabled:opacity-40 transition"
+                    className="flex justify-center items-center h-12 w-12 rounded-xl bg-black !text-white font-bold text-xl hover:bg-gray-900 active:scale-95 disabled:opacity-40 transition"
                   >−</button>
-                  <span className="text-gray-900 w-8 text-center font-semibold tabular-nums">{qty}</span>
+                  <span className="text-gray-900 w-10 text-center font-semibold tabular-nums text-base">{qty}</span>
                   <button
                     type="button"
                     onClick={() => setQty((q) => Math.min(99, q + 1))}
                     disabled={qty >= 99 || sending}
-                    className="flex justify-center items-center h-10 w-10 rounded-xl bg-black !text-white font-bold text-lg hover:bg-gray-900 active:scale-95 disabled:opacity-40 transition"
+                    className="flex justify-center items-center h-12 w-12 rounded-xl bg-black !text-white font-bold text-xl hover:bg-gray-900 active:scale-95 disabled:opacity-40 transition"
                   >+</button>
                 </div>
               </div>
@@ -458,9 +457,8 @@ export default function ModalBuy({
                         <img
                           src={i.image}
                           alt={i.title}
-                          className="w-12 h-12 rounded-lg object-cover border shrink-0"
+                          className="w-12 h-12 rounded-lg object-contain bg-gray-50 p-0.5 border shrink-0"
                           loading="lazy"
-                          onError={(e) => { e.currentTarget.src = "/placeholder.png"; }}
                         />
                         <div className="flex-1 min-w-0 space-y-0.5">
                           <div className="flex justify-between gap-3 text-sm">
@@ -616,14 +614,14 @@ export default function ModalBuy({
                   type="button"
                   onClick={() => onClose?.()}
                   disabled={sending}
-                  className="h-11 px-3 sm:px-4 rounded-2xl bg-black !text-white text-sm font-semibold hover:bg-gray-900 active:scale-95 disabled:opacity-40 transition"
+                  className="h-14 sm:h-16 px-5 sm:px-7 rounded-2xl bg-black !text-white text-base sm:text-lg font-semibold hover:bg-gray-900 active:scale-95 disabled:opacity-40 transition"
                 >
                   Скасувати
                 </button>
                 <button
                   type="submit"
                   disabled={sending}
-                  className="h-11 px-4 sm:px-5 rounded-2xl bg-black !text-white text-sm font-semibold hover:bg-gray-900 active:scale-95 disabled:opacity-50 transition"
+                  className="h-14 sm:h-16 px-6 sm:px-8 rounded-2xl bg-orange-600 !text-white text-base sm:text-lg font-bold hover:bg-orange-700 active:scale-[0.98] disabled:opacity-50 transition shadow-lg"
                 >
                   {sending ? "Надсилаємо…" : "Купити"}
                 </button>

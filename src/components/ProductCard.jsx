@@ -1,7 +1,7 @@
 // src/components/ProductCard.jsx
 import { memo, useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Flame, Truck, Clock, ShoppingCart } from "lucide-react";
+import { Flame, Truck, Clock } from "lucide-react";
 import ImageWithPlaceholder from "./ImageWithPlaceholder";
 import { useCart } from "../context/CartContext";
 import { formatUAH } from "../utils/format";
@@ -199,10 +199,9 @@ const ProductCard = memo(function ProductCard({ product }) {
           <button
             type="button"
             onClick={handleAddToCart}
-            className="mt-2 sm:mt-3 w-full h-11 sm:h-12 inline-flex items-center justify-center gap-2 rounded-xl !bg-black !text-white font-semibold text-sm shadow-md hover:bg-gray-900 active:scale-[0.98] transition"
+            className="mt-2 sm:mt-3 w-full h-11 sm:h-12 inline-flex items-center justify-center rounded-xl !bg-black !text-white font-semibold text-sm shadow-md hover:bg-gray-900 active:scale-[0.98] transition"
           >
-            <ShoppingCart className="h-4 w-4" />
-            В кошик
+            Додати в кошик
           </button>
         </div>
       </div>
