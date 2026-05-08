@@ -10,6 +10,7 @@ import { ShoppingCart, Loader2, ChevronLeft, ChevronRight, ShieldCheck, RotateCc
 
 import { trackViewItem } from "../utils/analytics";
 import { useScrollRestoration } from "../hooks/useScrollRestoration";
+import { sanityFmt } from "../utils/sanityImg";
 
 // Lazy: модалка покупки потрібна тільки після кліку
 const ModalBuy = lazy(() => import("./ModalBuy"));
@@ -461,9 +462,11 @@ export default function ProductPage() {
             <section className="lg:col-span-7">
               <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden bg-white shadow-2xl border border-gray-100">
                 <img
-                  src={currentSlide?.url}
+                  src={sanityFmt(currentSlide?.url, 1000)}
                   alt={product.title}
                   className="w-full aspect-[4/3] object-contain cursor-zoom-in"
+                  loading="eager"
+                  decoding="async"
                   onClick={openFull}
                   onPointerDown={(e) => (swipeStartX.current = e.clientX)}
                   onPointerUp={(e) => {
@@ -582,7 +585,7 @@ export default function ProductPage() {
                             <input type="checkbox" checked={selectedAddons.includes(addon.name)} onChange={() => toggleAddon(addon.name)} className="w-5 h-5 accent-blue-600 shrink-0 mt-1 sm:mt-0" />
                             {addon.imageUrl && (
                               <img
-                                src={addon.imageUrl}
+                                src={sanityFmt(addon.imageUrl, 112)}
                                 alt={addon.name}
                                 className="w-12 h-12 sm:w-14 sm:h-14 rounded-lg object-cover border border-gray-200 bg-white shrink-0"
                                 loading="lazy"
@@ -715,7 +718,7 @@ export default function ProductPage() {
                 onPointerUp={onFSPointerUp}
             >
                 <img
-                  src={imgs[fsIdx]}
+                  src={sanityFmt(imgs[fsIdx], 1600)}
                   alt="Full view"
                   className="absolute top-1/2 left-1/2 transition-transform duration-75"
                   style={{

@@ -6,6 +6,7 @@ import ImageWithPlaceholder from "./ImageWithPlaceholder";
 import { useCart } from "../context/CartContext";
 import { formatUAH } from "../utils/format";
 import { urlFor } from "../sanityClient";
+import { sanityFmt, sanitySrcSet } from "../utils/sanityImg";
 
 const ProductCard = memo(function ProductCard({ product }) {
   const navigate = useNavigate();
@@ -49,23 +50,13 @@ const ProductCard = memo(function ProductCard({ product }) {
   const productHref = `/product/${productSlug}`;
 
   // ─── Image Logic ─────────────────────────────────────────────────────────
-  // Якщо це Sanity-CDN URL — додаємо параметри ?w=&auto=format&fit=max
-  // для швидкої доставки потрібного розміру у webp/avif (Sanity обирає сам).
-  const withSanityParams = (url, w) => {
-    if (!url || typeof url !== "string") return url;
-    if (!url.includes("cdn.sanity.io")) return url;
-    const sep = url.includes("?") ? "&" : "?";
-    return `${url}${sep}w=${w}&auto=format&fit=max&q=75`;
-  };
-
+  // Sanity CDN сам конвертує в WebP/AVIF через auto=format у sanityFmt().
   const baseUrl =
     product.mainImageUrl ||
     (product.mainImage ? urlFor(product.mainImage).width(600).url() : product.image);
 
-  const imageUrl = withSanityParams(baseUrl, 600);
-  const imageSrcSet = baseUrl?.includes?.("cdn.sanity.io")
-    ? `${withSanityParams(baseUrl, 320)} 320w, ${withSanityParams(baseUrl, 480)} 480w, ${withSanityParams(baseUrl, 600)} 600w, ${withSanityParams(baseUrl, 800)} 800w`
-    : undefined;
+  const imageUrl = sanityFmt(baseUrl, 600, 75);
+  const imageSrcSet = sanitySrcSet(baseUrl, [320, 480, 600, 800], 75);
 
   // ─── Actions ─────────────────────────────────────────────────────────────
   const go = () => navigate(productHref);

@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { ShieldCheck, RotateCcw, CreditCard, Truck, X, ChevronLeft } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { formatUAH } from "../utils/format";
+import { sanityFmt } from "../utils/sanityImg";
 
 // Модалку оформлення тягнемо лише коли користувач натиснув "Купити"
 const ModalBuy = lazy(() => import("./ModalBuy"));
@@ -180,10 +181,11 @@ export default function Cart({ freeShippingFrom = 0 }) {
                 <div className="sm:self-start sm:mt-1">
                   <div className="w-full sm:w-24 md:w-28 aspect-square sm:aspect-square max-h-[200px] sm:max-h-none overflow-hidden rounded-xl bg-gray-50 relative shrink-0">
                     <img
-                      src={item.image || IMG_PLACEHOLDER}
+                      src={sanityFmt(item.image, 240) || IMG_PLACEHOLDER}
                       alt={item.title}
                       className="h-full w-full object-contain p-1"
                       loading="lazy"
+                      decoding="async"
                       onError={(e) => {
                         if (e.currentTarget.src !== IMG_PLACEHOLDER) {
                           e.currentTarget.src = IMG_PLACEHOLDER;
@@ -234,10 +236,11 @@ export default function Cart({ freeShippingFrom = 0 }) {
                           >
                             {addon.imageUrl && (
                               <img
-                                src={addon.imageUrl}
+                                src={sanityFmt(addon.imageUrl, 40)}
                                 alt={addon.name}
                                 className="w-5 h-5 rounded-full object-cover border border-white shrink-0"
                                 loading="lazy"
+                                decoding="async"
                               />
                             )}
                             <span className="pl-0.5">+ {addon.name}</span>

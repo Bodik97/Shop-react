@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, Star, Quote } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { client, urlFor } from "../sanityClient";
+import { sanityFmt } from "../utils/sanityImg";
 
 const fetchReviews = async () => {
   const query = `*[_type == "review" && published == true]
@@ -92,7 +93,7 @@ export default function ReviewsSlider() {
               {/* Зображення */}
               <div className="w-full lg:w-[55%] h-[350px] sm:h-[450px] relative overflow-hidden">
                 <img
-                  src={current.imageUrl}
+                  src={sanityFmt(current.imageUrl, 900)}
                   alt={current.name}
                   className="w-full h-full object-cover"
                   loading="lazy"

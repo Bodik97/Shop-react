@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState, useId } from "react";
 import { useNavigate } from "react-router-dom";
 import { trackBeginCheckout, trackPurchase } from "../utils/analytics";
 import { formatPhoneUA, isValidPhoneUA, phoneToE164UA } from "../utils/format";
+import { sanityFmt } from "../utils/sanityImg";
 
 const API_URL = "/api/order";
 
@@ -351,10 +352,11 @@ export default function ModalBuy({
             {!isCart && product && (
               <div className="flex items-start gap-3">
                 <img
-                  src={product.image || product.mainImageUrl}
+                  src={sanityFmt(product.image || product.mainImageUrl, 160)}
                   alt={product.title}
                   className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl object-contain bg-gray-50 p-1 border shrink-0"
                   loading="lazy"
+                  decoding="async"
                 />
                 <div className="flex-1 min-w-0 space-y-1">
                   <div className="font-semibold text-gray-900 text-sm sm:text-base line-clamp-2">
@@ -395,10 +397,11 @@ export default function ModalBuy({
                         <div className="flex items-center gap-1.5 min-w-0">
                           {a.imageUrl && (
                             <img
-                              src={a.imageUrl}
+                              src={sanityFmt(a.imageUrl, 48)}
                               alt={a.name}
                               className="w-6 h-6 rounded object-cover border border-gray-200 bg-white shrink-0"
                               loading="lazy"
+                              decoding="async"
                             />
                           )}
                           <span className="text-blue-600 truncate">+ {a.name}</span>
@@ -455,10 +458,11 @@ export default function ModalBuy({
                     return (
                       <div key={i.cartItemId || i.id} className="flex gap-3">
                         <img
-                          src={i.image}
+                          src={sanityFmt(i.image, 96)}
                           alt={i.title}
                           className="w-12 h-12 rounded-lg object-contain bg-gray-50 p-0.5 border shrink-0"
                           loading="lazy"
+                          decoding="async"
                         />
                         <div className="flex-1 min-w-0 space-y-0.5">
                           <div className="flex justify-between gap-3 text-sm">
@@ -486,10 +490,11 @@ export default function ModalBuy({
                               <div className="flex items-center gap-1.5 min-w-0">
                                 {a.imageUrl && (
                                   <img
-                                    src={a.imageUrl}
+                                    src={sanityFmt(a.imageUrl, 40)}
                                     alt={a.name}
                                     className="w-5 h-5 rounded object-cover border border-gray-200 bg-white shrink-0"
                                     loading="lazy"
+                                    decoding="async"
                                   />
                                 )}
                                 <span className="text-xs text-blue-600 truncate">+ {a.name}</span>
