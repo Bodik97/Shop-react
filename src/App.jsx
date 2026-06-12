@@ -52,6 +52,7 @@ const HistoryOrders    = lazy(() => import("./components/HistoryOrders"));
 const ThankYou         = lazy(() => import("./components/ThankYou"));
 const PrivacyPolicy    = lazy(() => import("./components/PrivacyPolicy"));
 const TermsOfService   = lazy(() => import("./components/TermsOfService"));
+const NotFound         = lazy(() => import("./components/NotFound"));
 
 const RouteFallback = () => (
   <div className="flex items-center justify-center min-h-[50vh]">
@@ -166,6 +167,10 @@ function AppContent() {
           <Route path="/terms-of-service" element={<TermsOfService />} />
           <Route path="/history-orders"   element={<HistoryOrders />} />
           <Route path="/reviews"         element={<ReviewsSlider />} />
+
+          {/* Catch-all 404: без нього невідомі URL віддають порожню сторінку
+              зі статусом 200 — Google рахує це як Soft 404 */}
+          <Route path="*"                 element={<NotFound />} />
         </Routes>
       </Suspense>
 

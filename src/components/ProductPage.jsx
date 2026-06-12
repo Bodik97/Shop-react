@@ -374,6 +374,12 @@ export default function ProductPage() {
     <main className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8 pb-28 lg:pb-8 overflow-x-hidden">
       {!product ? (
         <div className="text-center py-20">
+          {/* noindex: видалені товари віддають 200 без справжнього 404,
+              Google рахує їх Soft 404 — кажемо явно не індексувати */}
+          <Helmet>
+            <title>Товар не знайдено | AirSoft-UA</title>
+            <meta name="robots" content="noindex" />
+          </Helmet>
           <p className="text-white text-xl">Товар не знайдено.</p>
           <button onClick={() => navigate("/")} className="mt-4 px-6 py-2 bg-blue-600 rounded-lg text-white">На головну</button>
         </div>
