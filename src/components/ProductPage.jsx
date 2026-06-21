@@ -1,7 +1,7 @@
 // src/components/ProductPage.jsx
 import { lazy, Suspense, useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 // 1. Імпортуємо клієнт Sanity
 import { client } from "../sanityClient";
 import { useCart } from "../context/CartContext";
@@ -11,6 +11,7 @@ import { Loader2, ChevronLeft, ChevronRight, ShieldCheck, RotateCcw, CreditCard,
 import { trackViewItem } from "../utils/analytics";
 import { useScrollRestoration } from "../hooks/useScrollRestoration";
 import { sanityFmt } from "../utils/sanityImg";
+import ProductCard from "./ProductCard";
 
 // Lazy: модалка покупки потрібна тільки після кліку
 const ModalBuy = lazy(() => import("./ModalBuy"));
@@ -72,6 +73,7 @@ export default function ProductPage() {
   const [loading, setLoading] = useState(true);
   const [buyProduct, setBuyProduct] = useState(null);
   const [detailsOpen, setDetailsOpen] = useState(false); // міні-кошик у sticky-панелі
+  const [related, setRelated] = useState([]); // схожі товари (та сама категорія)
 
   // --- Завантаження даних ---
   // :id у URL може бути або slug.current, або _id (зворотна сумісність зі старими URL у Google).
@@ -112,6 +114,24 @@ export default function ProductPage() {
     if (product?.id) trackViewItem(product);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [product?.id]);
+
+  // Схожі товари — та сама категорія, без поточного (внутрішня перелінковка для SEO)
+  useEffect(() => {
+    if (!product?.category || !product?.id) { setRelated([]); return; }
+    let alive = true;
+    client
+      .fetch(
+        `*[_type == "product" && category == $category && _id != $excludeId]
+          | order(popularityScore desc)[0...8] {
+            _id, "id": _id, "slug": slug.current, title, price, oldPrice,
+            category, popular, giftText, stock, "mainImageUrl": mainImage.asset->url
+          }`,
+        { category: product.category, excludeId: product.id }
+      )
+      .then((r) => { if (alive) setRelated(Array.isArray(r) ? r : []); })
+      .catch(() => { if (alive) setRelated([]); });
+    return () => { alive = false; };
+  }, [product?.category, product?.id]);
 
   const isPopular = !!product?.popular;
 
@@ -640,6 +660,17 @@ export default function ProductPage() {
             </aside>
           </div>
 
+          {/* Схожі товари — внутрішня перелінковка + час на сайті */}
+          {related.length > 0 && (
+            <section className="mt-10 sm:mt-14">
+              <h2 className="font-display text-xl sm:text-2xl font-bold text-ink mb-4 sm:mb-6">Схожі товари</h2>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-6">
+                {related.slice(0, 4).map((p) => (
+                  <ProductCard key={p._id} product={p} />
+                ))}
+              </div>
+            </section>
+          )}
         </>
       )}
 

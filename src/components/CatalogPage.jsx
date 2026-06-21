@@ -1,8 +1,10 @@
 import { useMemo, useRef, useState, useEffect } from "react";
 import { useParams, Link, useSearchParams } from "react-router-dom";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { useQuery } from "@tanstack/react-query";
 import ProductCard from "./ProductCard";
+import Faq from "./Faq";
+import { CATEGORY_SEO } from "../data/categorySeo";
 import { ArrowUpDown, ChevronDown, ChevronUp, SlidersHorizontal, Loader2 } from "lucide-react";
 import { client } from "../sanityClient";
 import { useScrollRestoration } from "../hooks/useScrollRestoration";
@@ -74,6 +76,29 @@ export default function CatalogPage() {
   const pageTitle = isAll ? "Каталог товарів" : (cat?.name ?? id);
   const categoryDescription = isAll ? "Повний асортимент товарів для стрільби." : cat?.description;
 
+  // SEO-контент категорії + структуровані дані
+  const catSeo = isAll ? null : CATEGORY_SEO[id];
+  const breadcrumbJson = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Головна", item: `${SITE_URL}/` },
+      { "@type": "ListItem", position: 2, name: "Каталог", item: `${SITE_URL}/catalog` },
+      ...(isAll ? [] : [{ "@type": "ListItem", position: 3, name: pageTitle, item: `${SITE_URL}/category/${id}` }]),
+    ],
+  });
+  const faqJson = catSeo?.faq?.length
+    ? JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: catSeo.faq.map((f) => ({
+          "@type": "Question",
+          name: f.q,
+          acceptedAnswer: { "@type": "Answer", text: f.a },
+        })),
+      })
+    : null;
+
   const base = useMemo(
     () => (isAll ? sanityProducts : sanityProducts.filter((p) => p.category === id)),
     [isAll, id, sanityProducts]
@@ -119,8 +144,12 @@ export default function CatalogPage() {
   return (
     <main>
       <Helmet>
-        <title>{pageTitle} | AirSoft-UA</title>
+        <title>{`${pageTitle} | AirSoft-UA`}</title>
         <meta name="description" content={categoryDescription?.slice(0, 160)} />
+        <link rel="canonical" href={`https://airsoft-ua.com${isAll ? "/catalog" : `/category/${id}`}`} />
+        {qParam.trim() && <meta name="robots" content="noindex,follow" />}
+        <script type="application/ld+json">{breadcrumbJson}</script>
+        {faqJson && <script type="application/ld+json">{faqJson}</script>}
       </Helmet>
 
       <nav className="text-[13px] text-ink-soft mb-4">
@@ -179,6 +208,28 @@ export default function CatalogPage() {
         <div className="py-20 text-center rounded-2xl border border-line bg-surface">
           <p className="text-ink-soft font-semibold">Нічого не знайдено</p>
         </div>
+      )}
+
+      {/* SEO-контент категорії: унікальний текст + FAQ (лише на сторінці категорії, не в пошуку) */}
+      {catSeo && !qParam.trim() && (
+        <section className="mt-12 sm:mt-16 max-w-4xl">
+          <div className="space-y-4 text-ink-soft text-sm sm:text-base leading-relaxed">
+            {catSeo.body.map((p, i) => (
+              <p key={i}>{p}</p>
+            ))}
+          </div>
+
+          {catSeo.faq?.length > 0 && (
+            <div className="mt-10">
+              <h2 className="text-xl sm:text-2xl font-bold text-ink mb-4">Часті запитання</h2>
+              <div className="rounded-2xl border border-line bg-white p-4 sm:p-6 divide-y divide-line">
+                {catSeo.faq.map((f, i) => (
+                  <Faq key={i} q={f.q} a={f.a} />
+                ))}
+              </div>
+            </div>
+          )}
+        </section>
       )}
     </main>
   );

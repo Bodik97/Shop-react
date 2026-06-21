@@ -1,7 +1,7 @@
 // src/App.jsx
 import { useEffect, useState, lazy, Suspense } from "react";
 import { Routes, Route, useLocation, Link } from "react-router-dom";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { Loader2, ArrowRight, BadgeCheck, ShieldCheck, Truck, RotateCcw, ScanSearch } from "lucide-react";
 import { 
   QueryClient, 
@@ -122,7 +122,28 @@ function AppContent() {
             "@type": "WebSite",
             "name": "AirSoft-UA",
             "url": "https://airsoft-ua.com/",
-            "description": "Магазин пневматичних товарів для спорту та дозвілля."
+            "description": "Магазин пневматичних товарів для спорту та дозвілля.",
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": "https://airsoft-ua.com/catalog?q={search_term_string}",
+              "query-input": "required name=search_term_string"
+            }
+          }
+        `}</script>
+        <script type="application/ld+json">{`
+          {
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "AirSoft-UA",
+            "url": "https://airsoft-ua.com/",
+            "logo": "https://airsoft-ua.com/img/Logo.svg",
+            "contactPoint": {
+              "@type": "ContactPoint",
+              "email": "support@airsoft.shop",
+              "contactType": "customer support",
+              "areaServed": "UA",
+              "availableLanguage": "uk"
+            }
           }
         `}</script>
       </Helmet>

@@ -3,7 +3,7 @@
 // тому ставимо <meta name="robots" content="noindex"> — Google бачить його після
 // рендеру JS і прибирає сторінку з індексу замість помилки Soft 404.
 import { Link } from "react-router-dom";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 
 export default function NotFound() {
   return (
