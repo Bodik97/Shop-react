@@ -14,8 +14,6 @@ import { createClient } from "@sanity/client";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DIST = join(__dirname, "..", "dist");
-const PORT = 4180;
-const ORIGIN = `http://localhost:${PORT}`;
 
 const sanity = createClient({
   projectId: "xzcx3aim",
@@ -64,7 +62,10 @@ async function startServer() {
       res.end("error");
     }
   });
-  return new Promise((resolve) => server.listen(PORT, () => resolve(server)));
+  return new Promise((resolve, reject) => {
+    server.once("error", reject);
+    server.listen(0, () => resolve(server)); // 0 → ОС обирає вільний порт
+  });
 }
 
 // Лишаємо лише перший <title> (react-helmet-async інколи лишає дубль).
@@ -80,6 +81,27 @@ async function savePrerendered(route, html) {
   const outDir = route === "/" ? DIST : join(DIST, route);
   await mkdir(outDir, { recursive: true });
   await writeFile(join(outDir, "index.html"), dedupeTitle(html), "utf8");
+}
+
+// Запуск браузера: на Vercel/CI — Chromium під це середовище (@sparticuz),
+// локально — повний puppeteer із власним Chromium.
+async function launchBrowser() {
+  const WEB = ["--disable-web-security", "--disable-features=IsolateOrigins,site-per-process"];
+  if (process.env.VERCEL || process.env.CI) {
+    const chromium = (await import("@sparticuz/chromium")).default;
+    const puppeteerCore = (await import("puppeteer-core")).default;
+    return puppeteerCore.launch({
+      args: [...chromium.args, ...WEB],
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath(),
+      headless: true,
+    });
+  }
+  const puppeteer = (await import("puppeteer")).default;
+  return puppeteer.launch({
+    headless: true,
+    args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage", ...WEB],
+  });
 }
 
 async function main() {
@@ -99,34 +121,17 @@ async function main() {
 
   const routes = [...STATIC_ROUTES, ...CATEGORY_ROUTES, ...productRoutes];
 
-  // 2) Запускаємо puppeteer (м'яко — без падіння деплою)
-  let puppeteer;
-  try {
-    puppeteer = (await import("puppeteer")).default;
-  } catch (e) {
-    console.warn("[prerender] puppeteer недоступний, пропускаю пререндер:", e?.message);
-    return;
-  }
-
+  // 2) Запускаємо браузер (м'яко — без падіння деплою)
   let browser;
   try {
-    browser = await puppeteer.launch({
-      headless: true,
-      args: [
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--disable-dev-shm-usage",
-        // Обходимо CORS для запитів до Sanity з localhost (безпечно в build-середовищі)
-        "--disable-web-security",
-        "--disable-features=IsolateOrigins,site-per-process",
-      ],
-    });
+    browser = await launchBrowser();
   } catch (e) {
     console.warn("[prerender] браузер не стартував, пропускаю пререндер (сайт лишається CSR):", e?.message);
     return;
   }
 
   const server = await startServer();
+  const origin = `http://localhost:${server.address().port}`;
   let ok = 0, fail = 0;
 
   // Домени трекерів/реклами блокуємо під час знімка: вони тримають з'єднання
@@ -139,7 +144,7 @@ async function main() {
       await page.setRequestInterception(true);
       page.on("request", (req) => (BLOCK.test(req.url()) ? req.abort() : req.continue()));
       await page.setUserAgent("Mozilla/5.0 (compatible; PrerenderBot/1.0)");
-      await page.goto(`${ORIGIN}${route}`, { waitUntil: "networkidle0", timeout: 30000 });
+      await page.goto(`${origin}${route}`, { waitUntil: "networkidle0", timeout: 30000 });
       // Чекаємо, поки зникне лоадер і змонтується контент (дані з Sanity дорендерились)
       await page
         .waitForFunction(

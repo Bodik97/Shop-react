@@ -91,20 +91,7 @@
     </noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
-
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "WebSite",
-        "name": "AirSoft-UA",
-        "url": "https://airsoft-ua.com/",
-        "description": "Магазин пневматичних товарів для спорту та дозвілля.",
-        "potentialAction": {
-          "@type": "SearchAction",
-          "target": "https://airsoft-ua.com/search?q={query}",
-          "query-input": "required name=query"
-        }
-      }
-    </script>
+    <!-- WebSite/Organization schema додає react-helmet-async (App.jsx) per-route,
+         щоб уникнути дубля статичної розмітки. -->
   </body>
 </html>
