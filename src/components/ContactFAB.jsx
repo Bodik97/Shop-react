@@ -89,7 +89,7 @@ export default function ContactFAB() {
       >
         {open ? <X className="h-6 w-6" /> : <MessageCircle className="h-6 w-6" />}
         {!open && (
-          <span className="absolute inset-0 rounded-full bg-orange-500 opacity-60 animate-ping" />
+          <span className="absolute inset-0 rounded-full bg-orange-500 animate-fab-pulse" />
         )}
       </button>
     </div>

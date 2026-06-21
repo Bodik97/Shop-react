@@ -148,7 +148,7 @@ const type = (safeStr(b.type || b.form || "", 40) || "").toLowerCase();
 
   const lines = [];
   if (isConsult) {
-    lines.push(`<b>🆕 Замовлення</b> | ${created.toLocaleString("uk-UA")}`);
+    lines.push(`<b>🆕 Консультація</b> | ${created.toLocaleString("uk-UA")}`);
     lines.push("────────────");
   }
   lines.push(`ID: <code>${esc(reqId)}</code>`);

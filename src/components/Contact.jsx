@@ -1,4 +1,5 @@
 // src/components/Contact.jsx
+import { useState } from "react";
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
 import {
@@ -9,12 +10,15 @@ import {
   ShieldCheck,
   Send,
   MessageSquare,
+  Phone,
 } from "lucide-react";
+import ConsultModal from "./ConsultModal";
 
 export default function Contact() {
   const EMAIL = "support@airsoft.shop";
   const HOURS = "Пн–Пт 10:00–19:00, Сб 11:00–16:00";
   const ADDRESS_LINES = ["Україна, Харківська область, м. Харків"];
+  const [consultOpen, setConsultOpen] = useState(false);
 
 
   return (
@@ -41,6 +45,15 @@ export default function Contact() {
             Консультанти AirSoft на зв’язку щодня — допомагаємо підібрати спорядження, перевіряємо на складі й швидко
             оформлюємо доставку.
           </p>
+
+          <button
+            type="button"
+            onClick={() => setConsultOpen(true)}
+            className="mt-6 inline-flex items-center justify-center gap-2 h-12 px-6 rounded-lg bg-accent text-white font-display font-semibold hover:brightness-95 active:scale-95 transition shadow-sm"
+          >
+            <Phone className="h-5 w-5" />
+            Замовити консультацію
+          </button>
         </div>
       </section>
 
@@ -104,6 +117,8 @@ export default function Contact() {
           </div>
         </div>
       </motion.section>
+
+      <ConsultModal open={consultOpen} onClose={() => setConsultOpen(false)} />
     </main>
   );
 };
