@@ -1,8 +1,8 @@
 // src/App.jsx
 import { useEffect, lazy, Suspense } from "react";
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import { Loader2 } from "lucide-react";
+import { Loader2, ArrowRight, BadgeCheck, ShieldCheck, Truck, RotateCcw, ScanSearch } from "lucide-react";
 import { 
   QueryClient, 
   QueryClientProvider, 
@@ -37,7 +37,7 @@ function PageViewTracker() {
 // Eager компоненти
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-import CategoryNav from "./components/CategoryNav";
+import Layout from "./components/Layout";
 import PopularSlider from "./components/PopularSlider";
 import ContactFAB from "./components/ContactFAB";
 import ReviewsSlider from "./components/ReviewsSlider";
@@ -122,31 +122,69 @@ function AppContent() {
         `}</script>
       </Helmet>
 
+      <Layout>
       <Suspense fallback={<RouteFallback />}>
         <Routes>
           <Route
             path="/"
             element={
-              <main className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
+              <main>
                 <Helmet>
                   <title>AirSoft-UA — Пневматичні гвинтівки та пістолети | Купити в Україні</title>
                   <meta name="description" content="Магазин пневматичних товарів в Україні: гвинтівки, пістолети, PCP, револьвери флобера." />
                   <link rel="canonical" href="https://airsoft-ua.com/" />
                 </Helmet>
-                
-                <h1 className="relative text-center text-3xl sm:text-4xl md:text-6xl font-stencil uppercase tracking-[0.15em] text-white mb-6 sm:mb-10 drop-shadow-[0_0_6px_rgba(255,255,255,0.7)]">
-                  AIRSOFT-UA
-                </h1>
 
-                <CategoryNav />
-                
-                <section className="mt-8">
+                {/* HERO — ціннісна пропозиція + заклики */}
+                <section className="relative overflow-hidden rounded-2xl border border-line bg-gradient-to-br from-stone-50 via-surface to-stone-200 px-6 sm:px-10 py-10 sm:py-14">
+                  <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-ink max-w-2xl leading-tight">
+                    Професійна пневматика та зброя <span className="text-accent">з гарантією</span>
+                  </h1>
+                  <p className="mt-4 text-base sm:text-lg text-ink-soft max-w-xl">
+                    Офіційний продавець. Перевіряємо кожен товар перед відправленням і відправляємо по всій Україні. Оплата при отриманні.
+                  </p>
+                  <div className="mt-6 flex flex-wrap gap-3">
+                    <Link to="/catalog" className="inline-flex items-center gap-2 rounded-lg bg-accent px-6 py-3.5 font-display font-semibold text-white hover:brightness-95 active:scale-95 transition">
+                      Перейти в каталог <ArrowRight className="w-5 h-5" />
+                    </Link>
+                    <Link to="/contact" className="inline-flex items-center rounded-lg border-2 border-ink px-6 py-3.5 font-display font-semibold text-ink hover:bg-ink hover:text-white transition">
+                      Консультація
+                    </Link>
+                  </div>
+                  <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm font-semibold text-ink">
+                    <span className="flex items-center gap-1.5"><BadgeCheck className="w-4 h-4 text-trust" />10 років на ринку</span>
+                    <span className="flex items-center gap-1.5"><BadgeCheck className="w-4 h-4 text-trust" />15 000+ клієнтів</span>
+                    <span className="flex items-center gap-1.5"><BadgeCheck className="w-4 h-4 text-trust" />Гарантія якості</span>
+                  </div>
+                </section>
+
+                {/* ТРАС-БАР — сигнали довіри підняті нагору */}
+                <div className="mt-5 grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                  {[
+                    { Icon: ShieldCheck, title: "Оплата при отриманні", sub: "Платіть, коли отримали" },
+                    { Icon: Truck, title: "Доставка по Україні", sub: "Нова Пошта 1–3 дні" },
+                    { Icon: ScanSearch, title: "Перевірка перед відправкою", sub: "Тестуємо кожен товар" },
+                    { Icon: RotateCcw, title: "14 днів на повернення", sub: "Без зайвих питань" },
+                  ].map(({ Icon, title, sub }) => (
+                    <div key={title} className="flex items-center gap-3 rounded-xl border border-line bg-white p-4">
+                      <span className="grid place-items-center w-10 h-10 rounded-lg bg-green-100 shrink-0">
+                        <Icon className="w-5 h-5 text-trust" />
+                      </span>
+                      <div>
+                        <div className="font-display font-semibold text-[14px] text-ink leading-tight">{title}</div>
+                        <div className="text-[13px] text-ink-soft">{sub}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <section className="mt-10">
                   {isLoading ? (
-                    <div className="flex justify-center py-10"><Loader2 className="animate-spin text-orange-500" /></div>
+                    <div className="flex justify-center py-10"><Loader2 className="animate-spin text-accent" /></div>
                   ) : products.length ? (
                     <PopularSlider products={products.slice(0, 16)} title="Популярні товари" />
                   ) : (
-                    <div className="rounded-2xl border border-white/10 bg-white/5 p-8 text-center text-white/30">
+                    <div className="rounded-2xl border border-line bg-surface p-8 text-center text-ink-soft">
                       Каталог оновлюється...
                     </div>
                   )}
@@ -173,6 +211,7 @@ function AppContent() {
           <Route path="*"                 element={<NotFound />} />
         </Routes>
       </Suspense>
+      </Layout>
 
       <Footer />
       <ContactFAB />

@@ -44,7 +44,7 @@ const Badge = ({ children, variant = "blue", className = "" }) => {
     variant === "green"
       ? "bg-green-50 text-green-700"
       : variant === "popular"
-      ? "bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 text-white shadow-sm"
+      ? "bg-accent text-white shadow-sm"
       : "bg-blue-50 text-blue-700";
   return (
     <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold ${styles} ${className}`}>
@@ -348,8 +348,8 @@ export default function ProductPage() {
   }, [product]);
 
   if (loading) return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900">
-      <Loader2 className="w-12 h-12 animate-spin text-blue-500" />
+    <div className="min-h-[60vh] flex items-center justify-center">
+      <Loader2 className="w-12 h-12 animate-spin text-accent" />
     </div>
   );
 
@@ -371,7 +371,7 @@ export default function ProductPage() {
   };
 
   return (
-    <main className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8 pb-28 lg:pb-8 overflow-x-hidden">
+    <main className="pb-28 lg:pb-8 overflow-x-hidden">
       {!product ? (
         <div className="text-center py-20">
           {/* noindex: видалені товари віддають 200 без справжнього 404,
@@ -380,8 +380,8 @@ export default function ProductPage() {
             <title>Товар не знайдено | AirSoft-UA</title>
             <meta name="robots" content="noindex" />
           </Helmet>
-          <p className="text-white text-xl">Товар не знайдено.</p>
-          <button onClick={() => navigate("/")} className="mt-4 px-6 py-2 bg-blue-600 rounded-lg text-white">На головну</button>
+          <p className="text-ink text-xl">Товар не знайдено.</p>
+          <button onClick={() => navigate("/")} className="mt-4 px-6 py-2 bg-accent rounded-lg text-white">На головну</button>
         </div>
       ) : (
         <>
@@ -421,12 +421,12 @@ export default function ProductPage() {
             </div>
           )}
 
-          <nav className="text-xs sm:text-sm text-gray-400 mb-4">
-            <Link to="/" className="hover:underline">Головна</Link>
-            <span className="mx-1">/</span>
-            <Link to={`/category/${product.category}`} className="hover:underline capitalize">{product.category}</Link>
-            <span className="mx-1">/</span>
-            <span className="text-gray-200 line-clamp-1">{product.title}</span>
+          <nav className="text-xs sm:text-sm text-ink-soft mb-4">
+            <Link to="/" className="hover:text-accent transition-colors">Головна</Link>
+            <span className="mx-1 text-line">/</span>
+            <Link to={`/category/${product.category}`} className="hover:text-accent transition-colors">{CATEGORY_NAMES[product.category] || product.category}</Link>
+            <span className="mx-1 text-line">/</span>
+            <span className="text-ink line-clamp-1">{product.title}</span>
           </nav>
 
           <div className="header-flex mb-4 sm:mb-6 flex flex-col gap-3 sm:gap-4">
@@ -441,19 +441,19 @@ export default function ProductPage() {
             </button>
             <h1
               lang="uk"
-              className="font-extrabold text-white leading-tight text-pretty hyphens-auto [overflow-wrap:anywhere] text-[clamp(1.25rem,5vw,2.5rem)] max-w-full"
+              className="font-display font-bold text-ink leading-tight text-pretty hyphens-auto [overflow-wrap:anywhere] text-[clamp(1.25rem,5vw,2.5rem)] max-w-full"
             >
               {product.title}
             </h1>
 
             {/* Соцдоказ біля заголовка: зірки + бейдж популярності */}
-            <div className="flex items-center gap-2 sm:gap-3 flex-wrap text-sm text-white/85">
+            <div className="flex items-center gap-2 sm:gap-3 flex-wrap text-sm text-ink-soft">
               <span className="inline-flex items-center gap-0.5 text-amber-400" aria-label="Рейтинг 5 з 5">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <Star key={i} className="h-4 w-4 fill-amber-400 stroke-amber-400" aria-hidden="true" />
                 ))}
               </span>
-              <span className="text-white/60">за відгуками покупців</span>
+              <span className="text-ink-soft">за відгуками покупців</span>
               {isPopular && (
                 <span className="inline-flex items-center gap-1 rounded-full bg-orange-500/15 text-orange-300 ring-1 ring-orange-500/40 px-2 py-0.5 text-xs font-semibold">
                   <Zap className="h-3.5 w-3.5" aria-hidden="true" />
@@ -541,7 +541,7 @@ export default function ProductPage() {
                 </div>
 
                 <div className="space-y-1 mb-4">
-                  <div className="text-2xl sm:text-3xl md:text-4xl font-black text-red-600 tabular-nums">
+                  <div className="text-2xl sm:text-3xl md:text-4xl font-black text-ink tabular-nums">
                     {formatUAH(finalPrice)}
                   </div>
                   {product.oldPrice && (
@@ -586,9 +586,9 @@ export default function ProductPage() {
                   <div className="space-y-3 mb-6">
                     <p className="font-bold text-gray-900">Додати до комплекту:</p>
                     {addons.map((addon) => (
-                      <label key={addon.name} className={`flex items-start sm:items-center justify-between gap-3 sm:gap-4 p-2 sm:p-2.5 rounded-xl border-2 transition cursor-pointer ${selectedAddons.includes(addon.name) ? "border-blue-600 bg-blue-50" : "border-gray-100 bg-gray-50 hover:border-gray-200"}`}>
+                      <label key={addon.name} className={`flex items-start sm:items-center justify-between gap-3 sm:gap-4 p-2 sm:p-2.5 rounded-xl border-2 transition cursor-pointer ${selectedAddons.includes(addon.name) ? "border-accent bg-orange-50" : "border-line bg-surface hover:border-ink-soft"}`}>
                         <div className="flex items-start sm:items-center gap-2 sm:gap-3 min-w-0 flex-1">
-                            <input type="checkbox" checked={selectedAddons.includes(addon.name)} onChange={() => toggleAddon(addon.name)} className="w-5 h-5 accent-blue-600 shrink-0 mt-1 sm:mt-0" />
+                            <input type="checkbox" checked={selectedAddons.includes(addon.name)} onChange={() => toggleAddon(addon.name)} className="w-5 h-5 accent-orange-600 shrink-0 mt-1 sm:mt-0" />
                             {addon.imageUrl && (
                               <img
                                 src={sanityFmt(addon.imageUrl, 112)}
@@ -611,12 +611,12 @@ export default function ProductPage() {
                 )}
 
                 <div className="grid grid-cols-1 gap-3">
-                  <button onClick={onBuyNow} className="h-12 sm:h-14 bg-orange-600 !text-white rounded-2xl font-bold text-base sm:text-lg hover:bg-orange-700 active:scale-[0.98] transition shadow-lg">
+                  <button onClick={onBuyNow} className="h-12 sm:h-14 bg-accent !text-white rounded-2xl font-bold text-base sm:text-lg hover:brightness-95 active:scale-[0.98] transition shadow-lg">
                     Купити зараз
                   </button>
                   <button
                     onClick={onAddToCart}
-                    className="h-12 sm:h-14 bg-black !text-white rounded-2xl font-bold text-base sm:text-lg hover:bg-gray-900 active:scale-[0.98] transition"
+                    className="h-12 sm:h-14 bg-ink !text-white rounded-2xl font-bold text-base sm:text-lg hover:brightness-110 active:scale-[0.98] transition"
                   >
                     Додати в кошик
                   </button>
@@ -672,7 +672,7 @@ export default function ProductPage() {
           <div className="border-t bg-white shadow-[0_-8px_24px_rgba(0,0,0,0.15)] pb-[max(env(safe-area-inset-bottom),8px)]">
             <div className="flex items-center gap-2 px-3 py-2">
               <div className="min-w-0 flex-1 leading-tight">
-                <div className="text-red-600 font-extrabold tabular-nums text-lg sm:text-xl">
+                <div className="text-ink font-extrabold tabular-nums text-lg sm:text-xl">
                   {formatUAH(finalPrice)}
                 </div>
                 {product.oldPrice && (
@@ -685,14 +685,14 @@ export default function ProductPage() {
                 type="button"
                 onClick={onAddToCart}
                 aria-label="Додати в кошик"
-                className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gray-900 !text-white hover:bg-black active:scale-95 transition shrink-0"
+                className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-ink !text-white hover:brightness-110 active:scale-95 transition shrink-0"
               >
                 <ShoppingCart size={20} />
               </button>
               <button
                 type="button"
                 onClick={onBuyNow}
-                className="inline-flex h-12 px-4 items-center justify-center rounded-xl bg-orange-600 !text-white font-bold text-sm hover:bg-orange-700 active:scale-95 transition shrink-0"
+                className="inline-flex h-12 px-4 items-center justify-center rounded-xl bg-accent !text-white font-bold text-sm hover:brightness-95 active:scale-95 transition shrink-0"
               >
                 Купити
               </button>

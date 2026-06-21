@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { useQuery } from "@tanstack/react-query";
 import ProductCard from "./ProductCard";
@@ -34,7 +34,9 @@ const fetchAllProducts = async () => {
 
 export default function CatalogPage() {
   const { id } = useParams();
-  const [q, setQ] = useState("");
+  const [searchParams] = useSearchParams();
+  const qParam = searchParams.get("q") || "";
+  const [q, setQ] = useState(qParam);
   const [sort, setSort] = useState("default");
   const [showSortMobile, setShowSortMobile] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -50,6 +52,11 @@ export default function CatalogPage() {
   useEffect(() => {
     setIsExpanded(false);
   }, [id]);
+
+  // Синхронізація пошуку з URL (?q=…) — коли переходять з пошуку в шапці
+  useEffect(() => {
+    setQ(qParam);
+  }, [qParam]);
 
   // Закриття мобільного сортування
   useEffect(() => {
@@ -103,34 +110,34 @@ export default function CatalogPage() {
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-        <Loader2 className="w-12 h-12 animate-spin text-orange-500" />
-        <p className="text-white/40 font-black uppercase text-[10px] tracking-widest">Завантаження...</p>
+        <Loader2 className="w-12 h-12 animate-spin text-accent" />
+        <p className="text-ink-soft font-black uppercase text-[10px] tracking-widest">Завантаження...</p>
       </div>
     );
   }
 
   return (
-    <main className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
+    <main>
       <Helmet>
         <title>{pageTitle} | AirSoft-UA</title>
         <meta name="description" content={categoryDescription?.slice(0, 160)} />
       </Helmet>
 
-      <nav className="text-[10px] text-white/40 mb-4 uppercase tracking-widest">
-        <Link to="/" className="hover:text-orange-500 transition-colors">Головна</Link>
-        <span className="mx-2">/</span>
-        <span className="text-white/80">{pageTitle}</span>
+      <nav className="text-[13px] text-ink-soft mb-4">
+        <Link to="/" className="hover:text-accent transition-colors">Головна</Link>
+        <span className="mx-2 text-line">/</span>
+        <span className="text-ink">{pageTitle}</span>
       </nav>
 
-      <div className="mb-8">
-        <h1 className="text-white font-black text-3xl sm:text-5xl uppercase italic mb-4 tracking-tighter">{pageTitle}</h1>
+      <div className="mb-6">
+        <h1 className="font-display font-bold text-ink text-3xl sm:text-4xl mb-2">{pageTitle}</h1>
         {categoryDescription && (
-          <div className="max-w-4xl border-l-2 border-orange-500 pl-4 py-1">
-            <div className={`text-white/50 text-sm sm:text-base leading-relaxed transition-all ${isExpanded ? "line-clamp-none" : "line-clamp-4"}`}>
+          <div className="max-w-4xl border-l-2 border-accent pl-4 py-1 mt-3">
+            <div className={`text-ink-soft text-sm sm:text-base leading-relaxed transition-all ${isExpanded ? "line-clamp-none" : "line-clamp-4"}`}>
               {categoryDescription}
             </div>
             {categoryDescription.length > 450 && (
-              <button onClick={() => setIsExpanded(!isExpanded)} className="text-orange-500 font-black text-[10px] uppercase mt-3 flex items-center gap-1 tracking-widest">
+              <button onClick={() => setIsExpanded(!isExpanded)} className="text-accent font-semibold text-[12px] uppercase mt-3 flex items-center gap-1 tracking-wide">
                 {isExpanded ? <>Згорнути <ChevronUp className="w-3 h-3"/></> : <>Показати все <ChevronDown className="w-3 h-3"/></>}
               </button>
             )}
@@ -139,19 +146,19 @@ export default function CatalogPage() {
       </div>
 
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
-        <div className="bg-white rounded-xl px-4 py-2.5 w-full sm:w-80 shadow-lg">
-          <input type="search" placeholder="Пошук моделі..." value={q} onChange={(e) => setQ(e.target.value)} className="w-full bg-transparent text-gray-900 font-bold outline-none text-sm" />
+        <div className="flex items-center gap-2 bg-surface border border-line rounded-xl px-4 py-2.5 w-full sm:w-80">
+          <input type="search" placeholder="Пошук моделі..." value={q} onChange={(e) => setQ(e.target.value)} className="w-full bg-transparent text-ink placeholder:text-ink-soft outline-none text-sm" />
         </div>
 
         <div ref={sortWrapRef} className="sm:hidden w-full relative z-40">
-           <button onClick={() => setShowSortMobile(!showSortMobile)} className="w-full h-12 bg-white rounded-xl flex items-center justify-between px-4 text-gray-900 font-black uppercase text-xs shadow-md">
-              <span className="flex items-center gap-2"><SlidersHorizontal className="w-4 h-4" /> {sortOptions.find(o => o.id === sort)?.label}</span>
+           <button onClick={() => setShowSortMobile(!showSortMobile)} className="w-full h-12 bg-white border border-line rounded-xl flex items-center justify-between px-4 text-ink font-semibold text-sm">
+              <span className="flex items-center gap-2"><SlidersHorizontal className="w-4 h-4 text-ink-soft" /> {sortOptions.find(o => o.id === sort)?.label}</span>
               <ChevronDown className={`w-4 h-4 transition-transform ${showSortMobile ? "rotate-180" : ""}`} />
            </button>
            {showSortMobile && (
-             <div className="absolute top-14 left-0 right-0 bg-white rounded-xl shadow-2xl p-2 z-50 border border-gray-100 animate-in fade-in slide-in-from-top-2">
+             <div className="absolute top-14 left-0 right-0 bg-white rounded-xl shadow-2xl p-2 z-50 border border-line animate-in fade-in slide-in-from-top-2">
                 {sortOptions.map(opt => (
-                  <button key={opt.id} onClick={() => { setSort(opt.id); setShowSortMobile(false); }} className={`w-full text-left p-3.5 rounded-lg text-sm font-bold transition-colors ${sort === opt.id ? "bg-orange-500 text-white" : "text-gray-900 hover:bg-gray-100"}`}>{opt.label}</button>
+                  <button key={opt.id} onClick={() => { setSort(opt.id); setShowSortMobile(false); }} className={`w-full text-left p-3.5 rounded-lg text-sm font-semibold transition-colors ${sort === opt.id ? "bg-accent text-white" : "text-ink hover:bg-surface"}`}>{opt.label}</button>
                 ))}
              </div>
            )}
@@ -159,7 +166,7 @@ export default function CatalogPage() {
 
         <div className="hidden sm:flex items-center gap-2">
           {sortOptions.map(opt => (
-            <button key={opt.id} onClick={() => setSort(opt.id)} className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${sort === opt.id ? "bg-orange-500 text-white shadow-lg shadow-orange-500/30" : "bg-white/5 text-white/50 border border-white/10 hover:bg-white/10"}`}>{opt.label}</button>
+            <button key={opt.id} onClick={() => setSort(opt.id)} className={`px-4 py-2 rounded-full text-[13px] font-semibold transition-all ${sort === opt.id ? "bg-accent text-white" : "bg-white text-ink-soft border border-line hover:bg-surface"}`}>{opt.label}</button>
           ))}
         </div>
       </div>
@@ -169,8 +176,8 @@ export default function CatalogPage() {
       </div>
 
       {items.length === 0 && (
-        <div className="py-20 text-center rounded-3xl border border-white/5 bg-white/5">
-          <p className="text-white/30 font-bold uppercase tracking-widest">Нічого не знайдено</p>
+        <div className="py-20 text-center rounded-2xl border border-line bg-surface">
+          <p className="text-ink-soft font-semibold">Нічого не знайдено</p>
         </div>
       )}
     </main>

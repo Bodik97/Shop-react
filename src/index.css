@@ -3,6 +3,24 @@
 @import "tailwindcss";
 
 /* ═══════════════════════════════════════════════════
+   ДИЗАЙН-ТОКЕНИ — "Clean Pro Retail" (світла тема довіри)
+   Генерують утиліти Tailwind: bg-accent, text-ink, border-line, text-trust...
+   Джерело правди: design-system/airsoft-ua/MASTER.md
+   ═══════════════════════════════════════════════════ */
+@theme {
+  --color-ink: #1C1917;        /* основний текст / темні поверхні */
+  --color-ink-soft: #57534E;   /* вторинний текст */
+  --color-surface: #F5F5F4;    /* світла поверхня / секції */
+  --color-line: #E7E5E4;       /* бордери, роздільники */
+  --color-accent: #EA580C;     /* головний CTA (помаранчевий) */
+  --color-accent-ink: #FFFFFF; /* текст на CTA */
+  --color-trust: #15803D;      /* сигнали довіри, "в наявності" */
+
+  --font-sans: "Source Sans 3", system-ui, -apple-system, sans-serif;
+  --font-display: "Lexend", system-ui, sans-serif;
+}
+
+/* ═══════════════════════════════════════════════════
    БАЗОВІ СТИЛІ — всередині @layer base, щоб Tailwind
    utility-класи (bg-*, text-*) мали пріоритет над ними.
    ═══════════════════════════════════════════════════ */
@@ -29,8 +47,10 @@
     min-width: 320px;
     /* dvh замість vh — без стрибків при появі/зникненні адресного рядка */
     min-height: 100dvh;
-    background-color: #344b5b;
-    color: #1a202c;
+    /* Світла тема "Clean Pro Retail" (раніше було темне #344b5b) */
+    background-color: #ffffff;
+    color: #1C1917;
+    font-family: var(--font-sans);
   }
 
   /* Посилання — скидаємо підкреслення, колір успадковується */

@@ -5,6 +5,10 @@
 export const TELEGRAM_USERNAME = "your_telegram";   // без @, наприклад "airsoft_ua"
 export const VIBER_PHONE = "380960000000";          // номер для Viber, без + і пробілів
 
+// Телефон для шапки/футера. PHONE_DISPLAY — як показуємо, PHONE_HREF — для tel:
+export const PHONE_DISPLAY = "+38 (096) 000-00-00"; // ⚠️ заміни на свій
+export const PHONE_HREF = "+380960000000";          // ⚠️ заміни на свій (формат tel:)
+
 // Готові посилання — використовуй їх у компонентах
 export const links = {
   telegram: `https://t.me/${TELEGRAM_USERNAME}`,

@@ -1,7 +1,7 @@
 // src/components/ProductCard.jsx
 import { memo, useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Flame, Truck, Clock } from "lucide-react";
+import { Flame, Truck, Clock, Check } from "lucide-react";
 import ImageWithPlaceholder from "./ImageWithPlaceholder";
 import { useCart } from "../context/CartContext";
 import { formatUAH } from "../utils/format";
@@ -104,8 +104,7 @@ const ProductCard = memo(function ProductCard({ product }) {
           <span className="
             absolute top-2 left-2 z-10
             inline-flex items-center gap-1 rounded-full
-            bg-gradient-to-r from-orange-500 to-pink-500
-            text-white shadow-lg ring-1 ring-white/20
+            bg-accent text-white shadow-sm
             px-1.5 sm:px-2.5 py-0.5
             text-[10px] sm:text-xs font-semibold
           ">
@@ -135,11 +134,11 @@ const ProductCard = memo(function ProductCard({ product }) {
         {added && (
           <span className="absolute left-1/2 bottom-3 -translate-x-1/2 z-20
                       inline-flex items-center gap-1 whitespace-nowrap
-                      bg-emerald-600 text-white
+                      bg-trust text-white
                       text-[11px] sm:text-xs font-semibold
                       px-2.5 sm:px-3 py-1 sm:py-1.5
                       rounded-full shadow-lg animate-fadeInUp">
-            ✅ Додано
+            <Check className="h-3.5 w-3.5" /> Додано
           </span>
         )}
       </div>
@@ -149,7 +148,7 @@ const ProductCard = memo(function ProductCard({ product }) {
         <Link
           to={productHref}
           onClick={(e) => e.stopPropagation()}
-          className="text-sm sm:text-base font-semibold text-gray-900 leading-snug line-clamp-2 hover:text-blue-700"
+          className="text-sm sm:text-base font-semibold text-gray-900 leading-snug line-clamp-2 hover:text-accent"
         >
           {product.title}
         </Link>
@@ -177,7 +176,7 @@ const ProductCard = memo(function ProductCard({ product }) {
 
         <div className="mt-auto pt-1.5 sm:pt-2">
           <div className="flex items-baseline gap-1.5 sm:gap-2 flex-wrap">
-            <span className="text-xl sm:text-2xl font-extrabold text-red-600 tabular-nums">
+            <span className="text-xl sm:text-2xl font-extrabold text-ink tabular-nums">
               {formatUAH(product.price)}
             </span>
             {hasDiscount && (
@@ -190,7 +189,7 @@ const ProductCard = memo(function ProductCard({ product }) {
           <button
             type="button"
             onClick={handleAddToCart}
-            className="mt-2 sm:mt-3 w-full h-11 sm:h-12 inline-flex items-center justify-center rounded-xl !bg-black !text-white font-semibold text-sm shadow-md hover:bg-gray-900 active:scale-[0.98] transition"
+            className="mt-2 sm:mt-3 w-full h-11 sm:h-12 inline-flex items-center justify-center rounded-xl !bg-accent !text-white font-semibold text-sm shadow-md hover:brightness-95 active:scale-[0.98] transition"
           >
             Додати в кошик
           </button>
