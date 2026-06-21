@@ -18,13 +18,13 @@ export default function Contact() {
 
 
   return (
-    <main className="relative overflow-hidden bg-gradient-to-b from-gray-50 via-white to-slate-100">
+    <main className="relative overflow-hidden bg-white">
       {/* HERO */}
       <section className="relative isolate max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(80%_50%_at_50%_-10%,rgba(59,130,246,0.15)_0%,transparent_70%)]" />
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(80%_50%_at_50%_-10%,rgba(234,88,12,0.10)_0%,transparent_70%)]" />
         <div className="relative flex flex-col items-center text-center">
-          <span className="inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[12px] font-semibold text-gray-700 bg-white/80 backdrop-blur-sm shadow-sm">
-            <Headphones className="h-4 w-4" />
+          <span className="inline-flex items-center gap-2 rounded-full border border-line px-3 py-1 text-[12px] font-semibold text-ink bg-white shadow-sm">
+            <Headphones className="h-4 w-4 text-accent" />
             Центр підтримки клієнтів
           </span>
 
@@ -32,13 +32,12 @@ export default function Contact() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="mt-6 font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-900 via-blue-800 to-slate-900
-                       text-[clamp(26px,5vw,46px)] leading-[1.15]"
+            className="mt-6 font-display font-bold text-ink text-[clamp(26px,5vw,46px)] leading-[1.15]"
           >
             Ми поруч, коли вам потрібна допомога
           </motion.h1>
 
-          <p className="mt-3 max-w-2xl text-gray-600 text-sm sm:text-base leading-relaxed">
+          <p className="mt-3 max-w-2xl text-ink-soft text-sm sm:text-base leading-relaxed">
             Консультанти AirSoft на зв’язку щодня — допомагаємо підібрати спорядження, перевіряємо на складі й швидко
             оформлюємо доставку.
           </p>
@@ -53,12 +52,12 @@ export default function Contact() {
           value={<a className="hover:text-blue-600" href={`tel:${PHONE_TEL}`}>{PHONE_DISPLAY}</a>}
         /> */}
         <InfoCard
-          icon={<Mail className="h-5 w-5 text-slate-900" />}
+          icon={<Mail className="h-5 w-5 text-ink" />}
           label="Email"
-          value={<a className="hover:text-blue-600" href={`mailto:${EMAIL}`}>{EMAIL}</a>}
+          value={<a className="hover:text-accent transition" href={`mailto:${EMAIL}`}>{EMAIL}</a>}
         />
-        <InfoCard icon={<Clock className="h-5 w-5 text-slate-900" />} label="Графік" value={HOURS} />
-        <InfoCard icon={<MapPin className="h-5 w-5 text-slate-900" />} label="Адреса" value={ADDRESS_LINES} />
+        <InfoCard icon={<Clock className="h-5 w-5 text-ink" />} label="Графік" value={HOURS} />
+        <InfoCard icon={<MapPin className="h-5 w-5 text-ink" />} label="Адреса" value={ADDRESS_LINES} />
       </section> 
 
       {/* WHY CHOOSE US */}
@@ -69,18 +68,18 @@ export default function Contact() {
         className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6"
       >
         {[
-          { icon: <ShieldCheck className="h-6 w-6 text-blue-600" />, title: "Гарантія та безпечність", desc: "14 днів на обмін, сертифікований товар." },
-          { icon: <Send className="h-6 w-6 text-blue-600" />, title: "Відправка день у день", desc: "Замовлення до 15:00 відправляємо цього ж дня." },
-          { icon: <MessageSquare className="h-6 w-6 text-blue-600" />, title: "Живий контакт", desc: "Реальні менеджери, швидкий зв’язок без ботів." },
+          { icon: <ShieldCheck className="h-6 w-6 text-accent" />, title: "Гарантія та безпечність", desc: "14 днів на обмін, сертифікований товар." },
+          { icon: <Send className="h-6 w-6 text-accent" />, title: "Відправка день у день", desc: "Замовлення до 15:00 відправляємо цього ж дня." },
+          { icon: <MessageSquare className="h-6 w-6 text-accent" />, title: "Живий контакт", desc: "Реальні менеджери, швидкий зв’язок без ботів." },
         ].map((f) => (
           <motion.div
             key={f.title}
             whileHover={{ y: -3 }}
-            className="rounded-2xl border bg-white p-5 sm:p-6 text-center shadow-sm hover:shadow-md transition"
+            className="rounded-2xl border border-line bg-white p-5 sm:p-6 text-center shadow-sm hover:shadow-md transition"
           >
             <div className="flex justify-center">{f.icon}</div>
-            <h4 className="mt-3 font-semibold text-slate-900 text-sm sm:text-base">{f.title}</h4>
-            <p className="mt-1 text-gray-500 text-[13px] sm:text-sm">{f.desc}</p>
+            <h4 className="mt-3 font-display font-semibold text-ink text-sm sm:text-base">{f.title}</h4>
+            <p className="mt-1 text-ink-soft text-[13px] sm:text-sm">{f.desc}</p>
           </motion.div>
         ))}
       </motion.section>
@@ -92,7 +91,7 @@ export default function Contact() {
         transition={{ duration: 0.7 }}
         className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 mb-16"
       >
-        <div className="relative overflow-hidden rounded-3xl border shadow-md">
+        <div className="relative overflow-hidden rounded-3xl border border-line shadow-md">
           <iframe
             title="Мапа"
             src="https://maps.google.com/maps?q=Kharkiv&t=&z=12&ie=UTF8&iwloc=&output=embed"
@@ -100,8 +99,8 @@ export default function Contact() {
             loading="lazy"
           />
           <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-md rounded-xl shadow px-4 py-3">
-            <p className="text-[13px] sm:text-sm font-semibold text-slate-900">Ми поруч 👋</p>
-            <p className="text-[12px] text-gray-600">Зручно дістатись Новою Поштою або авто</p>
+            <p className="text-[13px] sm:text-sm font-semibold text-ink">Ми поруч 👋</p>
+            <p className="text-[12px] text-ink-soft">Зручно дістатись Новою Поштою або авто</p>
           </div>
         </div>
       </motion.section>
@@ -115,18 +114,18 @@ function InfoCard({ icon, label, value }) {
   return (
     <motion.div
       whileHover={{ scale: 1.02 }}
-      className="rounded-2xl border bg-white p-4 sm:p-5 text-center shadow-sm hover:shadow-md transition"
+      className="rounded-2xl border border-line bg-white p-4 sm:p-5 text-center shadow-sm hover:shadow-md transition"
     >
-      <div className="mx-auto grid place-items-center h-10 w-10 rounded-xl bg-gray-100">{icon}</div>
-      <div className="mt-2 text-[12px] sm:text-sm text-gray-500">{label}</div>
+      <div className="mx-auto grid place-items-center h-10 w-10 rounded-xl bg-surface">{icon}</div>
+      <div className="mt-2 text-[12px] sm:text-sm text-ink-soft">{label}</div>
       {isArray ? (
-        <ul className="mt-1 space-y-1 font-semibold text-gray-900 text-sm sm:text-base">
+        <ul className="mt-1 space-y-1 font-semibold text-ink text-sm sm:text-base">
           {value.map((line, idx) => (
             <li key={`${label}-${idx}`}>{line}</li>
           ))}
         </ul>
       ) : (
-        <div className="mt-1 font-semibold text-gray-900 text-sm sm:text-base break-words">{value}</div>
+        <div className="mt-1 font-semibold text-ink text-sm sm:text-base break-words">{value}</div>
       )}
     </motion.div>
   );

@@ -102,7 +102,7 @@ const ProductCard = memo(function ProductCard({ product }) {
         {/* Бейдж "Популярний" */}
         {isPopular && (
           <span className="
-            absolute top-2 left-2 z-10
+            absolute bottom-2 left-2 z-10
             inline-flex items-center gap-1 rounded-full
             bg-accent text-white shadow-sm
             px-1.5 sm:px-2.5 py-0.5

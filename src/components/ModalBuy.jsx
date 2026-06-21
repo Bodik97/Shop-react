@@ -290,7 +290,7 @@ export default function ModalBuy({
         mx-0 sm:mx-4
         bg-white
         rounded-t-3xl sm:rounded-3xl
-        shadow-2xl border
+        shadow-2xl border border-line
         flex flex-col
         max-h-[92dvh] sm:max-h-[88dvh]
         overflow-hidden
@@ -301,16 +301,16 @@ export default function ModalBuy({
           flex-shrink-0
           flex items-center justify-between gap-2
           px-4 py-3 sm:px-6 sm:py-4
-          bg-white border-b
+          bg-white border-b border-line
         ">
           <div className="min-w-0 flex-1">
             <h2
               id="buy-title"
-              className="text-base sm:text-xl font-bold text-gray-900 leading-snug"
+              className="text-base sm:text-xl font-bold text-ink leading-snug"
             >
               {isCart ? "Оформлення замовлення" : "Швидка покупка"}
             </h2>
-            <p className="mt-0.5 text-gray-500 text-xs sm:text-sm line-clamp-1">
+            <p className="mt-0.5 text-ink-soft text-xs sm:text-sm line-clamp-1">
               {isCart ? "Кошик" : product?.title || "—"}
             </p>
           </div>
@@ -326,9 +326,9 @@ export default function ModalBuy({
               flex-shrink-0
               inline-flex items-center justify-center
               h-11 w-11
-              rounded-xl bg-black !text-white text-lg font-bold
-              hover:bg-gray-900 active:scale-95
-              focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600
+              rounded-xl bg-ink !text-white text-lg font-bold
+              hover:brightness-110 active:scale-95
+              focus:outline-none focus-visible:ring-2 focus-visible:ring-accent
               disabled:opacity-40
               transition
             "
@@ -354,12 +354,12 @@ export default function ModalBuy({
                 <img
                   src={sanityFmt(product.image || product.mainImageUrl, 160)}
                   alt={product.title}
-                  className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl object-contain bg-gray-50 p-1 border shrink-0"
+                  className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl object-contain bg-surface p-1 border border-line shrink-0"
                   loading="lazy"
                   decoding="async"
                 />
                 <div className="flex-1 min-w-0 space-y-1">
-                  <div className="font-semibold text-gray-900 text-sm sm:text-base line-clamp-2">
+                  <div className="font-semibold text-ink text-sm sm:text-base line-clamp-2">
                     {product.title}
                   </div>
                   {product.giftText?.text && (
@@ -368,18 +368,18 @@ export default function ModalBuy({
                         {product.giftText.text}
                       </p>
                     ) : (
-                      <div className="text-xs text-emerald-700 flex items-center gap-1">
+                      <div className="text-xs text-trust flex items-center gap-1">
                         🎁 {product.giftText.text}
                       </div>
                     )
                   )}
                   <div className="space-y-0.5 pt-1">
-                    <div className="flex justify-between items-center text-xs text-gray-500 gap-2">
+                    <div className="flex justify-between items-center text-xs text-ink-soft gap-2">
                     <span>Товар</span>
                     <div className="flex items-center gap-1.5 flex-wrap justify-end">
                       {Number(product?.oldPrice) > price && (
                         <>
-                          <span className="text-[11px] text-gray-400 line-through tabular-nums">
+                          <span className="text-[11px] text-ink-soft line-through tabular-nums">
                             {formatUAH(product.oldPrice)}
                           </span>
                           <span className="inline-flex items-center rounded-full bg-red-600 text-white text-[10px] font-extrabold tabular-nums px-1.5 py-0.5">
@@ -387,7 +387,7 @@ export default function ModalBuy({
                           </span>
                         </>
                       )}
-                      <span className="font-semibold text-gray-800 tabular-nums">
+                      <span className="font-semibold text-ink tabular-nums">
                         {formatUAH(price)}
                       </span>
                     </div>
@@ -399,18 +399,18 @@ export default function ModalBuy({
                             <img
                               src={sanityFmt(a.imageUrl, 48)}
                               alt={a.name}
-                              className="w-6 h-6 rounded object-cover border border-gray-200 bg-white shrink-0"
+                              className="w-6 h-6 rounded object-cover border border-line bg-white shrink-0"
                               loading="lazy"
                               decoding="async"
                             />
                           )}
-                          <span className="text-blue-600 truncate">+ {a.name}</span>
+                          <span className="text-ink-soft truncate">+ {a.name}</span>
                         </div>
-                        <span className="font-semibold text-blue-700 tabular-nums shrink-0">{formatUAH(a.price)}</span>
+                        <span className="font-semibold text-ink tabular-nums shrink-0">{formatUAH(a.price)}</span>
                       </div>
                     ))}
-                    <div className="flex justify-between text-sm font-bold pt-1 border-t border-dashed border-gray-200">
-                      <span className="text-gray-700">Разом</span>
+                    <div className="flex justify-between text-sm font-bold pt-1 border-t border-dashed border-line">
+                      <span className="text-ink">Разом</span>
                       <span className="text-red-600 tabular-nums">{formatUAH(displayTotal)}</span>
                     </div>
                   </div>
@@ -420,21 +420,21 @@ export default function ModalBuy({
 
             {/* Лічильник кількості — тільки для одиночного товару */}
             {!isCart && (
-              <div className="flex items-center justify-between gap-3 rounded-2xl border p-3">
-                <span className="text-sm font-medium text-gray-700">Кількість</span>
+              <div className="flex items-center justify-between gap-3 rounded-2xl border border-line p-3">
+                <span className="text-sm font-medium text-ink">Кількість</span>
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
                     onClick={() => setQty((q) => Math.max(1, q - 1))}
                     disabled={qty <= 1 || sending}
-                    className="flex justify-center items-center h-12 w-12 rounded-xl bg-black !text-white font-bold text-xl hover:bg-gray-900 active:scale-95 disabled:opacity-40 transition"
+                    className="flex justify-center items-center h-12 w-12 rounded-xl bg-ink !text-white font-bold text-xl hover:brightness-110 active:scale-95 disabled:opacity-40 transition"
                   >−</button>
-                  <span className="text-gray-900 w-10 text-center font-semibold tabular-nums text-base">{qty}</span>
+                  <span className="text-ink w-10 text-center font-semibold tabular-nums text-base">{qty}</span>
                   <button
                     type="button"
                     onClick={() => setQty((q) => Math.min(99, q + 1))}
                     disabled={qty >= 99 || sending}
-                    className="flex justify-center items-center h-12 w-12 rounded-xl bg-black !text-white font-bold text-xl hover:bg-gray-900 active:scale-95 disabled:opacity-40 transition"
+                    className="flex justify-center items-center h-12 w-12 rounded-xl bg-ink !text-white font-bold text-xl hover:brightness-110 active:scale-95 disabled:opacity-40 transition"
                   >+</button>
                 </div>
               </div>
@@ -443,10 +443,10 @@ export default function ModalBuy({
             {/* Список товарів кошика */}
             {isCart && (
               <section aria-label="Товари">
-                <h3 className="text-sm font-semibold text-gray-900 mb-2">
+                <h3 className="text-sm font-semibold text-ink mb-2">
                   Товари ({cart.length})
                 </h3>
-                <div className="space-y-3 rounded-2xl border p-3">
+                <div className="space-y-3 rounded-2xl border border-line p-3">
                   {cart.map((i) => {
                     const q         = Math.max(1, Number(i.qty) || 1);
                     const basePrice = Number(i.price) || 0;          // ціна за 1 штуку
@@ -460,19 +460,19 @@ export default function ModalBuy({
                         <img
                           src={sanityFmt(i.image, 96)}
                           alt={i.title}
-                          className="w-12 h-12 rounded-lg object-contain bg-gray-50 p-0.5 border shrink-0"
+                          className="w-12 h-12 rounded-lg object-contain bg-surface p-0.5 border border-line shrink-0"
                           loading="lazy"
                           decoding="async"
                         />
                         <div className="flex-1 min-w-0 space-y-0.5">
                           <div className="flex justify-between gap-3 text-sm">
-                          <span className="font-medium text-gray-800 leading-snug line-clamp-2">
-                            {i.title}{q > 1 && <span className="text-gray-400 font-normal"> × {q}</span>}
+                          <span className="font-medium text-ink leading-snug line-clamp-2">
+                            {i.title}{q > 1 && <span className="text-ink-soft font-normal"> × {q}</span>}
                           </span>
                           <div className="flex items-center gap-1.5 shrink-0 flex-wrap justify-end">
                             {Number(i.oldPrice) > basePrice && (
                               <>
-                                <span className="text-[11px] text-gray-400 line-through tabular-nums">
+                                <span className="text-[11px] text-ink-soft line-through tabular-nums">
                                   {formatUAH(i.oldPrice)}
                                 </span>
                                 <span className="inline-flex items-center rounded-full bg-red-600 text-white text-[10px] font-extrabold tabular-nums px-1.5 py-0.5">
@@ -480,7 +480,7 @@ export default function ModalBuy({
                                 </span>
                               </>
                             )}
-                            <span className="tabular-nums text-gray-800 font-semibold">
+                            <span className="tabular-nums text-ink font-semibold">
                               {formatUAH(baseLine)}
                             </span>
                           </div>
@@ -492,14 +492,14 @@ export default function ModalBuy({
                                   <img
                                     src={sanityFmt(a.imageUrl, 40)}
                                     alt={a.name}
-                                    className="w-5 h-5 rounded object-cover border border-gray-200 bg-white shrink-0"
+                                    className="w-5 h-5 rounded object-cover border border-line bg-white shrink-0"
                                     loading="lazy"
                                     decoding="async"
                                   />
                                 )}
-                                <span className="text-xs text-blue-600 truncate">+ {a.name}</span>
+                                <span className="text-xs text-ink-soft truncate">+ {a.name}</span>
                               </div>
-                              <span className="text-xs font-semibold text-blue-700 tabular-nums shrink-0">{formatUAH(a.price)}</span>
+                              <span className="text-xs font-semibold text-ink tabular-nums shrink-0">{formatUAH(a.price)}</span>
                             </div>
                           ))}
                           {i.giftText && (
@@ -508,15 +508,15 @@ export default function ModalBuy({
                                 {i.giftText}
                               </p>
                             ) : (
-                              <div className="text-xs text-emerald-700">🎁 {i.giftText}</div>
+                              <div className="text-xs text-trust">🎁 {i.giftText}</div>
                             )
                           )}
                           {(addons.length > 0 || q > 1) && (
-                            <div className="flex justify-between gap-2 pt-1 border-t border-dashed border-gray-200">
-                              <span className="text-xs text-gray-400">
+                            <div className="flex justify-between gap-2 pt-1 border-t border-dashed border-line">
+                              <span className="text-xs text-ink-soft">
                                 {q > 1 ? `${q} × ${formatUAH(unitTotal)}` : "Разом:"}
                               </span>
-                              <span className="text-xs font-bold text-gray-800 tabular-nums shrink-0">{formatUAH(lineTotal)}</span>
+                              <span className="text-xs font-bold text-ink tabular-nums shrink-0">{formatUAH(lineTotal)}</span>
                             </div>
                           )}
                         </div>
@@ -524,18 +524,18 @@ export default function ModalBuy({
                     );
                   })}
 
-                  <div className="pt-2 border-t space-y-1">
-                    <div className="flex justify-between text-sm text-gray-600">
+                  <div className="pt-2 border-t border-line space-y-1">
+                    <div className="flex justify-between text-sm text-ink-soft">
                       <span>Сума товарів</span>
                       <span className="tabular-nums">{formatUAH(subtotal)}</span>
                     </div>
                     {discount > 0 && (
-                      <div className="flex justify-between text-sm text-emerald-700">
+                      <div className="flex justify-between text-sm text-trust">
                         <span>Знижка</span>
                         <span className="tabular-nums">−{formatUAH(discount)}</span>
                       </div>
                     )}
-                    <div className="flex justify-between font-bold text-base pt-1 border-t">
+                    <div className="flex justify-between font-bold text-base pt-1 border-t border-line text-ink">
                       <span>Разом</span>
                       <span className="text-red-600 tabular-nums">{formatUAH(displayTotal)}</span>
                     </div>
@@ -546,7 +546,7 @@ export default function ModalBuy({
 
             {/* Контакти */}
             <section aria-labelledby="contacts-title">
-              <h3 id="contacts-title" className="text-sm font-semibold text-gray-900 mb-3">
+              <h3 id="contacts-title" className="text-sm font-semibold text-ink mb-3">
                 Контакти
               </h3>
               <div className="grid grid-cols-1 xs:grid-cols-2 gap-3">
@@ -581,12 +581,12 @@ export default function ModalBuy({
                 checked={agree}
                 onChange={(e) => setAgree(e.target.checked)}
                 aria-invalid={!!errors.agree}
-                className="mt-0.5 h-5 w-5 rounded accent-blue-600 shrink-0"
+                className="mt-0.5 h-5 w-5 rounded accent-orange-600 shrink-0"
                 disabled={sending} required
               />
               <label
                 htmlFor={agreeId}
-                className={`text-sm leading-snug ${errors.agree ? "text-red-700" : "text-gray-700"}`}
+                className={`text-sm leading-snug ${errors.agree ? "text-red-700" : "text-ink-soft"}`}
               >
                 Погоджуюсь на обробку персональних даних та умови повернення.
               </label>
@@ -600,14 +600,14 @@ export default function ModalBuy({
           {/* ── Футер (sticky) ── */}
           <div className="
             flex-shrink-0
-            border-t bg-white
+            border-t border-line bg-white
             px-4 sm:px-6 py-3
             pb-[calc(0.75rem+env(safe-area-inset-bottom))]
           ">
             <div className="flex items-center justify-between gap-3">
               {/* Сума */}
               <div>
-                <div className="text-xs text-gray-500">{isCart ? "Разом" : "До сплати"}</div>
+                <div className="text-xs text-ink-soft">{isCart ? "Разом" : "До сплати"}</div>
                 <div className="text-xl sm:text-2xl font-extrabold text-red-600 tabular-nums leading-tight">
                   {formatUAH(displayTotal)}
                 </div>
@@ -619,14 +619,14 @@ export default function ModalBuy({
                   type="button"
                   onClick={() => onClose?.()}
                   disabled={sending}
-                  className="h-14 sm:h-16 px-5 sm:px-7 rounded-2xl bg-black !text-white text-base sm:text-lg font-semibold hover:bg-gray-900 active:scale-95 disabled:opacity-40 transition"
+                  className="h-14 sm:h-16 px-5 sm:px-7 rounded-2xl bg-white border border-line text-ink text-base sm:text-lg font-semibold hover:bg-surface hover:border-ink active:scale-95 disabled:opacity-40 transition"
                 >
                   Скасувати
                 </button>
                 <button
                   type="submit"
                   disabled={sending}
-                  className="h-14 sm:h-16 px-6 sm:px-8 rounded-2xl bg-orange-600 !text-white text-base sm:text-lg font-bold hover:bg-orange-700 active:scale-[0.98] disabled:opacity-50 transition shadow-lg"
+                  className="h-14 sm:h-16 px-6 sm:px-8 rounded-2xl bg-accent !text-white text-base sm:text-lg font-bold uppercase tracking-wide hover:brightness-95 active:scale-[0.98] disabled:opacity-50 transition shadow-lg"
                 >
                   {sending ? "Надсилаємо…" : "Купити"}
                 </button>
@@ -672,8 +672,8 @@ function Field({
 }) {
   return (
     <div>
-      <label htmlFor={id} className="block text-sm text-gray-800 mb-1">
-        {label} {required && <span className="text-rose-600">*</span>}
+      <label htmlFor={id} className="block text-sm text-ink mb-1">
+        {label} {required && <span className="text-accent">*</span>}
       </label>
       <input
         id={id}
@@ -690,11 +690,11 @@ function Field({
         pattern={pattern}
         maxLength={maxLength}
         disabled={disabled}
-        className={`w-full rounded-xl border px-3 py-2.5 text-[15px] text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 ${
-          error ? "border-red-400 focus:ring-red-600" : "border-gray-300/70 focus:ring-blue-600"
+        className={`w-full rounded-xl border px-3 py-2.5 text-[15px] text-ink placeholder:text-ink-soft focus:outline-none focus:ring-2 ${
+          error ? "border-red-400 focus:ring-red-600" : "border-line focus:ring-accent focus:border-accent"
         } disabled:opacity-50`}
       />
-      <p id={`${id}-help`} className={`mt-1 text-xs ${error ? "text-red-700" : "text-gray-700"}`}>
+      <p id={`${id}-help`} className={`mt-1 text-xs ${error ? "text-red-700" : "text-ink-soft"}`}>
         {error || help}
       </p>
     </div>

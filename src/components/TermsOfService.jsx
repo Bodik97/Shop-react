@@ -2,7 +2,7 @@ import { Helmet } from "react-helmet";
 
 export default function TermsOfService() {
   return (
-    <main className="bg-transparent min-h-screen text-white">
+    <main className="bg-white text-ink">
       <Helmet>
         <title>Умови використання | AirSoft</title>
         <meta
@@ -12,16 +12,16 @@ export default function TermsOfService() {
       </Helmet>
 
       {/* Hero-заголовок */}
-      <section className="border-b border-gray-800 bg-transparent">
+      <section className="border-b border-line bg-surface">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 md:px-8 py-12 sm:py-16 text-center">
-          <h1 className="heading-title font-bold mb-4 text-white leading-tight">
+          <h1 className="heading-title font-bold mb-4 text-ink leading-tight">
             Умови використання
            </h1>
 
 
 
 
-          <p className="text-base sm:text-lg text-white/90 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-ink-soft max-w-2xl mx-auto">
             Ознайомтесь з основними правилами користування сайтом AirSoft перед
             оформленням замовлення.
           </p>
@@ -31,7 +31,7 @@ export default function TermsOfService() {
       {/* Основний текст */}
       <section className="max-w-4xl mx-auto px-4 sm:px-6 md:px-8 py-10 sm:py-12 md:py-16 leading-relaxed">
         <div className="space-y-10 sm:space-y-12">
-          <p className="text-sm sm:text-base md:text-lg text-white/90">
+          <p className="text-sm sm:text-base md:text-lg text-ink-soft">
             Використовуючи сайт <strong>AirSoft</strong> (далі – «Сайт»), ви погоджуєтесь
             із наведеними нижче умовами. Якщо ви не згодні з будь-якою частиною цих умов,
             будь ласка, не користуйтесь Сайтом.
@@ -64,10 +64,10 @@ export default function TermsOfService() {
                 <>
                   Якщо у вас виникли питання, напишіть нам на{" "}
                   <a
-                    href="mailto:info@myshop.com"
-                    className="underline text-indigo-300 hover:text-indigo-200"
+                    href="mailto:support@airsoft.shop"
+                    className="underline text-accent hover:brightness-110"
                   >
-                    info@myshop.com
+                    support@airsoft.shop
                   </a>
                   .
                 </>
@@ -75,16 +75,16 @@ export default function TermsOfService() {
             },
           ].map((item, index) => (
             <div key={index}>
-              <h2 className="text-xl sm:text-2xl font-semibold mb-3 text-white">
+              <h2 className="text-xl sm:text-2xl font-semibold mb-3 text-ink">
                 {item.title}
               </h2>
-              <p className="text-sm sm:text-base md:text-lg text-white/80">
+              <p className="text-sm sm:text-base md:text-lg text-ink-soft">
                 {item.text}
               </p>
             </div>
           ))}
 
-          <p className="text-xs sm:text-sm text-white/70 pt-6 border-t border-white/10">
+          <p className="text-xs sm:text-sm text-ink-soft pt-6 border-t border-line">
             Останнє оновлення: {new Date().toLocaleDateString("uk-UA")}
           </p>
         </div>

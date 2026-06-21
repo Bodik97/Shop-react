@@ -6,7 +6,7 @@ import { Helmet } from "react-helmet";
 import { client } from "../sanityClient";
 import { useCart } from "../context/CartContext";
 import { formatUAH } from "../utils/format";
-import { ShoppingCart, Loader2, ChevronLeft, ChevronRight, ShieldCheck, RotateCcw, CreditCard, Star, Zap } from "lucide-react";
+import { Loader2, ChevronLeft, ChevronRight, ShieldCheck, RotateCcw, CreditCard, Star, Zap } from "lucide-react";
 
 import { trackViewItem } from "../utils/analytics";
 import { useScrollRestoration } from "../hooks/useScrollRestoration";
@@ -45,7 +45,7 @@ const Badge = ({ children, variant = "blue", className = "" }) => {
       ? "bg-green-50 text-green-700"
       : variant === "popular"
       ? "bg-accent text-white shadow-sm"
-      : "bg-blue-50 text-blue-700";
+      : "bg-surface text-ink";
   return (
     <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold ${styles} ${className}`}>
       {variant === "popular" ? (
@@ -415,7 +415,7 @@ export default function ProductPage() {
 
           {flashCart && (
             <div className="fixed left-1/2 -translate-x-1/2 top-20 lg:top-24 z-[80] animate-slideUpFade">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-600 text-white text-xs font-semibold px-3 py-1.5 shadow-lg">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-trust text-white text-xs font-semibold px-3 py-1.5 shadow-lg">
                 ✅ Додано в кошик
               </span>
             </div>
@@ -434,7 +434,7 @@ export default function ProductPage() {
               type="button"
               onClick={() => navigate(-1)}
               aria-label="Назад"
-              className="inline-flex items-center justify-center gap-1.5 w-fit h-12 sm:h-13 px-5 sm:px-6 rounded-xl bg-white text-gray-900 ring-2 ring-gray-300 text-base font-semibold shadow-sm hover:bg-gray-50 hover:ring-gray-400 active:scale-[0.98] transition"
+              className="inline-flex items-center justify-center ml-0.5 gap-1.5 w-fit h-9 sm:h-13 px-5 sm:px-6 rounded-xl bg-white text-ink border border-line text-base font-semibold shadow-sm hover:bg-surface hover:border-ink active:scale-[0.98] transition"
             >
               <ChevronLeft className="h-5 w-5" aria-hidden="true" />
               Назад
@@ -455,7 +455,7 @@ export default function ProductPage() {
               </span>
               <span className="text-ink-soft">за відгуками покупців</span>
               {isPopular && (
-                <span className="inline-flex items-center gap-1 rounded-full bg-orange-500/15 text-orange-300 ring-1 ring-orange-500/40 px-2 py-0.5 text-xs font-semibold">
+                <span className="inline-flex items-center gap-1 rounded-full bg-orange-50 text-accent ring-1 ring-orange-200 px-2 py-0.5 text-xs font-semibold">
                   <Zap className="h-3.5 w-3.5" aria-hidden="true" />
                   Хіт продажів
                 </span>
@@ -466,7 +466,7 @@ export default function ProductPage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 lg:gap-8">
             {/* ГАЛЕРЕЯ */}
             <section className="lg:col-span-7">
-              <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden bg-white shadow-2xl border border-gray-100">
+              <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden bg-white shadow-2xl border border-line">
                 <img
                   src={sanityFmt(currentSlide?.url, 1000)}
                   alt={product.title}
@@ -510,7 +510,7 @@ export default function ProductPage() {
                           onClick={() => setIdx(i)}
                           aria-label={`Слайд ${i + 1}`}
                           className={`h-2 rounded-full transition-all ${
-                            i === idx ? "w-6 bg-black" : "w-2 bg-gray-300"
+                            i === idx ? "w-6 bg-ink" : "w-2 bg-stone-300"
                           }`}
                         />
                       ))}
@@ -518,11 +518,24 @@ export default function ProductPage() {
                   </>
                 )}
               </div>
+
+              {/* Під слайдером: відео (якщо є), одразу за ним — характеристики.
+                  Якщо відео немає — характеристики стають на місце відео. */}
+              {videoEmbed && (
+                <div className="mt-4 sm:mt-6">
+                  <VideoCard src={videoEmbed} title={product.title} />
+                </div>
+              )}
+              {specs.length > 0 && (
+                <div className="mt-4 sm:mt-6">
+                  <SpecsCard specs={specs} />
+                </div>
+              )}
             </section>
 
             {/* САЙДБАР */}
             <aside className="lg:col-span-5 space-y-4 sm:space-y-6">
-              <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-xl border border-gray-100">
+              <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-xl border border-line">
                 <div className="flex items-center gap-2 mb-3 sm:mb-4 flex-wrap">
                     {isPopular && <Badge variant="popular" />}
                     {hasStock ? (
@@ -534,7 +547,7 @@ export default function ProductPage() {
                         <Badge variant="green">В наявності</Badge>
                       )
                     ) : (
-                      <span className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold bg-gray-100 text-gray-600">
+                      <span className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold bg-surface text-ink-soft">
                         Під замовлення
                       </span>
                     )}
@@ -546,7 +559,7 @@ export default function ProductPage() {
                   </div>
                   {product.oldPrice && (
                     <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-gray-400 line-through text-base sm:text-lg tabular-nums">{formatUAH(product.oldPrice)}</span>
+                        <span className="text-ink-soft line-through text-base sm:text-lg tabular-nums">{formatUAH(product.oldPrice)}</span>
                         <span className="bg-red-100 text-red-600 px-2 py-0.5 rounded-lg text-xs font-bold">
                             -{Math.round((1 - product.price / product.oldPrice) * 100)}%
                         </span>
@@ -566,7 +579,7 @@ export default function ProductPage() {
                     product.category === "pepper-sprays" ? (
                         // Для перцевих балончиків це не подарунок —
                         // показуємо просто текст без помаранчевої плашки і смайлика.
-                        <p className="text-sm text-gray-700 leading-snug mb-6">
+                        <p className="text-sm text-ink-soft leading-snug mb-6">
                             {product.giftText}
                         </p>
                     ) : (
@@ -584,7 +597,7 @@ export default function ProductPage() {
 
                 {addons.length > 0 && (
                   <div className="space-y-3 mb-6">
-                    <p className="font-bold text-gray-900">Додати до комплекту:</p>
+                    <p className="font-bold text-ink">Додати до комплекту:</p>
                     {addons.map((addon) => (
                       <label key={addon.name} className={`flex items-start sm:items-center justify-between gap-3 sm:gap-4 p-2 sm:p-2.5 rounded-xl border-2 transition cursor-pointer ${selectedAddons.includes(addon.name) ? "border-accent bg-orange-50" : "border-line bg-surface hover:border-ink-soft"}`}>
                         <div className="flex items-start sm:items-center gap-2 sm:gap-3 min-w-0 flex-1">
@@ -593,7 +606,7 @@ export default function ProductPage() {
                               <img
                                 src={sanityFmt(addon.imageUrl, 112)}
                                 alt={addon.name}
-                                className="w-12 h-12 sm:w-14 sm:h-14 rounded-lg object-cover border border-gray-200 bg-white shrink-0"
+                                className="w-12 h-12 sm:w-14 sm:h-14 rounded-lg object-cover border border-line bg-white shrink-0"
                                 loading="lazy"
                                 decoding="async"
                                 width={56}
@@ -622,61 +635,24 @@ export default function ProductPage() {
                   </button>
                 </div>
               </div>
+
             </aside>
           </div>
 
-          {/* ВІДЕО ТА ХАРАКТЕРИСТИКИ */}
-          <div className="mt-8 sm:mt-12 space-y-6 sm:space-y-8">
-            {videoEmbed && (
-              <section className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-sm border border-gray-100">
-                <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">Відеоогляд</h2>
-                <div className="relative w-full aspect-video rounded-xl sm:rounded-2xl overflow-hidden bg-black">
-                  <iframe
-                    src={videoEmbed}
-                    title={`Відео: ${product.title}`}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    className="absolute inset-0 w-full h-full"
-                  />
-                </div>
-              </section>
-            )}
-
-            {specs.length > 0 && (
-                <section className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-sm border border-gray-100">
-                    <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">Характеристики</h2>
-                    <dl className="grid grid-cols-1 md:grid-cols-2 md:gap-x-8 lg:gap-x-12">
-                        {specs.map((spec, i) => (
-                            <div
-                                key={`${spec.label}-${i}`}
-                                className="flex items-start justify-between gap-3 sm:gap-4 py-2.5 border-b border-gray-100 last:border-b-0 odd:md:border-b md:[&:nth-last-child(-n+2)]:border-b-0"
-                            >
-                                <dt className="text-gray-500 text-sm md:text-base shrink-0 max-w-[55%] break-words leading-snug">
-                                    {spec.label}
-                                </dt>
-                                <dd className="text-gray-900 font-semibold text-sm md:text-base text-right break-words min-w-0 leading-snug">
-                                    {spec.value}
-                                </dd>
-                            </div>
-                        ))}
-                    </dl>
-                </section>
-            )}
-          </div>
         </>
       )}
 
       {/* МОБІЛЬНИЙ STICKY CTA: ціна + Купити + В кошик. Lg+ ховаємо. */}
       {product && (
         <div className="fixed inset-x-0 bottom-0 z-40 lg:hidden">
-          <div className="border-t bg-white shadow-[0_-8px_24px_rgba(0,0,0,0.15)] pb-[max(env(safe-area-inset-bottom),8px)]">
+          <div className="border-t border-line bg-white shadow-[0_-8px_24px_rgba(0,0,0,0.15)] pb-[max(env(safe-area-inset-bottom),8px)]">
             <div className="flex items-center gap-2 px-3 py-2">
               <div className="min-w-0 flex-1 leading-tight">
                 <div className="text-ink font-extrabold tabular-nums text-lg sm:text-xl">
                   {formatUAH(finalPrice)}
                 </div>
                 {product.oldPrice && (
-                  <div className="text-[11px] text-gray-400 line-through tabular-nums">
+                  <div className="text-[11px] text-ink-soft line-through tabular-nums">
                     {formatUAH(product.oldPrice)}
                   </div>
                 )}
@@ -684,10 +660,9 @@ export default function ProductPage() {
               <button
                 type="button"
                 onClick={onAddToCart}
-                aria-label="Додати в кошик"
-                className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-ink !text-white hover:brightness-110 active:scale-95 transition shrink-0"
+                className="inline-flex h-12 px-3 items-center justify-center rounded-xl bg-ink !text-white text-sm font-bold whitespace-nowrap hover:brightness-110 active:scale-95 transition shrink-0"
               >
-                <ShoppingCart size={20} />
+                Додати в кошик
               </button>
               <button
                 type="button"
@@ -706,13 +681,13 @@ export default function ProductPage() {
           <div className="fixed inset-0 z-[100] bg-white flex flex-col" style={{ touchAction: "none" }}>
             <div className="p-3 sm:p-4 flex justify-between items-center bg-white/80 backdrop-blur-md border-b gap-2">
                 <div className="flex gap-1.5 sm:gap-2">
-                    <button onClick={fsPrev} className="w-11 h-11 rounded-full bg-black !text-white flex items-center justify-center font-bold active:scale-95 transition">←</button>
-                    <button onClick={fsNext} className="w-11 h-11 rounded-full bg-black !text-white flex items-center justify-center font-bold active:scale-95 transition">→</button>
+                    <button onClick={fsPrev} className="w-11 h-11 rounded-full bg-ink !text-white flex items-center justify-center font-bold active:scale-95 transition">←</button>
+                    <button onClick={fsNext} className="w-11 h-11 rounded-full bg-ink !text-white flex items-center justify-center font-bold active:scale-95 transition">→</button>
                 </div>
                 <div className="flex gap-1.5 sm:gap-2">
-                    <button onClick={() => zoomAt(scale + 0.5, innerWidth/2, innerHeight/2)} className="w-11 h-11 bg-black !text-white rounded-lg font-bold active:scale-95 transition">+</button>
-                    <button onClick={() => zoomAt(scale - 0.5, innerWidth/2, innerHeight/2)} className="w-11 h-11 bg-black !text-white rounded-lg font-bold active:scale-95 transition">−</button>
-                    <button onClick={() => setOpenFS(false)} className="w-11 h-11 bg-black !text-white rounded-lg font-bold active:scale-95 transition" aria-label="Закрити">✕</button>
+                    <button onClick={() => zoomAt(scale + 0.5, innerWidth/2, innerHeight/2)} className="w-11 h-11 bg-ink !text-white rounded-lg font-bold active:scale-95 transition">+</button>
+                    <button onClick={() => zoomAt(scale - 0.5, innerWidth/2, innerHeight/2)} className="w-11 h-11 bg-ink !text-white rounded-lg font-bold active:scale-95 transition">−</button>
+                    <button onClick={() => setOpenFS(false)} className="w-11 h-11 bg-ink !text-white rounded-lg font-bold active:scale-95 transition" aria-label="Закрити">✕</button>
                 </div>
             </div>
             <div 
@@ -748,14 +723,56 @@ export default function ProductPage() {
   );
 }
 
+// Картка відеоогляду
+function VideoCard({ src, title }) {
+  return (
+    <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-sm border border-line">
+      <h2 className="text-lg sm:text-xl font-bold text-ink mb-3 sm:mb-4">Відеоогляд</h2>
+      <div className="relative w-full aspect-video rounded-xl sm:rounded-2xl overflow-hidden bg-black">
+        <iframe
+          src={src}
+          title={`Відео: ${title}`}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          className="absolute inset-0 w-full h-full"
+        />
+      </div>
+    </div>
+  );
+}
+
+// Картка характеристик (одноколонковий список)
+function SpecsCard({ specs }) {
+  return (
+    <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-xl border border-line">
+      <h2 className="text-lg sm:text-xl font-bold text-ink mb-3 sm:mb-4">Характеристики</h2>
+      <dl className="grid grid-cols-1">
+        {specs.map((spec, i) => (
+          <div
+            key={`${spec.label}-${i}`}
+            className="flex items-start justify-between gap-3 py-2.5 border-b border-line last:border-b-0"
+          >
+            <dt className="text-ink-soft text-sm shrink-0 max-w-[55%] break-words leading-snug">
+              {spec.label}
+            </dt>
+            <dd className="text-ink font-semibold text-sm text-right break-words min-w-0 leading-snug">
+              {spec.value}
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  );
+}
+
 // Компактний trust-блок під ціною: іконка + короткий текст
 function TrustItem({ icon, text }) {
   return (
-    <div className="flex items-center gap-2 rounded-xl bg-gray-50 ring-1 ring-black/5 px-2.5 py-2">
-      <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-emerald-50 text-emerald-600">
+    <div className="flex items-center gap-2 rounded-xl bg-surface ring-1 ring-black/5 px-2.5 py-2">
+      <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-green-100 text-trust">
         {icon}
       </span>
-      <span className="text-[12px] sm:text-[13px] text-gray-800 leading-snug">{text}</span>
+      <span className="text-[12px] sm:text-[13px] text-ink leading-snug">{text}</span>
     </div>
   );
 }
@@ -764,7 +781,7 @@ function TrustItem({ icon, text }) {
 // показуємо логотип + слово "Доставка" поряд, без дублювання назви перевізника.
 function NovaPoshtaItem() {
   return (
-    <div className="flex items-center gap-2 rounded-xl bg-gray-50 ring-1 ring-black/5 px-2.5 py-2">
+    <div className="flex items-center gap-2 rounded-xl bg-surface ring-1 ring-black/5 px-2.5 py-2">
       <img
         src="/img/nova-poshta.svg"
         alt="Нова Пошта"
@@ -772,7 +789,7 @@ function NovaPoshtaItem() {
         loading="lazy"
         decoding="async"
       />
-      <span className="text-[12px] sm:text-[13px] text-gray-800 leading-snug">Доставка</span>
+      <span className="text-[12px] sm:text-[13px] text-ink leading-snug">Доставка</span>
     </div>
   );
 }

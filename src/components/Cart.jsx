@@ -56,15 +56,22 @@ export default function Cart({ freeShippingFrom = 0 }) {
     return () => clearTimeout(t);
   }, [armedId]);
 
-  // 🔧 FIX: subtotal враховує addons через unitTotal
-  const { itemsCount, subtotal } = useMemo(() => {
-    const itemsCount = cart.reduce((n, i) => n + Math.max(1, Number(i.qty) || 0), 0);
-    const subtotal = cart.reduce((s, i) => {
-      const qty  = Math.max(1, Number(i.qty) || 0);
-      const unit = Number(i.unitTotal) || Number(i.price) || 0;
-      return s + unit * qty;
-    }, 0);
-    return { itemsCount, subtotal };
+  // Детальний підрахунок: товари окремо від додатків + економія
+  const { itemsCount, productsSum, addonsSum, addonsCount, savings, subtotal } = useMemo(() => {
+    let itemsCount = 0, productsSum = 0, addonsSum = 0, addonsCount = 0, savings = 0;
+    for (const i of cart) {
+      const qty      = Math.max(1, Number(i.qty) || 0);
+      const price    = Number(i.price) || 0;
+      const oldPrice = Number(i.oldPrice) || 0;
+      const addons   = Array.isArray(i.addons) ? i.addons : [];
+      const lineAddons = addons.reduce((s, a) => s + (Number(a.price) || 0), 0);
+      itemsCount  += qty;
+      productsSum += price * qty;
+      addonsSum   += lineAddons * qty;
+      addonsCount += addons.length;
+      if (oldPrice > price) savings += (oldPrice - price) * qty;
+    }
+    return { itemsCount, productsSum, addonsSum, addonsCount, savings, subtotal: productsSum + addonsSum };
   }, [cart]);
 
   const discount = 0;
@@ -94,33 +101,29 @@ export default function Cart({ freeShippingFrom = 0 }) {
     return (
       <main className="mx-auto w-full max-w-2xl px-4 py-10 sm:py-16">
         <section role="status" aria-live="polite"
-          className="rounded-3xl border bg-white p-6 sm:p-10 text-center shadow-sm"
+          className="rounded-3xl border border-line bg-white p-6 sm:p-10 text-center shadow-sm"
         >
-          <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow">
+          <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-accent text-white shadow">
             <svg viewBox="0 0 24 24" className="h-8 w-8" aria-hidden>
               <path fill="currentColor" d="M7 4h-2l-1 2H1v2h2l3.6 7.59A2 2 0 0 0 8.4 17h7.2a2 2 0 0 0 1.8-1.14L21 8H6.42l-.94-2H7zM7 20a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm10 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"/>
             </svg>
           </div>
-          <h1 className="mt-4 text-2xl sm:text-3xl font-extrabold">Кошик порожній</h1>
-          <p className="mt-2 text-gray-600 text-sm sm:text-base">
+          <h1 className="mt-4 text-2xl sm:text-3xl font-extrabold text-ink">Кошик порожній</h1>
+          <p className="mt-2 text-ink-soft text-sm sm:text-base">
             Залетіли глянути топчики? Оберіть, що зайде.
           </p>
           {freeShippingFrom > 0 && (
-            <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-emerald-700 text-xs sm:text-sm font-semibold ring-1 ring-emerald-200">
+            <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-green-50 px-3 py-1.5 text-trust text-xs sm:text-sm font-semibold ring-1 ring-green-200">
               <span>Безкоштовна доставка від {formatUAH(freeShippingFrom)}</span>
             </div>
           )}
           <div className="mt-8 flex flex-col sm:flex-row justify-center gap-3">
             <BackButton />
-            <Link to="/" className="group relative h-12 px-6 rounded-2xl font-semibold focus:outline-none active:scale-[0.98] transition">
-              <span aria-hidden className="absolute -inset-1 rounded-3xl bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 blur-lg opacity-60 group-hover:opacity-80 transition" />
-              <span aria-hidden className="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 shadow-[0_10px_30px_rgba(0,0,0,0.25)]" />
-              <span className="relative z-10 flex mt-3 items-center justify-center gap-2 text-white">
-                <svg viewBox="0 0 24 24" className="h-5 w-5 opacity-90" aria-hidden>
-                  <path fill="currentColor" d="M3 3h6v6H3V3Zm12 0h6v6h-6V3ZM3 15h6v6H3v-6Zm12 0h6v6h-6v-6Z"/>
-                </svg>
-                У каталог
-              </span>
+            <Link to="/" className="inline-flex items-center justify-center gap-2 h-12 px-6 rounded-xl bg-accent text-white font-display font-semibold hover:brightness-95 active:scale-[0.98] transition">
+              <svg viewBox="0 0 24 24" className="h-5 w-5 opacity-90" aria-hidden>
+                <path fill="currentColor" d="M3 3h6v6H3V3Zm12 0h6v6h-6V3ZM3 15h6v6H3v-6Zm12 0h6v6h-6v-6Z"/>
+              </svg>
+              У каталог
             </Link>
           </div>
         </section>
@@ -137,19 +140,19 @@ export default function Cart({ freeShippingFrom = 0 }) {
 
       {/* Банер безкоштовної доставки */}
       {freeShippingFrom > 0 && (
-        <div className="mb-5 rounded-2xl border bg-white p-4">
+        <div className="mb-5 rounded-2xl border border-line bg-white p-4">
           {leftToFree > 0 ? (
-            <p className="text-sm text-gray-700 mb-2">
-              Додайте ще <span className="font-semibold">{formatUAH(leftToFree)}</span>, щоб отримати
+            <p className="text-sm text-ink-soft mb-2">
+              Додайте ще <span className="font-semibold text-ink">{formatUAH(leftToFree)}</span>, щоб отримати
               безкоштовну доставку від {formatUAH(freeShippingFrom)}.
             </p>
           ) : (
-            <p className="text-sm text-emerald-700 mb-2 font-medium">
+            <p className="text-sm text-trust mb-2 font-medium">
               Умови безкоштовної доставки виконані ✓
             </p>
           )}
-          <div className="h-2 w-full rounded-full bg-gray-100 overflow-hidden">
-            <div className="h-full bg-blue-600 transition-[width] duration-500" style={{ width: `${freeProgress}%` }} aria-hidden />
+          <div className="h-2 w-full rounded-full bg-surface overflow-hidden">
+            <div className="h-full bg-accent transition-[width] duration-500" style={{ width: `${freeProgress}%` }} aria-hidden />
           </div>
         </div>
       )}
@@ -175,7 +178,7 @@ export default function Cart({ freeShippingFrom = 0 }) {
             return (
               <article
                 key={cartItemId}
-                className="flex flex-col sm:flex-row sm:items-stretch gap-3 sm:gap-4 p-3 sm:p-4 bg-white rounded-2xl border transition-shadow hover:shadow-md"
+                className="flex flex-col sm:flex-row sm:items-stretch gap-3 sm:gap-4 p-3 sm:p-4 bg-white rounded-2xl border border-line transition-shadow hover:shadow-md"
               >
                 {/* Фото */}
                 <div className="sm:self-start sm:mt-1">
@@ -204,7 +207,7 @@ export default function Cart({ freeShippingFrom = 0 }) {
                 <div className="flex-1 min-w-0 flex flex-col gap-2">
 
                   {/* Назва */}
-                  <h2 className="font-semibold text-gray-900 leading-snug break-words">
+                  <h2 className="font-semibold text-ink leading-snug break-words">
                     {item.title}
                   </h2>
 
@@ -232,7 +235,7 @@ export default function Cart({ freeShippingFrom = 0 }) {
                         return (
                           <span
                             key={addonKey}
-                            className="inline-flex items-center gap-1 rounded-full border border-blue-200 bg-blue-50 pl-1 pr-1 py-0.5 text-xs font-medium text-blue-900"
+                            className="inline-flex items-center gap-1 rounded-full border border-line bg-surface pl-1 pr-1 py-0.5 text-xs font-medium text-ink"
                           >
                             {addon.imageUrl && (
                               <img
@@ -268,7 +271,7 @@ export default function Cart({ freeShippingFrom = 0 }) {
                         {item.giftText}
                       </p>
                     ) : (
-                      <div className="text-sm text-emerald-600 font-medium flex items-center gap-1">
+                      <div className="text-sm text-trust font-medium flex items-center gap-1">
                         <span>🎁</span>
                         <span>{item.giftText}</span>
                       </div>
@@ -297,12 +300,12 @@ export default function Cart({ freeShippingFrom = 0 }) {
 
                   {/* Підсумок позиції */}
                   <div className="sm:text-right">
-                    <div className="text-xs text-gray-400 mb-0.5">Разом:</div>
-                    <div className="text-xl font-extrabold text-gray-900 tabular-nums leading-none">
+                    <div className="text-xs text-ink-soft mb-0.5">Разом:</div>
+                    <div className="text-xl font-extrabold text-ink tabular-nums leading-none">
                       {formatUAH(line)}
                     </div>
                     {(qty > 1 || addons.length > 0) && (
-                      <div className="text-xs text-gray-400 tabular-nums mt-1">
+                      <div className="text-xs text-ink-soft tabular-nums mt-1">
                         {qty > 1 && `${qty} × `}{formatUAH(unitTotal)}
                       </div>
                     )}
@@ -313,7 +316,7 @@ export default function Cart({ freeShippingFrom = 0 }) {
                     <button
                       type="button"
                       onClick={() => setArmedId(cartItemId)}
-                      className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-black bg-slate-900 mt-2 sm:mt-5 h-10 px-3 text-sm text-white hover:bg-slate-800 active:scale-95 transition whitespace-nowrap"
+                      className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-line bg-white mt-2 sm:mt-5 h-10 px-3 text-sm text-ink-soft hover:border-ink hover:text-ink active:scale-95 transition whitespace-nowrap"
                     >
                     <span className="font-medium">Видалити</span>
                     </button>
@@ -322,14 +325,14 @@ export default function Cart({ freeShippingFrom = 0 }) {
                       <button
                         type="button"
                         onClick={() => { onRemove(cartItemId); setArmedId(null); }}
-                        className="inline-flex items-center justify-center h-14 w-30 px-2 rounded-lg bg-black !text-white text-xs font-semibold hover:bg-gray-900 active:scale-95 transition"
+                        className="inline-flex items-center justify-center h-14 w-30 px-2 rounded-lg bg-red-600 !text-white text-xs font-semibold hover:bg-red-700 active:scale-95 transition"
                       >
                         Підтвердити
                       </button>
                       <button
                         type="button"
                         onClick={() => setArmedId(null)}
-                        className="inline-flex items-center justify-center h-14 w-30 px-2 rounded-lg bg-black !text-white text-xs font-semibold hover:bg-gray-900 active:scale-95 transition"
+                        className="inline-flex items-center justify-center h-14 w-30 px-2 rounded-lg bg-ink !text-white text-xs font-semibold hover:brightness-110 active:scale-95 transition"
                       >
                         Скасувати
                       </button>
@@ -343,15 +346,22 @@ export default function Cart({ freeShippingFrom = 0 }) {
 
         {/* ── Сайдбар підсумку ── */}
         <aside className="hidden lg:block lg:col-span-1">
-          <div className="p-5 sm:p-6 bg-white/95 backdrop-blur rounded-2xl border shadow-xl ring-3 ring-slate-800 sticky top-24">
-            <h2 className="text-blue-950 text-2xl text-center font-bold tracking-tight mb-4">Підсумок</h2>
-            <Breakdown itemsCount={itemsCount} subtotal={subtotal} discount={discount} total={total} />
-            <div className="my-3 h-px bg-gradient-to-r from-transparent via-slate-600 to-transparent" />
+          <div className="p-5 sm:p-6 bg-white rounded-2xl border border-line shadow-lg sticky top-24">
+            <h2 className="text-ink text-2xl text-center font-bold tracking-tight mb-4">Підсумок</h2>
+            <Breakdown
+              itemsCount={itemsCount}
+              productsSum={productsSum}
+              addonsSum={addonsSum}
+              addonsCount={addonsCount}
+              savings={savings}
+              total={total}
+            />
+            <div className="my-3 h-px bg-line" />
             <button
               type="button"
               onClick={handleCheckout}
               disabled={!itemsCount}
-              className="inline-flex items-center justify-center w-full h-12 rounded-2xl bg-black text-white font-semibold hover:bg-black/90 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed transition mt-4 shadow-lg"
+              className="inline-flex items-center justify-center w-full h-12 rounded-xl bg-accent text-white font-display font-semibold uppercase tracking-wide hover:brightness-95 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed transition mt-4 shadow-sm"
             >
               Оформити замовлення
             </button>
@@ -361,11 +371,11 @@ export default function Cart({ freeShippingFrom = 0 }) {
               {PERKS.map((perk) => {
                 const Icon = perk.icon;
                 return (
-                  <div key={perk.text} className="flex h-11 items-center gap-2 rounded-xl bg-gray-50 ring-1 ring-black/5 px-3">
-                    <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-gradient-to-r from-orange-500 via-rose-500 to-pink-500 text-white">
+                  <div key={perk.text} className="flex h-11 items-center gap-2 rounded-xl bg-surface border border-line px-3">
+                    <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-green-100 text-trust">
                       <Icon className="h-3.5 w-3.5" />
                     </span>
-                    <span className="text-sm text-gray-700">{perk.text}</span>
+                    <span className="text-sm text-ink-soft">{perk.text}</span>
                   </div>
                 );
               })}
@@ -373,7 +383,7 @@ export default function Cart({ freeShippingFrom = 0 }) {
           </div>
 
           {/* 🔧 FIX: прибрали animate-pulse з навігаційного посилання */}
-          <Link to="/" className="block mt-3 text-center text-sm text-gray-600 hover:text-black hover:underline transition">
+          <Link to="/" className="block mt-3 text-center text-sm text-ink-soft hover:text-accent hover:underline transition">
             ← Продовжити покупки
           </Link>
         </aside>
@@ -382,9 +392,10 @@ export default function Cart({ freeShippingFrom = 0 }) {
       <div aria-live="polite" className="sr-only">Разом: {formatUAH(total)}</div>
 
       {/* ── Sticky мобільний footer ── */}
-      <div className="fixed inset-x-0 bottom-0 z-40 lg:hidden">
+      {/* z-50 > z-40 FAB месенджерів: при розгортанні «Деталей» підсумок перекриває кнопку */}
+      <div className="fixed inset-x-0 bottom-0 z-50 lg:hidden">
         <div className="mx-auto max-w-2xl px-2 sm:px-4 pb-[max(env(safe-area-inset-bottom),10px)]">
-          <div className="rounded-t-2xl border bg-white shadow-2xl p-2 sm:p-3">
+          <div className="rounded-t-2xl border border-line bg-white shadow-2xl p-2 sm:p-3">
 
             <div className="flex items-center justify-between gap-2">
               {/* ── Ціна ── */}
@@ -404,12 +415,12 @@ export default function Cart({ freeShippingFrom = 0 }) {
                 </div>
 
                 {freeShippingFrom > 0 && leftToFree > 0 && (
-                  <div className="text-[10px] xs:text-[11px] text-gray-500 mt-0.5 line-clamp-1">
+                  <div className="text-[10px] xs:text-[11px] text-ink-soft mt-0.5 line-clamp-1">
                     Ще {formatUAH(leftToFree)} до безкоштовної
                   </div>
                 )}
                 {freeShippingFrom > 0 && leftToFree === 0 && (
-                  <div className="text-[10px] xs:text-[11px] text-emerald-700 mt-0.5">
+                  <div className="text-[10px] xs:text-[11px] text-trust mt-0.5">
                     Безкоштовна доставка ✓
                   </div>
                 )}
@@ -425,9 +436,9 @@ export default function Cart({ freeShippingFrom = 0 }) {
                     inline-flex items-center justify-center
                     h-14 sm:h-16
                     px-4 sm:px-6
-                    rounded-xl bg-black !text-white
+                    rounded-xl bg-white border border-line !text-ink
                     text-base sm:text-lg font-semibold
-                    hover:bg-gray-900 active:scale-95
+                    hover:bg-surface active:scale-95
                     transition shrink-0
                   "
                 >
@@ -442,9 +453,9 @@ export default function Cart({ freeShippingFrom = 0 }) {
                     inline-flex items-center justify-center
                     h-14 sm:h-16
                     px-5 sm:px-8
-                    rounded-xl bg-orange-600 !text-white
-                    text-base sm:text-lg font-bold
-                    hover:bg-orange-700 active:scale-[0.98] disabled:opacity-50
+                    rounded-xl bg-accent !text-white
+                    text-base sm:text-lg font-bold uppercase tracking-wide
+                    hover:brightness-95 active:scale-[0.98] disabled:opacity-50
                     transition shrink-0 shadow-lg
                   "
                 >
@@ -455,25 +466,15 @@ export default function Cart({ freeShippingFrom = 0 }) {
 
             {/* Розгортаємий підсумок */}
             {mobileDetails && (
-              <div className="mt-3 pt-3 border-t space-y-1.5 text-sm">
-                <div className="flex justify-between text-gray-600">
-                  <span>Товарів</span>
-                  <span className="tabular-nums">{itemsCount}</span>
-                </div>
-                <div className="flex justify-between text-gray-600">
-                  <span>Сума товарів</span>
-                  <span className="tabular-nums">{formatUAH(subtotal)}</span>
-                </div>
-                {discount > 0 && (
-                  <div className="flex justify-between text-emerald-700">
-                    <span>Знижка</span>
-                    <span className="tabular-nums">−{formatUAH(discount)}</span>
-                  </div>
-                )}
-                <div className="flex justify-between font-semibold pt-1 border-t">
-                  <span>Разом</span>
-                  <span className="tabular-nums text-red-600">{formatUAH(total)}</span>
-                </div>
+              <div className="mt-3 pt-3 border-t border-line">
+                <Breakdown
+                  itemsCount={itemsCount}
+                  productsSum={productsSum}
+                  addonsSum={addonsSum}
+                  addonsCount={addonsCount}
+                  savings={savings}
+                  total={total}
+                />
               </div>
             )}
 
@@ -511,7 +512,7 @@ function BackButton() {
     <button
       type="button"
       onClick={() => (canGoBack ? nav(-1) : nav("/"))}
-      className="inline-flex items-center justify-center gap-1.5 h-12 sm:h-13 px-5 sm:px-6 rounded-xl bg-white text-gray-900 ring-2 ring-gray-300 text-base font-semibold shadow-sm hover:bg-gray-50 hover:ring-gray-400 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-blue-600 transition"
+      className="inline-flex items-center justify-center gap-1.5 h-12 sm:h-13 px-5 sm:px-6 rounded-xl bg-white text-ink border border-line text-base font-semibold shadow-sm hover:bg-surface hover:border-ink active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-accent transition"
       aria-label="Назад"
     >
       <ChevronLeft className="h-5 w-5" aria-hidden="true" />
@@ -546,7 +547,7 @@ function Qty({ id, value, onChange, min = 1, max = 99, pending = false }) {
         aria-label="Зменшити кількість"
         disabled={pending || value <= min}
         onClick={() => commit((value || min) - 1)}
-        className="inline-flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-xl bg-black !text-white text-lg font-bold hover:bg-gray-900 active:scale-95 disabled:opacity-40 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
+        className="inline-flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-xl bg-ink !text-white text-lg font-bold hover:brightness-110 active:scale-95 disabled:opacity-40 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
       >
         −
       </button>
@@ -558,7 +559,7 @@ function Qty({ id, value, onChange, min = 1, max = 99, pending = false }) {
         inputMode="numeric"
         min={min}
         max={max}
-        className="w-12 sm:w-14 h-10 sm:h-11 text-center rounded-xl border-2 border-gray-200 bg-white text-gray-900 tabular-nums font-semibold text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition"
+        className="w-12 sm:w-14 h-10 sm:h-11 text-center rounded-xl border-2 border-line bg-white text-ink tabular-nums font-semibold text-base focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent transition"
         value={draft}
         onChange={(e) => setDraft(e.target.value.replace(/[^0-9]/g, ""))}
         onBlur={() => commit(draft)}
@@ -571,7 +572,7 @@ function Qty({ id, value, onChange, min = 1, max = 99, pending = false }) {
         aria-label="Збільшити кількість"
         disabled={pending || value >= max}
         onClick={() => commit((value || min) + 1)}
-        className="inline-flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-xl bg-black !text-white text-lg font-bold hover:bg-gray-900 active:scale-95 disabled:opacity-40 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
+        className="inline-flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-xl bg-ink !text-white text-lg font-bold hover:brightness-110 active:scale-95 disabled:opacity-40 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
       >
         +
       </button>
@@ -579,26 +580,31 @@ function Qty({ id, value, onChange, min = 1, max = 99, pending = false }) {
   );
 }
 
-// 🔧 FIX: accent тепер для value (не label), "Разом" — червоний
-function Breakdown({ itemsCount, subtotal, discount, total }) {
+// Детальний підсумок: товари / додатки / економія / разом
+function Breakdown({ itemsCount, productsSum, addonsSum, addonsCount, savings, total }) {
   return (
     <div className="space-y-2 text-[15px]">
-      <Row label="Товарів"       value={String(itemsCount)} />
-      <Row label="Сума товарів"  value={formatUAH(subtotal)} />
-      {discount > 0 && (
-      <Row label="Знижка" value={`−${formatUAH(discount)}`} valueClass="text-emerald-600" />
+      <Row label="Товарів" value={`${itemsCount} шт.`} />
+      <Row label="Вартість товарів" value={formatUAH(productsSum)} />
+      {addonsCount > 0 ? (
+        <Row label={`Додатки (${addonsCount})`} value={`+ ${formatUAH(addonsSum)}`} />
+      ) : (
+        <Row label="Додатки" value="Немає" valueClass="text-ink-soft" />
       )}
-      <div className="pt-2 border-t">
-        <Row label="Разом" value={formatUAH(total)} strong valueClass="text-red-600" />
+      {savings > 0 && (
+        <Row label="Ви заощадили" value={`−${formatUAH(savings)}`} valueClass="text-trust" />
+      )}
+      <div className="pt-2 border-t border-line">
+        <Row label="Разом до сплати" value={formatUAH(total)} strong valueClass="text-red-600" />
       </div>
     </div>
   );
 }
 
-function Row({ label, value, strong = false, valueClass = "text-gray-900" }) {
+function Row({ label, value, strong = false, valueClass = "text-ink" }) {
   return (
     <div className={`flex items-center justify-between gap-3 ${strong ? "font-semibold text-base" : "text-sm"}`}>
-      <span className="text-gray-600">{label}</span>
+      <span className="text-ink-soft">{label}</span>
       <span className={`tabular-nums ${valueClass}`}>{value}</span>
     </div>
   );

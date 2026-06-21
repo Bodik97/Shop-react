@@ -1,28 +1,76 @@
 import { Link } from "react-router-dom";
+import { ShieldCheck, Truck, RotateCcw, ScanSearch, Mail, Clock } from "lucide-react";
+import { FaTelegramPlane, FaViber } from "react-icons/fa";
+
+// Канонічний порядок категорій (збігається з Header / CategorySidebar).
+const CATEGORIES = [
+  { id: "air_rifles",     name: "Пневматичні гвинтівки" },
+  { id: "psp-rifles",     name: "PCP гвинтівки" },
+  { id: "flobers",        name: "Револьвери флобера" },
+  { id: "pnevmo-pistols", name: "Пневматичні пістолети" },
+  { id: "start-pistols",  name: "Стартові пістолети" },
+  { id: "pepper-sprays",  name: "Перцеві балончики" },
+];
+
+const TRUST = [
+  { Icon: ShieldCheck, text: "Оплата при отриманні" },
+  { Icon: Truck,       text: "Доставка по Україні" },
+  { Icon: RotateCcw,   text: "14 днів на повернення" },
+  { Icon: ScanSearch,  text: "Перевірка перед відправкою" },
+];
+
+const EMAIL    = "support@airsoft.shop";
+const SCHEDULE  = "Пн–Пт 10:00–19:00, Сб 11:00–16:00";
+const TELEGRAM = "https://t.me/AirGunShopManager";
+const VIBER    = "viber://chat?number=%2B380961595130";
 
 export default function Footer() {
-  return (
-    <footer className=" bg-white text-black/90">
-      {/* Верхній блок */}
-      <div className="max-w-6xl mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-3 gap-10">
-        {/* Бренд */}
-        <div className="space-y-3">
-          <Link to="/" className="inline-flex items-baseline gap-2">
-            <span className="text-2xl font-bold tracking-tight">AirSoft</span>
-            <span className="text-xs px-2 py-0.5 rounded-full bg-white/10">
-              since {new Date().getFullYear()}
-            </span>
-          </Link>
-          <p className="text-gray-600 text-sm leading-relaxed">
-            Пневматичні товари та аксесуари для спорту і дозвілля. Якість, сервіс, швидка доставка.
-          </p>
+  const year = new Date().getFullYear();
 
-          {/* Соцмережі (відключено за вимогою) */}
-          {/*
-          <div className="flex items-center gap-4 pt-2">
-            ... іконки ...
+  return (
+    <footer className="bg-ink text-stone-300">
+      {/* ── Трас-стрічка ── */}
+      <div className="border-b border-white/10">
+        <div className="max-w-6xl mx-auto px-4 py-5 grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {TRUST.map(({ Icon, text }) => (
+            <div key={text} className="flex items-center gap-2.5">
+              <span className="grid place-items-center w-9 h-9 rounded-lg bg-white/5 shrink-0">
+                <Icon className="w-5 h-5 text-trust" />
+              </span>
+              <span className="text-[13px] sm:text-sm font-medium text-white leading-tight">{text}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Основні колонки ── */}
+      <div className="max-w-6xl mx-auto px-4 py-12 grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-10">
+        {/* Бренд */}
+        <div className="col-span-2 md:col-span-1 space-y-4">
+          <Link to="/" className="inline-block font-stencil text-2xl tracking-wide text-white hover:text-accent transition">
+            AIRSOFT-UA
+          </Link>
+          <p className="text-sm leading-relaxed text-stone-400 max-w-xs">
+            Пневматика та спорядження для спорту й дозвілля. Офіційний продавець: перевіряємо товар перед відправленням і доставляємо по всій Україні.
+          </p>
+          <div className="flex items-center gap-2.5 pt-1">
+            <a
+              href={TELEGRAM}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Telegram"
+              className="grid place-items-center w-11 h-11 rounded-full bg-white/5 text-white hover:bg-accent active:scale-95 transition"
+            >
+              <FaTelegramPlane className="w-5 h-5 translate-x-[-1px]" />
+            </a>
+            <a
+              href={VIBER}
+              aria-label="Viber"
+              className="grid place-items-center w-11 h-11 rounded-full bg-white/5 text-white hover:bg-accent active:scale-95 transition"
+            >
+              <FaViber className="w-5 h-5" />
+            </a>
           </div>
-          */}
         </div>
 
         {/* Навігація */}
@@ -31,27 +79,46 @@ export default function Footer() {
           <FooterLink to="/catalog">Каталог</FooterLink>
           <FooterLink to="/about">Про нас</FooterLink>
           <FooterLink to="/contact">Контакти</FooterLink>
+          <FooterLink to="/history-orders">Мої замовлення</FooterLink>
         </FooterColumn>
 
-        {/* Інформація */}
-        <FooterColumn title="Інформація">
-          <FooterLink to="/privacy-policy">Політика конфіденційності</FooterLink>
-          <FooterLink to="/terms-of-service">Умови використання</FooterLink>
+        {/* Категорії */}
+        <FooterColumn title="Категорії">
+          {CATEGORIES.map((c) => (
+            <FooterLink key={c.id} to={`/category/${c.id}`}>{c.name}</FooterLink>
+          ))}
         </FooterColumn>
+
+        {/* Контакти + Інформація */}
+        <div className="col-span-2 md:col-span-1">
+          <h3 className="text-sm font-display font-semibold uppercase tracking-wider text-white mb-4">
+            Контакти
+          </h3>
+          <ul className="space-y-3 text-sm">
+            <li>
+              <a href={`mailto:${EMAIL}`} className="flex items-center gap-2.5 text-stone-300 hover:text-accent transition">
+                <Mail className="w-4 h-4 text-accent shrink-0" />
+                {EMAIL}
+              </a>
+            </li>
+            <li className="flex items-start gap-2.5 text-stone-400">
+              <Clock className="w-4 h-4 text-accent shrink-0 mt-0.5" />
+              <span>{SCHEDULE}</span>
+            </li>
+          </ul>
+
+          <ul className="mt-5 space-y-2">
+            <FooterLink to="/privacy-policy">Політика конфіденційності</FooterLink>
+            <FooterLink to="/terms-of-service">Умови використання</FooterLink>
+          </ul>
+        </div>
       </div>
 
-      {/* Дівайдер з легким градієнтом */}
-      <div className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-
-      {/* Нижній рядок */}
-      <div className="max-w-6xl mx-auto px-4 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-black/70">
-        <p>© {new Date().toLocaleDateString("uk-UA", { year: "numeric" })} AirSoft. Усі права захищено.</p>
-        <div className="flex items-center gap-4">
-          <MiniLink to="/privacy-policy">Конфіденційність</MiniLink>
-          <MiniLink to="/terms-of-service">Умови</MiniLink>
-          <a href="mailto:info@myshop.com" className="opacity-80 hover:opacity-100 transition">
-            info@myshop.com
-          </a>
+      {/* ── Нижній рядок ── */}
+      <div className="border-t border-white/10">
+        <div className="max-w-6xl mx-auto px-4 py-5 flex flex-col sm:flex-row items-center justify-between gap-2 text-[13px] text-stone-400">
+          <p>© {year} AIRSOFT-UA. Усі права захищено.</p>
+          <p className="text-stone-500">Ціни в гривні (₴) · Оплата при отриманні</p>
         </div>
       </div>
     </footer>
@@ -63,7 +130,7 @@ export default function Footer() {
 function FooterColumn({ title, children }) {
   return (
     <div>
-      <h3 className="text-lg font-semibold mb-3">{title}</h3>
+      <h3 className="text-sm font-display font-semibold uppercase tracking-wider text-white mb-4">{title}</h3>
       <ul className="space-y-2">{children}</ul>
     </div>
   );
@@ -74,28 +141,11 @@ function FooterLink({ to, children }) {
     <li>
       <Link
         to={to}
-        className="group inline-flex items-center gap-2 text-black hover:text-white transition"
+        className="group inline-flex items-center gap-2 text-stone-400 hover:text-white hover:translate-x-0.5 transition-all"
       >
-        <span className="h-1.5 w-1.5 rounded-full bg-gray-800 group-hover:bg-white transition" />
-        <span className="relative">
-          {children}
-          <span
-            className="absolute left-0 -bottom-0.5 h-px w-full bg-white/60 scale-x-0 group-hover:scale-x-100 origin-left transition-transform"
-            aria-hidden="true"
-          />
-        </span>
+        <span className="h-1.5 w-1.5 rounded-full bg-stone-600 group-hover:bg-accent transition shrink-0" aria-hidden="true" />
+        <span>{children}</span>
       </Link>
     </li>
-  );
-}
-
-function MiniLink({ to, children }) {
-  return (
-    <Link
-      to={to}
-      className="opacity-80 hover:opacity-100 transition underline-offset-4 hover:underline"
-    >
-      {children}
-    </Link>
   );
 }

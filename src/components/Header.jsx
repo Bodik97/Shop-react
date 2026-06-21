@@ -10,12 +10,19 @@ import {
   PhoneIcon,
   ShieldCheckIcon,
   TruckIcon,
+  HomeIcon,
+  Squares2X2Icon,
+  ChevronRightIcon,
+  InformationCircleIcon,
+  ClipboardDocumentListIcon,
+  ArrowPathIcon,
+  CheckBadgeIcon,
+  SparklesIcon,
+  ClockIcon,
 } from "@heroicons/react/24/outline";
 import logo from "/img/Logo.svg";
-import { PHONE_DISPLAY, PHONE_HREF } from "../utils/contacts";
 
-// ID мають збігатися з Sanity-схемою (studio-shop/schemaTypes/products.ts).
-// Канонічний порядок такий же, як на сторінці категорії.
+
 const CATEGORIES = [
   { id: "air_rifles",     name: "Пневматичні гвинтівки" },
   { id: "psp-rifles",     name: "PCP гвинтівки" },
@@ -23,6 +30,17 @@ const CATEGORIES = [
   { id: "pnevmo-pistols", name: "Пневматичні пістолети" },
   { id: "start-pistols",  name: "Стартові пістолети" },
   { id: "pepper-sprays",    name: "Перцеві балончики" },
+];
+
+// Переваги для бігаючого рядка у верхній смузі.
+const PERKS = [
+  { Icon: ShieldCheckIcon,      text: "Оплата при отриманні" },
+  { Icon: TruckIcon,            text: "Доставка по всій Україні" },
+  { Icon: ArrowPathIcon,        text: "14 днів на повернення" },
+  { Icon: CheckBadgeIcon,       text: "Гарантія якості" },
+  { Icon: SparklesIcon,         text: "Оригінальна продукція" },
+  { Icon: MagnifyingGlassIcon,  text: "Перевірка перед відправкою" },
+  { Icon: ClockIcon,            text: "10 років на ринку" },
 ];
 
 export default function Header() {
@@ -72,28 +90,50 @@ export default function Header() {
     </NavLink>
   );
 
+  // Пункт мобільного меню: іконка + назва + активний стан, тач-таргет ≥44px
+  const DrawerLink = ({ to, icon: Icon, children, sub = false }) => (
+    <NavLink
+      to={to}
+      onClick={() => setOpen(false)}
+      onPointerDown={press}
+      className={({ isActive }) =>
+        `flex items-center gap-3 w-full rounded-xl px-3 min-h-[48px] transition-transform duration-100
+        [&.pressed]:scale-[0.97] ${sub ? "text-[15px]" : "text-[16px] font-semibold"} ${
+          isActive
+            ? "bg-orange-50 text-accent"
+            : sub
+            ? "text-ink-soft hover:bg-surface hover:text-ink"
+            : "text-ink hover:bg-surface"
+        }`
+      }
+    >
+      {Icon && <Icon className="w-5 h-5 shrink-0" />}
+      <span className="flex-1">{children}</span>
+    </NavLink>
+  );
+
   return (
     <>
-      {/* Верхня смуга: довіра + телефон */}
+      {/* Верхня смуга: переваги — бігаючий рядок */}
       <div className="bg-ink text-white text-[13px]">
-        <div className="max-w-7xl mx-auto px-3 sm:px-4 h-9 flex items-center justify-between gap-4">
-          <div className="hidden sm:flex items-center gap-5 text-stone-300">
-            <span className="flex items-center gap-1.5">
-              <ShieldCheckIcon className="w-4 h-4 text-accent" />
-              Оплата при отриманні
-            </span>
-            <span className="flex items-center gap-1.5">
-              <TruckIcon className="w-4 h-4 text-accent" />
-              Доставка по всій Україні
-            </span>
+        <div className="relative max-w-7xl mx-auto h-9 overflow-hidden flex items-center">
+          <div className="flex shrink-0 items-center whitespace-nowrap will-change-transform animate-marquee">
+            {PERKS.map((p) => (
+              <span key={p.text} className="flex items-center gap-1.5 text-stone-300 px-6">
+                <p.Icon className="w-4 h-4 text-accent shrink-0" />
+                {p.text}
+              </span>
+            ))}
+            {PERKS.map((p) => (
+              <span key={`dup-${p.text}`} aria-hidden="true" className="flex items-center gap-1.5 text-stone-300 px-6">
+                <p.Icon className="w-4 h-4 text-accent shrink-0" />
+                {p.text}
+              </span>
+            ))}
           </div>
-          <a
-            href={`tel:${PHONE_HREF}`}
-            className="flex items-center gap-1.5 font-semibold ml-auto sm:ml-0 hover:text-accent transition"
-          >
-            <PhoneIcon className="w-4 h-4 text-accent" />
-            {PHONE_DISPLAY}
-          </a>
+          {/* Fade-краї для м'якого «входу/виходу» */}
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-ink to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-ink to-transparent" />
         </div>
       </div>
 
@@ -108,31 +148,6 @@ export default function Header() {
             {/* Десктоп-нав */}
             <nav className="hidden lg:flex items-center gap-1 text-[15px] font-semibold shrink-0">
               <Item to="/">Головна</Item>
-              <div className="relative group">
-                <NavLink
-                  to="/catalog"
-                  className="px-3 py-2 text-ink hover:text-accent transition uppercase tracking-wide inline-block"
-                >
-                  Каталог
-                </NavLink>
-                <div className="absolute left-0 top-full mt-2 min-w-64 bg-white border border-line rounded-xl shadow-lg p-4 opacity-0 invisible
-                                group-hover:opacity-100 group-hover:visible transition-all duration-200 z-10">
-                  <div className="grid grid-cols-2 gap-2">
-                    {CATEGORIES.map((c) => (
-                      <Link
-                        key={c.id}
-                        to={`/category/${c.id}`}
-                        onClick={() => setOpen(false)}
-                        className="rounded-md px-3 py-2 hover:bg-orange-50 hover:text-accent text-sm text-ink-soft transition"
-                      >
-                        {c.name}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              </div>
-              <Item to="/about">Про нас</Item>
-              <Item to="/contact">Контакти</Item>
             </nav>
 
             {/* Пошук (десктоп/планшет) */}
@@ -153,25 +168,27 @@ export default function Header() {
             </form>
 
             {/* Праворуч: Замовлення + Кошик + бургер */}
-            <div className="flex items-center gap-1.5 sm:gap-2.5 ml-auto md:ml-0">
+            <div className="flex items-center gap-1.5 sm:gap-2.5 ml-auto">
               <Link
                 to="/history-orders"
                 onClick={() => setOpen(false)}
-                className="hidden lg:inline-flex items-center gap-2 rounded-xl border border-line px-4 py-2.5 text-[15px] text-ink font-semibold hover:bg-surface transition"
+                className="hidden lg:inline-flex items-center gap-2 rounded-xl border border-line bg-white px-4 h-12 text-[15px] text-ink font-semibold
+                  hover:border-ink hover:bg-surface active:scale-95 transition-all"
                 aria-label="Мої замовлення"
               >
+                <ClipboardDocumentListIcon className="h-5 w-5 text-ink-soft" />
                 Замовлення
               </Link>
 
               <Link
                 to="/cart"
                 onClick={() => setOpen(false)}
-                className="relative inline-flex items-center gap-1.5 rounded-xl bg-accent px-3 sm:px-5 h-11 sm:h-12 text-white font-bold uppercase tracking-wide hover:brightness-95 active:scale-95 transition"
+                className="relative inline-flex items-center gap-1.5 rounded-xl bg-black px-4 sm:px-5 h-11 sm:h-12  text-white font-bold uppercase tracking-wide hover:brightness-95 active:scale-95 transition"
                 aria-label="Перейти до кошика"
               >
-                <ShoppingCartIcon className="h-6 w-6 text-white" />
+                <ShoppingCartIcon className="h-6 w-6 text-white center" />
                 {cartCount > 0 && (
-                  <span className="absolute -top-1.5 -right-1.5 min-w-5 h-5 grid place-items-center rounded-full bg-ink px-1 text-[11px] font-bold text-white">
+                  <span className="absolute -top-1.5 -right-1.5 min-w-5 h-5 grid place-items-center rounded-full bg-red-500 px-1 text-[11px] font-bold text-white">
                     {cartCount}
                   </span>
                 )}
@@ -215,74 +232,68 @@ export default function Header() {
         {/* Drawer */}
         <aside
           ref={drawerRef}
-          className={`fixed left-0 top-0 z-[90] h-full w-80 max-w-[85vw] bg-white shadow-2xl border-r border-line transition-transform duration-400
+          className={`fixed left-0 top-0 z-[90] flex flex-col h-full w-80 max-w-[85vw] bg-white shadow-2xl border-r border-line transition-transform duration-300
             ${open ? "translate-x-0" : "-translate-x-full"}`}
           aria-label="Мобільне меню"
         >
-          <div className="flex items-center justify-between p-2 ">
+          {/* Шапка меню */}
+          <div className="flex items-center justify-between gap-2 h-16 px-4 border-b border-line shrink-0">
             <Link to="/" onClick={() => setOpen(false)} aria-label="На головну">
-              <img src={logo} alt="AirSoft-UA" className="h-10 w-20" />
+              <img src={logo} alt="AirSoft-UA" className="h-9 w-auto" />
             </Link>
             <button
               ref={firstFocusableRef}
               onClick={() => setOpen(false)}
-              className="p-2 bg-ink rounded-lg hover:brightness-110 active:scale-95 transition"
+              className="grid place-items-center h-11 w-11 bg-ink rounded-xl hover:brightness-110 active:scale-95 transition"
               aria-label="Закрити меню"
             >
               <XMarkIcon className="h-6 w-6 text-white" />
             </button>
           </div>
-          <hr className="my-2 border-line" />
-          <nav className="p-2 space-y-2 text-[18px] font-medium w-full select-none [-webkit-tap-highlight-color:transparent]">
-            {CATEGORIES.map((c) => (
-              <Link
-                key={c.id}
-                to={`/category/${c.id}`}
-                onClick={() => setOpen(false)}
-                onPointerDown={press}
-                className="block w-full rounded-xl px-4 py-3 bg-white text-ink
-                          transition-transform duration-100 [transform]
-                          [&.pressed]:bg-surface [&.pressed]:scale-95"
-              >
-                {c.name}
-              </Link>
-            ))}
 
-            <hr className="my-2 border-line" />
+          {/* Прокручуваний вміст */}
+          <nav className="flex-1 overflow-y-auto overscroll-contain px-3 py-3 select-none [-webkit-tap-highlight-color:transparent]">
+            {/* Категорії — одразу, повним списком */}
+            <p className="px-3 pb-2 text-[12px] font-bold uppercase tracking-wider text-ink-soft">
+              Категорії
+            </p>
+            <ul className="space-y-0.5">
+              {CATEGORIES.map((c) => (
+                <li key={c.id}>
+                  <NavLink
+                    to={`/category/${c.id}`}
+                    onClick={() => setOpen(false)}
+                    onPointerDown={press}
+                    className={({ isActive }) =>
+                      `flex items-center justify-between gap-3 w-full rounded-xl px-3 min-h-[48px] text-[15px] transition-transform duration-100
+                      [&.pressed]:scale-[0.97] ${
+                        isActive
+                          ? "bg-orange-50 text-accent font-semibold"
+                          : "text-ink hover:bg-surface"
+                      }`
+                    }
+                  >
+                    <span>{c.name}</span>
+                    <ChevronRightIcon className="w-4 h-4 shrink-0 opacity-50" />
+                  </NavLink>
+                </li>
+              ))}
+            </ul>
 
-            <NavLink
-              to="/about"
-              onClick={() => setOpen(false)}
-              onPointerDown={press}
-              className={({ isActive }) =>
-                `block w-full rounded-xl px-4 py-3 bg-surface text-ink
-                transition-transform duration-100 [transform]
-                [&.pressed]:bg-orange-50 [&.pressed]:scale-95 ${isActive ? "text-accent" : ""}`
-              }
-            >
-              Про нас
-            </NavLink>
+            <hr className="my-3 border-line" />
 
-            <NavLink
-              to="/contact"
-              onClick={() => setOpen(false)}
-              onPointerDown={press}
-              className={({ isActive }) =>
-                `block w-full rounded-xl px-4 py-3 bg-surface text-ink
-                transition-transform duration-100 [transform]
-                [&.pressed]:bg-orange-50 [&.pressed]:scale-95 ${isActive ? "text-accent" : ""}`
-              }
-            >
-              Контакти
-            </NavLink>
+            <DrawerLink to="/" icon={HomeIcon}>Головна</DrawerLink>
+            <DrawerLink to="/catalog" icon={Squares2X2Icon}>Всі товари</DrawerLink>
+            <DrawerLink to="/about" icon={InformationCircleIcon}>Про нас</DrawerLink>
+            <DrawerLink to="/contact" icon={PhoneIcon}>Контакти</DrawerLink>
           </nav>
 
-          {/* Кошик + Замовлення */}
-          <div className="p-4 border-t border-line space-y-2">
+          {/* Закріплений низ: основна дія + замовлення */}
+          <div className="shrink-0 border-t border-line p-3 space-y-2 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
             <Link
               to="/cart"
               onClick={() => setOpen(false)}
-              className="relative inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-accent px-4 py-3 text-white font-semibold shadow-sm
+              className="relative inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-black px-4 min-h-[52px] text-white font-bold uppercase tracking-wide shadow-sm
                 hover:brightness-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent
                 motion-safe:transition active:scale-[0.98] touch-manipulation"
               aria-label="Перейти до кошика"
@@ -290,7 +301,7 @@ export default function Header() {
               <ShoppingCartIcon className="h-5 w-5" />
               Кошик
               {cartCount > 0 && (
-                <span className="ml-2 rounded-full bg-ink px-2 py-0.5 text-xs text-white">
+                <span className="ml-1 rounded-full bg-red-500 px-2 py-0.5 text-xs text-white">
                   {cartCount}
                 </span>
               )}
@@ -299,9 +310,10 @@ export default function Header() {
             <Link
               to="/history-orders"
               onClick={() => setOpen(false)}
-              className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-line px-4 py-3 text-base text-ink font-semibold hover:bg-surface active:scale-95 transition"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-line px-4 min-h-[48px] text-[15px] text-ink font-semibold hover:bg-surface active:scale-[0.98] transition"
               aria-label="Мої замовлення"
             >
+              <ClipboardDocumentListIcon className="h-5 w-5 text-accent" />
               Мої замовлення
             </Link>
           </div>

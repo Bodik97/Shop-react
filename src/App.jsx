@@ -1,5 +1,5 @@
 // src/App.jsx
-import { useEffect, lazy, Suspense } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
 import { Routes, Route, useLocation, Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { Loader2, ArrowRight, BadgeCheck, ShieldCheck, Truck, RotateCcw, ScanSearch } from "lucide-react";
@@ -41,6 +41,9 @@ import Layout from "./components/Layout";
 import PopularSlider from "./components/PopularSlider";
 import ContactFAB from "./components/ContactFAB";
 import ReviewsSlider from "./components/ReviewsSlider";
+import FaqSection from "./components/FaqSection";
+import ConsultModal from "./components/ConsultModal";
+import HeroRadar from "./components/HeroRadar";
 
 // Lazy сторінки
 const CatalogPage      = lazy(() => import("./components/CatalogPage"));
@@ -83,6 +86,7 @@ const fetchPopularProducts = async () => {
 // ─── AppContent ──────────────────────────────────────────────────────────
 function AppContent() {
   const { cartCount } = useCart();
+  const [consultOpen, setConsultOpen] = useState(false);
 
   // Використовуємо React Query замість useEffect/useState
   const { data: products = [], isLoading } = useQuery({
@@ -108,6 +112,7 @@ function AppContent() {
       {/* ScrollToTop видалено, щоб не конфліктувати з відновленням скролу */}
       <PageViewTracker />
 
+      <div className="flex min-h-dvh flex-col">
       <Header cartCount={cartCount} />
 
       <Helmet>
@@ -122,6 +127,7 @@ function AppContent() {
         `}</script>
       </Helmet>
 
+      <div className="flex-1">
       <Layout>
       <Suspense fallback={<RouteFallback />}>
         <Routes>
@@ -130,31 +136,36 @@ function AppContent() {
             element={
               <main>
                 <Helmet>
-                  <title>AirSoft-UA — Пневматичні гвинтівки та пістолети | Купити в Україні</title>
-                  <meta name="description" content="Магазин пневматичних товарів в Україні: гвинтівки, пістолети, PCP, револьвери флобера." />
+                  <title>AirSoft-UA — Професійна пневматика та спорядження | Купити в Україні</title>
+                  <meta name="description" content="Офіційний магазин пневматики та спорядження в Україні. Перевіряємо товар перед відправленням, доставка по всій Україні, оплата при отриманні." />
                   <link rel="canonical" href="https://airsoft-ua.com/" />
                 </Helmet>
 
                 {/* HERO — ціннісна пропозиція + заклики */}
                 <section className="relative overflow-hidden rounded-2xl border border-line bg-gradient-to-br from-stone-50 via-surface to-stone-200 px-6 sm:px-10 py-10 sm:py-14">
-                  <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-ink max-w-2xl leading-tight">
-                    Професійна пневматика та зброя <span className="text-accent">з гарантією</span>
-                  </h1>
-                  <p className="mt-4 text-base sm:text-lg text-ink-soft max-w-xl">
-                    Офіційний продавець. Перевіряємо кожен товар перед відправленням і відправляємо по всій Україні. Оплата при отриманні.
-                  </p>
-                  <div className="mt-6 flex flex-wrap gap-3">
-                    <Link to="/catalog" className="inline-flex items-center gap-2 rounded-lg bg-accent px-6 py-3.5 font-display font-semibold text-white hover:brightness-95 active:scale-95 transition">
-                      Перейти в каталог <ArrowRight className="w-5 h-5" />
-                    </Link>
-                    <Link to="/contact" className="inline-flex items-center rounded-lg border-2 border-ink px-6 py-3.5 font-display font-semibold text-ink hover:bg-ink hover:text-white transition">
-                      Консультація
-                    </Link>
-                  </div>
-                  <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm font-semibold text-ink">
-                    <span className="flex items-center gap-1.5"><BadgeCheck className="w-4 h-4 text-trust" />10 років на ринку</span>
-                    <span className="flex items-center gap-1.5"><BadgeCheck className="w-4 h-4 text-trust" />15 000+ клієнтів</span>
-                    <span className="flex items-center gap-1.5"><BadgeCheck className="w-4 h-4 text-trust" />Гарантія якості</span>
+                  {/* Декоративний анімований радар — приціл/точність, за текстом */}
+                  <HeroRadar />
+
+                  <div className="relative z-10">
+                    <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-ink max-w-2xl leading-tight">
+                      Професійна пневматика <span className="text-accent">та спорядження</span>
+                    </h1>
+                    <p className="mt-4 text-base sm:text-lg text-ink-soft max-w-xl">
+                      Офіційний продавець. Перевіряємо кожен товар перед відправленням і відправляємо по всій Україні. Оплата при отриманні.
+                    </p>
+                    <div className="mt-6 flex flex-wrap gap-3">
+                      <Link to="/catalog" className="inline-flex items-center gap-2 rounded-lg bg-accent px-6 py-3.5 font-display font-semibold text-white hover:brightness-95 active:scale-95 transition">
+                        Перейти в каталог <ArrowRight className="w-5 h-5" />
+                      </Link>
+                      <button type="button" onClick={() => setConsultOpen(true)} className="inline-flex items-center rounded-lg border-2 border-ink px-6 py-3.5 font-display font-semibold text-ink hover:bg-ink hover:text-white transition">
+                        Консультація
+                      </button>
+                    </div>
+                    <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm font-semibold text-ink">
+                      <span className="flex items-center gap-1.5"><BadgeCheck className="w-4 h-4 text-trust" />10 років на ринку</span>
+                      <span className="flex items-center gap-1.5"><BadgeCheck className="w-4 h-4 text-trust" />Оригінальна продукція</span>
+                      <span className="flex items-center gap-1.5"><BadgeCheck className="w-4 h-4 text-trust" />Гарантія якості</span>
+                    </div>
                   </div>
                 </section>
 
@@ -166,7 +177,7 @@ function AppContent() {
                     { Icon: ScanSearch, title: "Перевірка перед відправкою", sub: "Тестуємо кожен товар" },
                     { Icon: RotateCcw, title: "14 днів на повернення", sub: "Без зайвих питань" },
                   ].map(({ Icon, title, sub }) => (
-                    <div key={title} className="flex items-center gap-3 rounded-xl border border-line bg-white p-4">
+                    <div key={title} className="flex items-center justify-center gap-3 rounded-xl border border-line bg-white p-4">
                       <span className="grid place-items-center w-10 h-10 rounded-lg bg-green-100 shrink-0">
                         <Icon className="w-5 h-5 text-trust" />
                       </span>
@@ -190,6 +201,7 @@ function AppContent() {
                   )}
                 </section>
                 <ReviewsSlider />
+                <FaqSection />
               </main>
             }
           />
@@ -212,9 +224,12 @@ function AppContent() {
         </Routes>
       </Suspense>
       </Layout>
+      </div>
 
       <Footer />
+      </div>
       <ContactFAB />
+      <ConsultModal open={consultOpen} onClose={() => setConsultOpen(false)} />
     </>
   );
 }

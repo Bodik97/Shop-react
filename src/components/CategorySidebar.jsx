@@ -15,9 +15,9 @@ const CATEGORIES = [
 ];
 
 const itemBase =
-  "flex items-center gap-3 px-4 py-3 text-[15px] whitespace-nowrap border-line " +
+  "flex items-center gap-3 px-4 py-3 text-[15px] border-line " +
   "transition-colors lg:hover:bg-surface lg:hover:text-accent " +
-  "border-b border-r lg:border-r-0";
+  "border-b";
 
 const itemClass = ({ isActive }) =>
   `${itemBase} ${
@@ -29,12 +29,12 @@ const itemClass = ({ isActive }) =>
 export default function CategorySidebar() {
   return (
     <aside className="lg:sticky lg:top-[88px] rounded-xl border border-line bg-white overflow-hidden">
-      <div className="hidden lg:flex items-center gap-2 px-4 py-3.5 bg-ink text-white font-display font-semibold text-[15px]">
+      <div className="flex items-center gap-2 px-4 py-3.5 bg-ink text-white font-display font-semibold text-[15px]">
         <Menu className="w-4 h-4" />
         Категорії
       </div>
 
-      <nav className="flex lg:block overflow-x-auto no-scrollbar">
+      <nav>
         {CATEGORIES.map(({ id, name, Icon }) => (
           <NavLink key={id} to={`/category/${id}`} className={itemClass}>
             <Icon className="w-5 h-5 text-ink-soft" />

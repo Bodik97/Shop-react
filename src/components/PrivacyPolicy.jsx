@@ -2,7 +2,7 @@ import { Helmet } from "react-helmet";
 
 export default function PrivacyPolicy() {
   return (
-    <main className="bg-transparent min-h-screen text-white">
+    <main className="bg-white text-ink">
       <Helmet>
         <title>Політика конфіденційності | AirSoft</title>
         <meta
@@ -12,13 +12,13 @@ export default function PrivacyPolicy() {
       </Helmet>
 
       {/* Hero-заголовок */}
-      <section className="border-b border-gray-800 bg-transparent">
+      <section className="border-b border-line bg-surface">
         <div className="max-w-5xl mx-auto px-4 py-16 text-center">
-          <h1 className="policy-title font-bold mb-3 text-white">
+          <h1 className="policy-title font-bold mb-3 text-ink">
             Політика конфіденційності
             </h1>
 
-          <p className="text-white max-w-2xl mx-auto">
+          <p className="text-ink max-w-2xl mx-auto">
             Ми цінуємо вашу довіру та дбаємо про захист особистих даних усіх користувачів
             нашого сайту AirSoft.
           </p>
@@ -34,10 +34,10 @@ export default function PrivacyPolicy() {
           </p>
 
           <div>
-            <h2 className="text-2xl font-semibold mb-3 text-white">
+            <h2 className="text-2xl font-semibold mb-3 text-ink">
               1. Збір інформації
             </h2>
-            <p className="text-white">
+            <p className="text-ink">
               Ми збираємо лише необхідну інформацію, яку ви добровільно надаєте під час
               оформлення замовлення чи заповнення форми: ім’я, номер телефону, електронну
               пошту, адресу доставки. Дані використовуються виключно для обробки
@@ -46,28 +46,28 @@ export default function PrivacyPolicy() {
           </div>
 
           <div>
-            <h2 className="text-2xl font-semibold mb-3 text-white">
+            <h2 className="text-2xl font-semibold mb-3 text-ink">
               2. Використання даних
             </h2>
-            <p className="text-white">
+            <p className="text-ink">
               Ваші персональні дані не передаються третім особам, крім служб доставки або
               платіжних сервісів, необхідних для виконання замовлення.
             </p>
           </div>
 
           <div>
-            <h2 className="text-2xl font-semibold mb-3 text-white">
+            <h2 className="text-2xl font-semibold mb-3 text-ink">
               3. Захист інформації
             </h2>
-            <p className="text-white">
+            <p className="text-ink">
               Ми застосовуємо сучасні технічні та організаційні засоби безпеки, щоб
               запобігти несанкціонованому доступу, втраті чи розголошенню ваших даних.
             </p>
           </div>
 
           <div>
-            <h2 className="text-2xl font-semibold mb-3 text-white">4. Файли cookie</h2>
-            <p className="text-white">
+            <h2 className="text-2xl font-semibold mb-3 text-ink">4. Файли cookie</h2>
+            <p className="text-ink">
               Сайт може використовувати cookie для покращення зручності користування.
               Ви можете вимкнути cookie у налаштуваннях браузера. Це не вплине на
               основні функції сайту.
@@ -75,20 +75,20 @@ export default function PrivacyPolicy() {
           </div>
 
           <div>
-            <h2 className="text-2xl font-semibold mb-3 text-white">
+            <h2 className="text-2xl font-semibold mb-3 text-ink">
               5. Зміни до політики
             </h2>
-            <p className="text-white">
+            <p className="text-ink">
               Ми залишаємо за собою право оновлювати цю політику. Актуальна версія завжди
               опублікована на цій сторінці із зазначенням дати оновлення.
             </p>
           </div>
 
           <div>
-            <h2 className="text-2xl font-semibold mb-3 text-white">
+            <h2 className="text-2xl font-semibold mb-3 text-ink">
               6. ІНФОРМАЦІЙНЕ РОЗ’ЯСНЕННЯ щодо законності товару
             </h2>
-            <p className="text-white">
+            <p className="text-ink">
               Даний товар належить до категорії виробів, що перебувають у вільному цивільному обігу на території України.
 
               Відповідно до чинного законодавства України, зокрема:
@@ -116,20 +116,20 @@ export default function PrivacyPolicy() {
           </div>
 
           <div>
-            <h2 className="text-2xl font-semibold mb-3 text-white">6. Контакти</h2>
-            <p className="text-white">
+            <h2 className="text-2xl font-semibold mb-3 text-ink">6. Контакти</h2>
+            <p className="text-ink">
               Якщо у вас є питання щодо обробки персональних даних, напишіть на{" "}
               <a
-                href="mailto:info@myshop.com"
-                className="text-white hover:underline"
+                href="mailto:support@airsoft.shop"
+                className="text-accent hover:underline"
               >
-                info@myshop.com
+                support@airsoft.shop
               </a>
               .
             </p>
           </div>
 
-          <p className="text-sm text-white pt-6 border-t border-white/10">
+          <p className="text-sm text-ink-soft pt-6 border-t border-line">
             Останнє оновлення: {new Date().toLocaleDateString("uk-UA")}
           </p>
         </div>

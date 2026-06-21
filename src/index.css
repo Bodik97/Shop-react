@@ -69,6 +69,18 @@
     cursor: pointer;
   }
 
+  /* Єдиний шрифт заголовків — Lexend (display); тіло — Source Sans 3 (на body).
+     Стенсил лишається тільки для логотипа. Утиліти Tailwind (font-*) можуть
+     перекрити це за потреби, бо правило в @layer base. */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-display);
+  }
+
   /* Великі заголовки — тут якість шрифту важливіша за швидкість */
   h1,
   h2,
@@ -145,6 +157,59 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .animate-fadeUp { animation: none; }
+}
+
+/* Бігаючий рядок переваг у верхній смузі (контент дублюється 2×, зсув -50%). */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 32s linear infinite;
+}
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee { animation: none; }
+}
+
+/* Hero "радар" — обертовий промінь + пульсуючі пінги + блипи. */
+.hero-radar-sweep {
+  transform-box: view-box;
+  transform-origin: 100px 100px;
+  animation: heroRadarSpin 4.5s linear infinite;
+}
+@keyframes heroRadarSpin { to { transform: rotate(360deg); } }
+
+.hero-radar-ping {
+  transform-box: view-box;
+  transform-origin: 100px 100px;
+  opacity: 0;
+  animation: heroRadarPing 4.5s ease-out infinite;
+}
+.hero-radar-ping-2 { animation-delay: 2.25s; }
+@keyframes heroRadarPing {
+  0%   { transform: scale(0.3); opacity: 0.5; }
+  70%  { opacity: 0.06; }
+  100% { transform: scale(6.2); opacity: 0; }
+}
+
+.hero-radar-blip {
+  opacity: 0;
+  animation: heroRadarBlip 4.5s ease-in-out infinite;
+}
+.hero-radar-blip-2 { animation-delay: 2s; }
+@keyframes heroRadarBlip {
+  0%, 100% { opacity: 0; }
+  45%, 60% { opacity: 0.7; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-radar-sweep,
+  .hero-radar-ping,
+  .hero-radar-blip { animation: none; }
+  .hero-radar-ping { opacity: 0.12; transform: scale(2); }
 }
 
 /* ═══════════════════════════════════════════════════

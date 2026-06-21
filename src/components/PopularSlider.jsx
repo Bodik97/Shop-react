@@ -27,7 +27,7 @@ export default function PopularSlider({
     <section className="py-6 sm:py-8 px-2 sm:px-0"> {/* Додав невеликий відступ для всієї секції */}
       {/* Заголовок */}
       <div className="mb-4 sm:mb-6 px-1">
-        <h2 className="text-lg sm:text-2xl font-stencil uppercase tracking-[0.15em] sm:tracking-[0.25em] text-white">
+        <h2 className="text-lg sm:text-2xl font-display font-bold uppercase tracking-[0.15em] sm:tracking-[0.25em] text-accent">
           {title}
         </h2>
       </div>

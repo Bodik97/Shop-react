@@ -44,26 +44,26 @@ export default function HistoryOrders() {
   if (!orders.length) {
     return (
       <main className="mx-auto max-w-screen-sm px-3 sm:px-6 py-8 sm:py-10 min-h-[800px]">
-        <div className="rounded-2xl sm:rounded-3xl border bg-white p-5 sm:p-8 text-center shadow-sm">
-          <div className="mx-auto grid h-14 w-14 sm:h-16 sm:w-16 place-items-center rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow mb-3 sm:mb-4">
+        <div className="rounded-2xl sm:rounded-3xl border border-line bg-white p-5 sm:p-8 text-center shadow-sm">
+          <div className="mx-auto grid h-14 w-14 sm:h-16 sm:w-16 place-items-center rounded-2xl bg-accent text-white shadow mb-3 sm:mb-4">
             <Package className="h-7 w-7 sm:h-8 sm:w-8" />
           </div>
-          <h1 className="text-xl sm:text-2xl font-extrabold text-gray-900 mb-2">
+          <h1 className="text-xl sm:text-2xl font-extrabold text-ink mb-2">
             Замовлень ще немає
           </h1>
-          <p className="text-xs sm:text-sm text-gray-500">
+          <p className="text-xs sm:text-sm text-ink-soft">
             Тут зберігатимуться всі ваші замовлення після оформлення.
           </p>
           <div className="mt-5 sm:mt-6 flex flex-col sm:flex-row gap-2.5 sm:gap-3 justify-center">
             <Link
               to="/"
-              className="inline-flex items-center justify-center gap-2 h-11 px-4 sm:px-5 rounded-2xl bg-black text-white text-sm sm:text-base font-semibold hover:bg-black/90 transition"
+              className="inline-flex items-center justify-center gap-2 h-11 px-4 sm:px-5 rounded-xl bg-accent text-white text-sm sm:text-base font-display font-semibold hover:brightness-95 active:scale-[0.98] transition"
             >
               <Home className="h-4 w-4" /> На головну
             </Link>
             <Link
               to="/cart"
-              className="inline-flex items-center justify-center gap-2 h-11 px-4 sm:px-5 rounded-2xl border font-semibold text-sm sm:text-base text-gray-800 hover:bg-gray-50 transition"
+              className="inline-flex items-center justify-center gap-2 h-11 px-4 sm:px-5 rounded-xl border border-line font-semibold text-sm sm:text-base text-ink hover:bg-surface hover:border-ink transition"
             >
               <ShoppingCart className="h-4 w-4" /> До кошика
             </Link>
@@ -82,22 +82,15 @@ export default function HistoryOrders() {
 
       {/* ── Ліва частина: іконка + заголовок ── */}
         <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
-          <div className="
-            grid place-items-center shrink-0
-            h-12 w-12 sm:h-12 sm:w-12
-            rounded-xl bg-black/40 ring-1 ring-white/10
-          ">
+          <div className="grid place-items-center shrink-0 h-12 w-12 rounded-xl bg-ink">
             <Package className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
           </div>
 
           <div className="min-w-0">
-            <h1 className="
-              text-base sm:text-xl md:text-2xl
-              font-extrabold text-white leading-tight truncate
-            ">
+            <h1 className="text-base sm:text-xl md:text-2xl font-extrabold text-ink leading-tight truncate">
               Мої замовлення
             </h1>
-            <p className="text-[11px] sm:text-sm text-gray-300">
+            <p className="text-[11px] sm:text-sm text-ink-soft">
               {orders.length} {orders.length === 1 ? "замовлення" : "замовлень"}
             </p>
           </div>
@@ -110,16 +103,16 @@ export default function HistoryOrders() {
           className="
             inline-flex items-center justify-center gap-1.5
             h-12 sm:h-14
-            w-20 sm:w-20
+            w-20 sm:w-auto
             px-3 sm:px-5
-            rounded-xl sm:rounded-2xl
-            bg-black !text-white
+            rounded-xl
+            border border-line bg-white !text-ink
             text-xs sm:text-sm font-semibold
-            hover:bg-gray-800 active:scale-[0.98]
+            hover:bg-surface hover:border-ink active:scale-[0.98]
             transition shrink-0
           "
         >
-          <Home className="h-7 w-7" />
+          <Home className="h-6 w-6" />
           <span className="hidden xs:inline">На головну</span>
         </Link>
 
@@ -135,16 +128,16 @@ export default function HistoryOrders() {
           return (
             <div
               key={order.orderId}
-              className={` transition-all ${
-                isOpen ? " shadow-md" : "border-transparent "
+              className={`rounded-xl border border-line overflow-hidden transition-shadow ${
+                isOpen ? "shadow-md" : ""
               }`}
             >
               {/* ── Шапка замовлення ── */}
               <button
                 type="button"
                 onClick={() => toggle(order.orderId)}
-                className={`w-full flex items-center justify-between gap-2 rounded-lg border-transparent sm:gap-4 px-3 sm:px-5 py-4 text-left transition-colors ${
-                  isOpen ? "bg-black text-white" : "bg-white text-black hover:bg-gray-50"
+                className={`w-full flex items-center justify-between gap-2 sm:gap-4 px-3 sm:px-5 py-4 text-left transition-colors ${
+                  isOpen ? "bg-ink text-white" : "bg-white text-ink hover:bg-surface"
                 }`}
               >
                 <div className="flex-1 min-w-0">
@@ -154,14 +147,14 @@ export default function HistoryOrders() {
                       № {order.orderId}
                     </span>
                     <span className={`text-[10px] sm:text-xs font-medium uppercase ${
-                      isOpen ? "text-gray-400" : "text-gray-500"
+                      isOpen ? "text-stone-300" : "text-ink-soft"
                     }`}>
                       {formatDate(order.createdAt)}
                     </span>
                   </div>
                   {/* Ім'я + телефон */}
                   <div className={`mt-1 text-xs sm:text-sm font-bold uppercase truncate ${
-                    isOpen ? "text-white" : "text-black"
+                    isOpen ? "text-white" : "text-ink"
                   }`}>
                     {order.name && <span>{order.name}</span>}
                     {order.name && order.phone && <span className="mx-1.5 opacity-40">|</span>}
@@ -170,7 +163,7 @@ export default function HistoryOrders() {
                   {/* Мітка "зі знижкою" */}
                   {orderSavings > 0 && (
                     <div className={`mt-1 text-[10px] sm:text-xs font-black uppercase ${
-                      isOpen ? "text-red-400" : "text-[#e30613]"
+                      isOpen ? "text-red-300" : "text-red-600"
                     }`}>
                       Знижка: {formatUAH(orderSavings)}
                     </div>
@@ -180,23 +173,23 @@ export default function HistoryOrders() {
                 {/* Сума + іконка */}
                 <div className="flex items-center gap-2 sm:gap-3 shrink-0">
                   <span className={`text-base sm:text-xl font-black tabular-nums ${
-                    isOpen ? "text-white" : "text-[#e30613]"
+                    isOpen ? "text-white" : "text-red-600"
                   }`}>
                     {formatUAH(order.total)}
                   </span>
                   {isOpen
                     ? <ChevronUp className="h-5 w-5 text-white" />
-                    : <ChevronDown className="h-5 w-5 text-gray-400" />
+                    : <ChevronDown className="h-5 w-5 text-ink-soft" />
                   }
                 </div>
               </button>
 
               {/* ── Деталі ── */}
               {isOpen && (
-                <div className="px-3 sm:px-5 pb-5 pt-4 bg-[#f9f9f9]">
+                <div className="px-3 sm:px-5 pb-5 pt-4 bg-surface">
                   {items.length > 0 ? (
                     <>
-                      <div className="text-[10px] font-black text-black uppercase tracking-widest mb-3 border-b border-gray-300 pb-1">
+                      <div className="text-[10px] font-black text-ink uppercase tracking-widest mb-3 border-b border-line pb-1">
                         Товари у замовленні
                       </div>
                       <ul className="space-y-2">
@@ -214,17 +207,17 @@ export default function HistoryOrders() {
                           return (
                             <li
                               key={`${item.id ?? idx}-${idx}`}
-                              className="border border-gray-200 bg-white p-3"
+                              className="border border-line rounded-lg bg-white p-3"
                             >
                               {/* Назва + ціна */}
                               <div className="flex items-start justify-between gap-3">
-                                <span className="text-xs sm:text-sm font-bold text-black uppercase leading-tight flex-1">
+                                <span className="text-xs sm:text-sm font-bold text-ink uppercase leading-tight flex-1">
                                   {item.title}
                                   {qty > 1 && (
-                                    <span className="ml-2 text-lime-400 font-black">[{qty} шт.]</span>
+                                    <span className="ml-2 text-accent font-black">[{qty} шт.]</span>
                                   )}
                                 </span>
-                                <span className="text-xs sm:text-sm font-black text-black tabular-nums shrink-0">
+                                <span className="text-xs sm:text-sm font-black text-ink tabular-nums shrink-0">
                                   {formatUAH(lineTotal)}
                                 </span>
                               </div>
@@ -232,13 +225,13 @@ export default function HistoryOrders() {
                               {/* Знижка */}
                               {hasDiscount && (
                                 <div className="mt-1 flex items-center gap-2 flex-wrap">
-                                  <span className="text-[10px] sm:text-xs text-gray-400 line-through">
+                                  <span className="text-[10px] sm:text-xs text-ink-soft line-through">
                                     {formatUAH(oldPrice)}
                                   </span>
-                                  <span className="bg-lime-400 text-white text-[9px] font-bold uppercase px-1.5 py-0.5">
+                                  <span className="bg-red-600 text-white text-[9px] font-bold uppercase rounded-full px-1.5 py-0.5">
                                     Акція
                                   </span>
-                                  <span className="text-[10px] sm:text-xs text-lime-400 font-bold">
+                                  <span className="text-[10px] sm:text-xs text-trust font-bold">
                                     −{formatUAH(itemSavings)}
                                   </span>
                                 </div>
@@ -250,7 +243,7 @@ export default function HistoryOrders() {
                                   {addons.map((a) => (
                                     <span
                                       key={a.id}
-                                      className="inline-flex items-center bg-blue-200 border border-gray-200 rounded-2xl px-2 py-0.5 text-[9px] sm:text-[10px] font-medium text-gray-900 "
+                                      className="inline-flex items-center bg-white border border-line rounded-full px-2 py-0.5 text-[9px] sm:text-[10px] font-medium text-ink"
                                     >
                                       + {a.name} ({formatUAH(a.price)})
                                     </span>
@@ -258,10 +251,10 @@ export default function HistoryOrders() {
                                 </div>
                               )}
 
-                              {/* Подарунок */}
+                              {/* Подарунок / умова */}
                               {item.giftText && (
-                                <div className="mt-2 text-[10px] sm:text-xs text-[#e30613] font-bold uppercase flex items-center gap-1">
-                                  <span className="text-lg"></span> Подарунок: {item.giftText}
+                                <div className="mt-2 text-[10px] sm:text-xs text-trust font-bold uppercase">
+                                  Подарунок: {item.giftText}
                                 </div>
                               )}
                             </li>
@@ -270,22 +263,22 @@ export default function HistoryOrders() {
                       </ul>
                     </>
                   ) : (
-                    <p className="text-xs text-gray-400 uppercase text-center py-4">
+                    <p className="text-xs text-ink-soft uppercase text-center py-4">
                       Інформація про товари відсутня
                     </p>
                   )}
 
                   {/* Підсумок */}
-                  <div className="mt-5 pt-4 border-t-2 border-black space-y-1">
+                  <div className="mt-5 pt-4 border-t-2 border-ink space-y-1">
                     {orderSavings > 0 && (
-                      <div className="flex items-center justify-between text-xs font-bold text-lime-400 uppercase">
+                      <div className="flex items-center justify-between text-xs font-bold text-trust uppercase">
                         <span>Загальна знижка:</span>
                         <span className="tabular-nums">{formatUAH(orderSavings)}</span>
                       </div>
                     )}
                     <div className="flex items-center justify-between">
-                      <span className="text-xs sm:text-sm font-bold uppercase text-gray-600">Разом до сплати:</span>
-                      <span className="text-xl sm:text-2xl font-black text-[#e30613] tabular-nums">
+                      <span className="text-xs sm:text-sm font-bold uppercase text-ink-soft">Разом до сплати:</span>
+                      <span className="text-xl sm:text-2xl font-black text-red-600 tabular-nums">
                         {formatUAH(order.total)}
                       </span>
                     </div>
@@ -296,9 +289,6 @@ export default function HistoryOrders() {
           );
         })}
       </div>
-
-      {/* Кнопки внизу */}
-      
     </main>
   );
 }
