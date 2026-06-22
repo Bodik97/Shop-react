@@ -95,11 +95,13 @@ async function launchBrowser() {
       defaultViewport: chromium.defaultViewport,
       executablePath: await chromium.executablePath(),
       headless: true,
+      protocolTimeout: 180000,
     });
   }
   const puppeteer = (await import("puppeteer")).default;
   return puppeteer.launch({
     headless: true,
+    protocolTimeout: 180000,
     args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage", ...WEB],
   });
 }
@@ -132,20 +134,21 @@ async function main() {
 
   const server = await startServer();
   const origin = `http://localhost:${server.address().port}`;
-  let ok = 0, fail = 0;
+  const counters = { ok: 0, fail: 0 };
 
-  // Домени трекерів/реклами блокуємо під час знімка: вони тримають з'єднання
-  // (через що network не «заспокоюється») і не впливають на HTML-контент.
+  // Домени трекерів/реклами блокуємо під час знімка (тримають з'єднання,
+  // не впливають на HTML-контент і сповільнюють пререндер).
   const BLOCK = /googletagmanager|google-analytics|analytics\.google|facebook\.(net|com)|connect\.facebook|doubleclick|fbevents/i;
 
-  for (const route of routes) {
+  async function renderRoute(route) {
     try {
       const page = await browser.newPage();
       await page.setRequestInterception(true);
       page.on("request", (req) => (BLOCK.test(req.url()) ? req.abort() : req.continue()));
       await page.setUserAgent("Mozilla/5.0 (compatible; PrerenderBot/1.0)");
-      await page.goto(`${origin}${route}`, { waitUntil: "networkidle0", timeout: 30000 });
-      // Чекаємо, поки зникне лоадер і змонтується контент (дані з Sanity дорендерились)
+      // domcontentloaded швидкий і не «висне» на network-idle; готовність контенту
+      // ловимо через waitForFunction (зник лоадер + дані з Sanity дорендерились).
+      await page.goto(`${origin}${route}`, { waitUntil: "domcontentloaded", timeout: 20000 });
       await page
         .waitForFunction(
           () => {
@@ -154,20 +157,30 @@ async function main() {
             if (document.querySelector(".animate-spin")) return false;
             return (document.querySelector("#root")?.children.length || 0) > 0;
           },
-          { timeout: 15000 }
+          { timeout: 12000 }
         )
         .catch(() => {});
-      await new Promise((r) => setTimeout(r, 400)); // дати Helmet домалювати <head>
+      await new Promise((r) => setTimeout(r, 300)); // дати Helmet домалювати <head>
       const html = await page.content();
       await page.close();
       await savePrerendered(route, html);
-      ok++;
+      counters.ok++;
     } catch (e) {
-      fail++;
+      counters.fail++;
       console.warn(`[prerender] ✗ ${route}: ${e?.message}`);
     }
   }
 
+  // Рендеримо паралельно (пул воркерів) — суттєво швидше за послідовний обхід.
+  const CONCURRENCY = Number(process.env.PRERENDER_CONCURRENCY) || 6;
+  const queue = [...routes];
+  await Promise.all(
+    Array.from({ length: Math.min(CONCURRENCY, queue.length) }, async () => {
+      while (queue.length) await renderRoute(queue.shift());
+    })
+  );
+
+  const { ok, fail } = counters;
   await browser.close();
   server.close();
   console.log(`[prerender] готово: ${ok} сторінок, помилок: ${fail}`);
