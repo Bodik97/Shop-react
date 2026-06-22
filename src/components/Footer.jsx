@@ -12,12 +12,6 @@ const CATEGORIES = [
   { id: "pepper-sprays",  name: "Перцеві балончики" },
 ];
 
-const TRUST = [
-  { Icon: ShieldCheck, text: "Оплата при отриманні" },
-  { Icon: Truck,       text: "Доставка по Україні" },
-  { Icon: RotateCcw,   text: "14 днів на повернення" },
-  { Icon: ScanSearch,  text: "Перевірка перед відправкою" },
-];
 
 const EMAIL    = "support@airsoft.shop";
 const SCHEDULE  = "Пн–Пт 10:00–19:00, Сб 11:00–16:00";
@@ -29,20 +23,6 @@ export default function Footer() {
 
   return (
     <footer className="bg-ink text-stone-300">
-      {/* ── Трас-стрічка ── */}
-      <div className="border-b border-white/10">
-        <div className="max-w-6xl mx-auto px-4 py-5 grid grid-cols-2 lg:grid-cols-4 gap-4">
-          {TRUST.map(({ Icon, text }) => (
-            <div key={text} className="flex items-center gap-2.5">
-              <span className="grid place-items-center w-9 h-9 rounded-lg bg-white/5 shrink-0">
-                <Icon className="w-5 h-5 text-trust" />
-              </span>
-              <span className="text-[13px] sm:text-sm font-medium text-white leading-tight">{text}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
       {/* ── Основні колонки ── */}
       <div className="max-w-6xl mx-auto px-4 py-12 grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-10">
         {/* Бренд */}
