@@ -41,6 +41,7 @@ import Layout from "./components/Layout";
 import PopularSlider from "./components/PopularSlider";
 import ContactFAB from "./components/ContactFAB";
 import CartToast from "./components/CartToast";
+import MobileCartBar from "./components/MobileCartBar";
 import ConsultModal from "./components/ConsultModal";
 import HeroRadar from "./components/HeroRadar";
 
@@ -259,6 +260,7 @@ function AppContent() {
       </div>
       <ContactFAB />
       <CartToast />
+      <MobileCartBar />
       <ConsultModal open={consultOpen} onClose={() => setConsultOpen(false)} />
     </>
   );
