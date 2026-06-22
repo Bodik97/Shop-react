@@ -66,13 +66,12 @@ const Badge = ({ children, variant = "blue", className = "" }) => {
 export default function ProductPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { addToCart, cart, cartCount, cartTotal } = useCart();
+  const { addToCart } = useCart();
 
   // --- Sanity Data State ---
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [buyProduct, setBuyProduct] = useState(null);
-  const [detailsOpen, setDetailsOpen] = useState(false); // міні-кошик у sticky-панелі
   const [related, setRelated] = useState([]); // схожі товари (та сама категорія)
 
   // --- Завантаження даних ---
@@ -660,108 +659,7 @@ export default function ProductPage() {
         </>
       )}
 
-      {/* МОБІЛЬНИЙ STICKY CTA: ціна + Купити + В кошик. Lg+ ховаємо. */}
-      {product && (
-        <div className="fixed inset-x-0 bottom-0 z-50 lg:hidden">
-          <div className="border-t border-line bg-white shadow-[0_-8px_24px_rgba(0,0,0,0.15)] pb-[max(env(safe-area-inset-bottom),8px)]">
-
-            {/* Міні-кошик — розгортається кнопкою «Деталі» */}
-            {detailsOpen && (
-              <div className="border-b border-line px-3 py-3 max-h-[45vh] overflow-y-auto">
-                {cart.length === 0 ? (
-                  <p className="text-sm text-ink-soft text-center py-2">
-                    Кошик порожній. Додайте товар кнопкою «Додати в кошик» вище.
-                  </p>
-                ) : (
-                  <>
-                    <p className="text-xs font-semibold uppercase tracking-wide text-ink-soft mb-2">У кошику</p>
-                    <ul className="space-y-2">
-                      {cart.map((i) => {
-                        const q = Math.max(1, Number(i.qty) || 1);
-                        const line = (Number(i.unitTotal) || Number(i.price) || 0) * q;
-                        const itemAddons = Array.isArray(i.addons) ? i.addons : [];
-                        return (
-                          <li key={i.cartItemId || i.id} className="flex gap-2 text-sm">
-                            <img
-                              src={sanityFmt(i.image, 72)}
-                              alt=""
-                              className="w-9 h-9 rounded-lg object-contain bg-surface border border-line shrink-0"
-                              loading="lazy"
-                              decoding="async"
-                            />
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-start justify-between gap-2">
-                                <span className="min-w-0 truncate text-ink">
-                                  {i.title}{q > 1 && <span className="text-ink-soft"> ×{q}</span>}
-                                </span>
-                                <span className="tabular-nums font-semibold text-ink shrink-0">{formatUAH(line)}</span>
-                              </div>
-                              {itemAddons.map((a) => (
-                                <div
-                                  key={a.id || a.name}
-                                  className="flex items-center justify-between gap-2 text-xs text-ink-soft mt-0.5"
-                                >
-                                  <span className="min-w-0 truncate">+ {a.name}</span>
-                                  <span className="tabular-nums shrink-0">{formatUAH(a.price)}</span>
-                                </div>
-                              ))}
-                            </div>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                    <div className="flex items-center justify-between mt-3 pt-2 border-t border-line">
-                      <span className="text-sm font-semibold text-ink">Разом ({cartCount})</span>
-                      <span className="text-base font-extrabold text-red-600 tabular-nums">{formatUAH(cartTotal)}</span>
-                    </div>
-                    <Link
-                      to="/cart"
-                      onClick={() => setDetailsOpen(false)}
-                      className="mt-3 inline-flex w-full items-center justify-center h-11 rounded-xl bg-ink text-white font-bold hover:brightness-110 active:scale-[0.98] transition"
-                    >
-                      Перейти в кошик
-                    </Link>
-                  </>
-                )}
-              </div>
-            )}
-
-            {/* Основний рядок: ціна + Деталі + Купити */}
-            <div className="flex items-center gap-2 px-3 py-2">
-              <div className="min-w-0 flex-1 leading-tight">
-                <div className="text-ink font-extrabold tabular-nums text-lg sm:text-xl">
-                  {formatUAH(finalPrice)}
-                </div>
-                {product.oldPrice && (
-                  <div className="text-[11px] text-ink-soft line-through tabular-nums">
-                    {formatUAH(product.oldPrice)}
-                  </div>
-                )}
-              </div>
-              <button
-                type="button"
-                onClick={() => setDetailsOpen((v) => !v)}
-                aria-expanded={detailsOpen}
-                className="relative inline-flex h-12 px-3 items-center justify-center rounded-xl bg-white border border-line text-ink text-sm font-bold whitespace-nowrap hover:bg-surface hover:border-ink active:scale-95 transition shrink-0"
-              >
-                {detailsOpen ? "Сховати" : "Деталі"}
-                {cartCount > 0 && (
-                  <span className="absolute -top-1.5 -right-1.5 min-w-5 h-5 grid place-items-center rounded-full bg-accent px-1 text-[11px] font-bold text-white">
-                    {cartCount}
-                  </span>
-                )}
-              </button>
-              <button
-                type="button"
-                onClick={onBuyNow}
-                className="inline-flex h-12 px-4 items-center justify-center rounded-xl bg-accent !text-white font-bold text-sm hover:brightness-95 active:scale-95 transition shrink-0"
-              >
-                Купити
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Мобільний бар кошика — глобальний <MobileCartBar/> (уніфіковано). */}
 
       {/* ФУЛСКРІН ГАЛЕРЕЯ */}
       {openFS && (

@@ -10,7 +10,7 @@ import { useCart } from "../context/CartContext";
 import { formatUAH } from "../utils/format";
 import { sanityFmt } from "../utils/sanityImg";
 
-const HIDE = [/^\/cart/, /^\/product\//, /^\/thanks/];
+const HIDE = [/^\/cart/, /^\/thanks/];
 
 export default function MobileCartBar() {
   const { cart, cartCount, cartTotal } = useCart();
