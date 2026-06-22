@@ -3,7 +3,7 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { useQuery } from "@tanstack/react-query";
 import { PortableText } from "@portabletext/react";
-import { Loader2, ArrowRight, ArrowLeft, CalendarDays, UserRound } from "lucide-react";
+import { Loader2, ArrowRight, ArrowLeft } from "lucide-react";
 import { client, urlFor } from "../sanityClient";
 
 const SITE = "https://airsoft-ua.com";
@@ -31,18 +31,25 @@ const fmtDate = (d) =>
 // Рендер Portable Text у стилі сайту.
 const ptComponents = {
   block: {
-    normal: ({ children }) => <p className="text-ink-soft leading-relaxed mb-4">{children}</p>,
-    h2: ({ children }) => <h2 className="font-display text-xl sm:text-2xl font-bold text-ink mt-8 mb-3">{children}</h2>,
-    h3: ({ children }) => <h3 className="font-display text-lg font-bold text-ink mt-6 mb-2">{children}</h3>,
+    normal: ({ children }) => <p className="text-[17px] text-ink-soft leading-[1.8] mb-5">{children}</p>,
+    h2: ({ children }) => <h2 className="font-display text-xl sm:text-2xl font-bold text-ink mt-10 mb-4 scroll-mt-24">{children}</h2>,
+    h3: ({ children }) => <h3 className="font-display text-lg font-bold text-ink mt-7 mb-2.5">{children}</h3>,
     blockquote: ({ children }) => (
-      <blockquote className="border-l-4 border-accent bg-surface rounded-r-lg px-4 py-3 my-5 text-ink-soft italic">
+      <blockquote className="border-l-4 border-accent bg-surface rounded-r-xl px-5 py-4 my-6 text-ink-soft italic text-[17px]">
         {children}
       </blockquote>
     ),
   },
   list: {
-    bullet: ({ children }) => <ul className="list-disc pl-6 mb-4 space-y-1.5 text-ink-soft">{children}</ul>,
-    number: ({ children }) => <ol className="list-decimal pl-6 mb-4 space-y-1.5 text-ink-soft">{children}</ol>,
+    bullet: ({ children }) => <ul className="mb-5 space-y-2.5 text-[17px] text-ink-soft">{children}</ul>,
+    number: ({ children }) => <ol className="mb-5 space-y-2.5 text-[17px] text-ink-soft list-decimal pl-6">{children}</ol>,
+  },
+  listItem: {
+    bullet: ({ children }) => (
+      <li className="relative pl-7 leading-[1.7] before:absolute before:left-0 before:top-[0.6em] before:h-2 before:w-2 before:rounded-full before:bg-accent">
+        {children}
+      </li>
+    ),
   },
   marks: {
     strong: ({ children }) => <strong className="font-semibold text-ink">{children}</strong>,
@@ -114,6 +121,7 @@ export default function BlogPost() {
   const seoTitle = post.seoTitle || `${post.title} | AirSoft-UA`;
   const modified = post.updatedAt || post.publishedAt;
   const catLabel = CATEGORY_LABELS[post.category];
+  const authorInitials = (post.author || "A").split(/\s+/).slice(0, 2).map((w) => w[0]).join("").toUpperCase();
 
   const articleSchema = JSON.stringify({
     "@context": "https://schema.org",
@@ -188,19 +196,32 @@ export default function BlogPost() {
           <span className="text-ink line-clamp-1 inline">{post.title}</span>
         </nav>
 
-        <h1 className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold text-ink leading-tight">
+        {catLabel && (
+          <Link
+            to={`/category/${post.category}`}
+            className="inline-flex items-center rounded-full bg-orange-50 text-accent text-[11px] font-bold uppercase tracking-wide px-3 py-1 mb-4 hover:bg-orange-100 transition"
+          >
+            {catLabel}
+          </Link>
+        )}
+
+        <h1 className="font-display text-2xl sm:text-3xl lg:text-[40px] font-bold text-ink leading-[1.15]">
           {post.title}
         </h1>
 
-        <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5 mt-4 text-[13px] text-ink-soft">
-          <span className="inline-flex items-center gap-1.5">
-            <UserRound className="w-4 h-4" />
-            {post.author}{post.authorRole ? `, ${post.authorRole}` : ""}
+        <p className="mt-4 text-[17px] sm:text-lg text-ink-soft leading-relaxed">{post.excerpt}</p>
+
+        <div className="flex items-center gap-3 mt-6 pb-6 border-b border-line">
+          <span className="grid place-items-center w-11 h-11 rounded-full bg-ink text-white font-display font-bold text-sm shrink-0">
+            {authorInitials}
           </span>
-          <span className="inline-flex items-center gap-1.5">
-            <CalendarDays className="w-4 h-4" />
-            {post.updatedAt ? `Оновлено ${fmtDate(post.updatedAt)}` : fmtDate(post.publishedAt)}
-          </span>
+          <div className="text-[13px] leading-tight">
+            <div className="font-semibold text-ink">{post.author}</div>
+            <div className="text-ink-soft mt-0.5">
+              {post.authorRole ? `${post.authorRole} · ` : ""}
+              {post.updatedAt ? `оновлено ${fmtDate(post.updatedAt)}` : fmtDate(post.publishedAt)}
+            </div>
+          </div>
         </div>
 
         {post.mainImage && (
