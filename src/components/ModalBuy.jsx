@@ -604,6 +604,10 @@ export default function ModalBuy({
             px-4 sm:px-6 py-3
             pb-[calc(0.75rem+env(safe-area-inset-bottom))]
           ">
+            {/* Зняття тривоги перед оформленням — головна перевага довіри */}
+            <p className="text-center text-[12px] text-trust font-semibold mb-2.5 leading-snug">
+              Оплата при отриманні — платите, коли отримали й перевірили товар
+            </p>
             <div className="flex items-center justify-between gap-3">
               {/* Сума */}
               <div>
