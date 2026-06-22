@@ -30,7 +30,7 @@ export default function CartToast() {
       };
 
   return (
-    <div className="pointer-events-none fixed z-[100] top-[70px] inset-x-3 sm:top-auto sm:inset-x-auto sm:bottom-5 sm:right-5 sm:w-[360px]">
+    <div className="pointer-events-none fixed z-[100] top-[70px] inset-x-3 sm:top-auto sm:inset-x-auto sm:bottom-5 sm:right-5 sm:w-[360px] lg:hidden">
       <AnimatePresence>
         {toast && (
           <motion.div
