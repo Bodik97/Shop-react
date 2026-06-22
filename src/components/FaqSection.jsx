@@ -55,7 +55,7 @@ export default function FaqSection() {
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
       viewport={{ amount: 0.3 }}
-      className="max-w-4xl mx-auto mt-16 mb-20 px-4"
+      className="max-w-4xl mx-auto  mb-20 px-4"
     >
       <Helmet>
         <script type="application/ld+json">{faqSchema}</script>

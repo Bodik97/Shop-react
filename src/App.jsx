@@ -206,7 +206,7 @@ function AppContent() {
                 </section>
 
                 {/* ТРАС-БАР — сигнали довіри підняті нагору */}
-                <div className="mt-5 grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                <div className="mt-10 grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                   {[
                     { Icon: ShieldCheck, title: "Оплата при отриманні", sub: "Платіть, коли отримали" },
                     { Icon: Truck, title: "Доставка по Україні", sub: "Нова Пошта 1–3 дні" },
@@ -225,7 +225,7 @@ function AppContent() {
                   ))}
                 </div>
 
-                <section className="mt-10">
+                <section className="mt-5">
                   {isLoading ? (
                     <div className="flex justify-center py-10"><Loader2 className="animate-spin text-accent" /></div>
                   ) : products.length ? (
