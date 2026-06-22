@@ -25,10 +25,12 @@ const h = (type, props = {}, ...children) => {
   };
 };
 
+// Увага: шрифт roboto-cyrillic-700 не містить гліфа ₴ (U+20B4) — Satori малює
+// порожній квадрат («tofu»). Тому в OG-картинці пишемо «грн» текстом.
 const formatUAH = (n) =>
   new Intl.NumberFormat("uk-UA", { maximumFractionDigits: 0 }).format(
     Number(n) || 0
-  ) + " ₴";
+  ) + " грн";
 
 // Кириличний шрифт для тексту в OG-картинці.
 let robotoBoldCache = null;
@@ -102,9 +104,9 @@ export default async function handler(req) {
           width: "100%",
           height: "100%",
           background:
-            "linear-gradient(135deg, #0a0e1a 0%, #1e293b 50%, #0a0e1a 100%)",
+            "linear-gradient(135deg, #FAFAF9 0%, #F5F5F4 55%, #E7E5E4 100%)",
           padding: "48px 56px",
-          color: "white",
+          color: "#1C1917",
           fontFamily: "Roboto",
         },
       },
@@ -125,7 +127,7 @@ export default async function handler(req) {
               fontSize: "40px",
               fontWeight: 700,
               letterSpacing: "6px",
-              color: "white",
+              color: "#1C1917",
             },
           },
           "AIRSOFT-UA"
@@ -137,7 +139,7 @@ export default async function handler(req) {
                 style: {
                   display: "flex",
                   alignItems: "center",
-                  background: "#10b981",
+                  background: "#15803D",
                   color: "white",
                   padding: "10px 22px",
                   borderRadius: "999px",
@@ -145,10 +147,21 @@ export default async function handler(req) {
                   fontWeight: 700,
                 },
               },
-              "✓ В НАЯВНОСТІ"
+              "В НАЯВНОСТІ"
             )
           : null
       ),
+      // Фірмовий помаранчевий акцент-бар (як на сайті)
+      h("div", {
+        style: {
+          display: "flex",
+          width: "96px",
+          height: "6px",
+          background: "#EA580C",
+          borderRadius: "999px",
+          marginTop: "22px",
+        },
+      }),
       // Body: text left, image right
       h(
         "div",
@@ -200,7 +213,7 @@ export default async function handler(req) {
                 style: {
                   fontSize: "76px",
                   fontWeight: 700,
-                  color: "#ef4444",
+                  color: "#DC2626",
                   lineHeight: 1,
                 },
               },
@@ -221,7 +234,7 @@ export default async function handler(req) {
                     {
                       style: {
                         fontSize: "30px",
-                        color: "#9ca3af",
+                        color: "#78716C",
                         textDecoration: "line-through",
                       },
                     },
@@ -241,7 +254,7 @@ export default async function handler(req) {
                         fontWeight: 700,
                       },
                     },
-                    `−${discountPercent}%`
+                    `-${discountPercent}%`
                   )
                 )
               : null
@@ -261,7 +274,8 @@ export default async function handler(req) {
                   alignItems: "center",
                   justifyContent: "center",
                   overflow: "hidden",
-                  boxShadow: "0 25px 50px -12px rgba(0,0,0,0.5)",
+                  border: "1px solid #E7E5E4",
+                  boxShadow: "0 20px 45px -15px rgba(28,25,23,0.25)",
                 },
               },
               h("img", {
@@ -283,7 +297,7 @@ export default async function handler(req) {
             justifyContent: "flex-end",
             marginTop: "20px",
             fontSize: "22px",
-            color: "#9ca3af",
+            color: "#78716C",
             letterSpacing: "1px",
           },
         },
