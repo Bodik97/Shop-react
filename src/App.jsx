@@ -97,19 +97,6 @@ function AppContent() {
     queryFn: fetchPopularProducts,
   });
 
-  // Блокування zoom
-  useEffect(() => {
-    const opts = { passive: false };
-    const onWheel = (e) => { if (e.ctrlKey) e.preventDefault(); };
-    const onGesture = (e) => e.preventDefault();
-    window.addEventListener("wheel", onWheel, opts);
-    window.addEventListener("gesturestart", onGesture, opts);
-    return () => {
-      window.removeEventListener("wheel", onWheel);
-      window.removeEventListener("gesturestart", onGesture);
-    };
-  }, []);
-
   return (
     <>
       {/* ScrollToTop видалено, щоб не конфліктувати з відновленням скролу */}

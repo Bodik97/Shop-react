@@ -2,7 +2,7 @@
 <html lang="uk">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
     <meta name="robots" content="index,follow" />
     <meta name="format-detection" content="telephone=no" />
@@ -28,7 +28,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://cdn.sanity.io" crossorigin />
     <link rel="preconnect" href="https://xzcx3aim.apicdn.sanity.io" crossorigin />
-    <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
 
     <!-- LCP-фон головної: preload лише для десктопу.
          На мобільному ця картинка краде канал у критичних JS/шрифтів,
@@ -41,37 +40,62 @@
       media="(min-width: 768px)"
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <!-- Усі три родини одним запитом: Lexend (заголовки) + Source Sans 3 (текст) + Stardos Stencil (лого) -->
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600&family=Stardos+Stencil:wght@700&display=swap" />
-    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600&family=Stardos+Stencil:wght@700&display=swap" rel="stylesheet" />
+    <!-- Усі три родини одним запитом: Lexend (заголовки) + Source Sans 3 (текст) + Stardos Stencil (лого).
+         Нерендерблокінг: вантажимо як preload і перемикаємо на stylesheet після завантаження (display=swap). -->
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600&family=Stardos+Stencil:wght@700&display=swap"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600&family=Stardos+Stencil:wght@700&display=swap"
+      />
+    </noscript>
 
-    <!-- Meta Pixel Code -->
+    <!-- Аналітика (Meta Pixel + GA4): стаби чергують виклики синхронно,
+         а важкі скрипти (gtag.js ~?, fbevents.js ~100KiB) вантажимо
+         відкладено — на першу взаємодію або idle, щоб не блокувати FCP/LCP. -->
     <script>
-      !function(f,b,e,v,n,t,s)
-      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-      n.queue=[];t=b.createElement(e);t.async=!0;
-      t.src=v;s=b.getElementsByTagName(e)[0];
-      s.parentNode.insertBefore(t,s)}(window, document,'script',
-      'https://connect.facebook.net/en_US/fbevents.js');
+      // GA4 stub
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = function () { dataLayer.push(arguments); };
+      gtag('js', new Date());
+      // send_page_view: false — page_view відправляємо вручну на зміну маршруту.
+      gtag('config', 'G-522DB6D5J9', { send_page_view: false });
+
+      // Meta Pixel stub (черга подій без вставки важкого скрипта)
+      !function (f, b, e, v, n, t, s) {
+        if (f.fbq) return; n = f.fbq = function () { n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments) };
+        if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0'; n.queue = [];
+      }(window, document);
       fbq('init', '1995190334717375');
       fbq('track', 'PageView');
-    </script>
-    <!-- End Meta Pixel Code -->
 
-    <!-- Google Analytics 4 (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-522DB6D5J9"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      window.gtag = gtag;
-      gtag('js', new Date());
-      // send_page_view: false — page_view ми відправляємо вручну на зміну маршруту
-      // (інакше GA4 рахує тільки перший вхід на SPA, а не переходи між сторінками).
-      gtag('config', 'G-522DB6D5J9', { send_page_view: false });
+      // Відкладене завантаження важких скриптів аналітики.
+      // Пропускаємо для автоматизації/пререндеру (navigator.webdriver),
+      // щоб скрипти не «запеклись» у статичний HTML.
+      (function () {
+        if (navigator.webdriver) return;
+        var loaded = false;
+        function load() {
+          if (loaded) return; loaded = true;
+          var g = document.createElement('script'); g.async = true;
+          g.src = 'https://www.googletagmanager.com/gtag/js?id=G-522DB6D5J9';
+          document.head.appendChild(g);
+          var fb = document.createElement('script'); fb.async = true;
+          fb.src = 'https://connect.facebook.net/en_US/fbevents.js';
+          document.head.appendChild(fb);
+        }
+        var evs = ['pointerdown', 'keydown', 'scroll', 'touchstart'];
+        function once() { evs.forEach(function (e) { removeEventListener(e, once); }); load(); }
+        evs.forEach(function (e) { addEventListener(e, once, { passive: true }); });
+        // Фолбек: якщо взаємодії немає — за 4с після завантаження.
+        addEventListener('load', function () { setTimeout(load, 4000); });
+      })();
     </script>
-    <!-- End Google Analytics -->
   </head>
 
   <body>
