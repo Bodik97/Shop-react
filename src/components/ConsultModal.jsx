@@ -1,7 +1,7 @@
 // src/components/ConsultModal.jsx
 // Міні-форма "Консультація": ім'я + телефон → /api/order (type: consult) → Telegram.
 import { useState, useEffect, useRef, useId } from "react";
-import { X, Phone, CheckCircle2 } from "lucide-react";
+import { X, Send, CheckCircle2 } from "lucide-react";
 import { formatPhoneUA, isValidPhoneUA, phoneToE164UA } from "../utils/format";
 
 export default function ConsultModal({ open, onClose }) {
@@ -61,7 +61,7 @@ export default function ConsultModal({ open, onClose }) {
     } catch {
       setErrors((p) => ({
         ...p,
-        submit: "Не вдалося надіслати. Спробуйте ще раз або зателефонуйте нам.",
+        submit: "Не вдалося надіслати. Спробуйте ще раз або напишіть нам у Viber / Telegram.",
       }));
     } finally {
       setSending(false);
@@ -106,7 +106,7 @@ export default function ConsultModal({ open, onClose }) {
             </div>
             <h3 className="text-lg font-bold text-ink">Дякуємо!</h3>
             <p className="mt-1 text-sm text-ink-soft">
-              Менеджер зателефонує вам найближчим часом.
+              Менеджер звʼяжеться з вами у Viber або Telegram найближчим часом.
             </p>
             <button
               type="button"
@@ -123,7 +123,7 @@ export default function ConsultModal({ open, onClose }) {
             className="px-5 py-5 space-y-4 pb-[calc(1.25rem+env(safe-area-inset-bottom))]"
           >
             <p className="text-sm text-ink-soft">
-              Залиште ім'я та номер — передзвонимо, допоможемо підібрати товар і відповімо на питання.
+              Залиште ім'я та номер — звʼяжемося з вами у Viber або Telegram, допоможемо підібрати товар і відповімо на питання.
             </p>
 
             <div>
@@ -147,7 +147,7 @@ export default function ConsultModal({ open, onClose }) {
 
             <div>
               <label htmlFor={phoneId} className="block text-sm text-ink mb-1">
-                Телефон <span className="text-accent">*</span>
+                Телефон (Viber / Telegram) <span className="text-accent">*</span>
               </label>
               <input
                 id={phoneId}
@@ -174,8 +174,8 @@ export default function ConsultModal({ open, onClose }) {
               disabled={sending}
               className="inline-flex w-full items-center justify-center gap-2 h-12 rounded-xl bg-accent text-white font-display font-semibold uppercase tracking-wide hover:brightness-95 active:scale-[0.98] disabled:opacity-50 transition shadow-sm"
             >
-              <Phone className="h-5 w-5" />
-              {sending ? "Надсилаємо…" : "Надіслати"}
+              <Send className="h-5 w-5" />
+              {sending ? "Надсилаємо…" : "Надіслати заявку"}
             </button>
 
             <p className="text-[11px] text-ink-soft text-center">

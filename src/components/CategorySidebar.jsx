@@ -27,7 +27,7 @@ const fetchCategoryCounts = async () => {
 };
 
 const itemBase =
-  "flex items-center gap-2.5 px-3 py-3 text-[15px] border-line " +
+  "flex items-center gap-2 px-2.5 py-3 text-[14px] border-line " +
   "transition-colors lg:hover:bg-surface lg:hover:text-accent " +
   "border-b";
 
@@ -70,11 +70,11 @@ export default function CategorySidebar() {
             <span className="min-w-0 truncate">{name}</span>
             {counts?.[id] != null && (
               <span
-                className="ml-auto shrink-0 inline-flex items-center justify-center min-w-[1.25rem]
-                  rounded-full bg-accent px-1 text-[11px] font-semibold text-white border border-black tabular-nums"
-                aria-label={`товарів: ${counts[id]}`}
+                className="ml-auto shrink-0 inline-flex items-center rounded-full bg-accent px-2 py-0.5
+                  text-[10.5px] font-semibold text-white border border-black tabular-nums whitespace-nowrap"
+                aria-label={`товарів: ${counts[id]} шт`}
               >
-                {counts[id]}
+                {counts[id]} шт
               </span>
             )}
           </NavLink>
