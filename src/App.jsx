@@ -55,6 +55,8 @@ const HistoryOrders    = lazy(() => import("./components/HistoryOrders"));
 const ThankYou         = lazy(() => import("./components/ThankYou"));
 const PrivacyPolicy    = lazy(() => import("./components/PrivacyPolicy"));
 const TermsOfService   = lazy(() => import("./components/TermsOfService"));
+const Blog             = lazy(() => import("./components/Blog"));
+const BlogPost         = lazy(() => import("./components/BlogPost"));
 const NotFound         = lazy(() => import("./components/NotFound"));
 
 const RouteFallback = () => (
@@ -248,6 +250,8 @@ function AppContent() {
           <Route path="/thanks"           element={<ThankYou />} />
           <Route path="/privacy-policy"   element={<PrivacyPolicy />} />
           <Route path="/terms-of-service" element={<TermsOfService />} />
+          <Route path="/blog"             element={<Blog />} />
+          <Route path="/blog/:slug"       element={<BlogPost />} />
           <Route path="/history-orders"   element={<HistoryOrders />} />
           <Route path="/reviews"         element={<ReviewsSlider />} />
 

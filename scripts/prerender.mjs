@@ -22,7 +22,7 @@ const sanity = createClient({
   apiVersion: "2024-01-01",
 });
 
-const STATIC_ROUTES = ["/", "/catalog", "/about", "/contact", "/privacy-policy", "/terms-of-service"];
+const STATIC_ROUTES = ["/", "/catalog", "/blog", "/about", "/contact", "/privacy-policy", "/terms-of-service"];
 const CATEGORY_ROUTES = [
   "air_rifles", "psp-rifles", "flobers", "pnevmo-pistols", "start-pistols", "pepper-sprays",
 ].map((c) => `/category/${c}`);
@@ -121,7 +121,18 @@ async function main() {
     console.warn("[prerender] не вдалося отримати товари з Sanity:", e?.message);
   }
 
-  const routes = [...STATIC_ROUTES, ...CATEGORY_ROUTES, ...productRoutes];
+  // 1b) Статті блогу (опубліковані)
+  let postRoutes = [];
+  try {
+    const posts = await sanity.fetch(
+      `*[_type == "post" && published == true]{ "slug": slug.current }`
+    );
+    postRoutes = posts.map((p) => p.slug).filter(Boolean).map((s) => `/blog/${s}`);
+  } catch (e) {
+    console.warn("[prerender] не вдалося отримати статті з Sanity:", e?.message);
+  }
+
+  const routes = [...STATIC_ROUTES, ...CATEGORY_ROUTES, ...productRoutes, ...postRoutes];
 
   // 2) Запускаємо браузер (м'яко — без падіння деплою)
   let browser;

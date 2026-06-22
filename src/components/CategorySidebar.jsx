@@ -4,7 +4,7 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { Wind, Target, Disc, Crosshair, Zap, SprayCan, Info, Phone, Menu, ChevronDown } from "lucide-react";
+import { Wind, Target, Disc, Crosshair, Zap, SprayCan, Info, Phone, Menu, ChevronDown, Newspaper } from "lucide-react";
 import { client } from "../sanityClient";
 
 // ID збігаються з Sanity-схемою та Header.jsx (канонічний порядок).
@@ -86,6 +86,10 @@ export default function CategorySidebar() {
         Інформація
       </div>
       <nav className="hidden lg:block">
+        <NavLink to="/blog" className={itemClass}>
+          <Newspaper className="w-5 h-5 text-ink-soft" />
+          Блог
+        </NavLink>
         <NavLink to="/about" className={itemClass}>
           <Info className="w-5 h-5 text-ink-soft" />
           Про нас

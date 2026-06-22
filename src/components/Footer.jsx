@@ -77,6 +77,7 @@ export default function Footer() {
         <FooterColumn title="Навігація">
           <FooterLink to="/">Головна</FooterLink>
           <FooterLink to="/catalog">Каталог</FooterLink>
+          <FooterLink to="/blog">Блог</FooterLink>
           <FooterLink to="/about">Про нас</FooterLink>
           <FooterLink to="/contact">Контакти</FooterLink>
           <FooterLink to="/history-orders">Мої замовлення</FooterLink>

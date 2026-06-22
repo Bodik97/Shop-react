@@ -15,6 +15,7 @@ const sanity = createClient({
 const STATIC_PAGES = [
   { path: "/", priority: "1.0", changefreq: "daily" },
   { path: "/catalog", priority: "0.9", changefreq: "daily" },
+  { path: "/blog", priority: "0.7", changefreq: "weekly" },
   { path: "/about", priority: "0.5", changefreq: "monthly" },
   { path: "/contact", priority: "0.6", changefreq: "monthly" },
   { path: "/privacy-policy", priority: "0.3", changefreq: "yearly" },
@@ -40,9 +41,12 @@ const escapeXml = (s) =>
 
 export default async function handler(req, res) {
   try {
-    const products = await sanity.fetch(
-      `*[_type == "product"]{ "id": _id, "slug": slug.current, _updatedAt }`
-    );
+    const [products, posts] = await Promise.all([
+      sanity.fetch(`*[_type == "product"]{ "id": _id, "slug": slug.current, _updatedAt }`),
+      sanity.fetch(
+        `*[_type == "post" && published == true]{ "slug": slug.current, _updatedAt, updatedAt, publishedAt }`
+      ),
+    ]);
 
     const now = new Date().toISOString();
 
@@ -76,6 +80,17 @@ export default async function handler(req, res) {
     <priority>0.7</priority>
   </url>`;
       }),
+      ...posts
+        .filter((p) => p.slug)
+        .map((p) => {
+          const lastmod = new Date(p.updatedAt || p.publishedAt || p._updatedAt || now).toISOString();
+          return `  <url>
+    <loc>${SITE_URL}/blog/${escapeXml(p.slug)}</loc>
+    <lastmod>${lastmod}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>`;
+        }),
     ].join("\n");
 
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
