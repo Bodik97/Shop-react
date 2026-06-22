@@ -1,7 +1,7 @@
 // src/components/ProductCard.jsx
-import { memo, useEffect, useMemo, useState } from "react";
+import { memo, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Flame, Truck, Clock, Check } from "lucide-react";
+import { Flame, Truck, Clock } from "lucide-react";
 import ImageWithPlaceholder from "./ImageWithPlaceholder";
 import { useCart } from "../context/CartContext";
 import { formatUAH } from "../utils/format";
@@ -11,14 +11,6 @@ import { sanityFmt, sanitySrcSet } from "../utils/sanityImg";
 const ProductCard = memo(function ProductCard({ product }) {
   const navigate = useNavigate();
   const { addToCart } = useCart();
-  const [added, setAdded] = useState(false);
-
-  // auto-hide "Додано" toast
-  useEffect(() => {
-    if (!added) return;
-    const t = setTimeout(() => setAdded(false), 1500);
-    return () => clearTimeout(t);
-  }, [added]);
 
   // ─── Derived data ────────────────────────────────────────────────────────
   const isPopular = product?.popular === true;
@@ -65,7 +57,6 @@ const ProductCard = memo(function ProductCard({ product }) {
   const handleAddToCart = (e) => {
     stopPropagate(e);
     addToCart(product);
-    setAdded(true);
   };
 
   return (
@@ -130,17 +121,6 @@ const ProductCard = memo(function ProductCard({ product }) {
           </span>
         )}
 
-        {/* Toast "Додано" */}
-        {added && (
-          <span className="absolute left-1/2 bottom-3 -translate-x-1/2 z-20
-                      inline-flex items-center gap-1 whitespace-nowrap
-                      bg-trust text-white
-                      text-[11px] sm:text-xs font-semibold
-                      px-2.5 sm:px-3 py-1 sm:py-1.5
-                      rounded-full shadow-lg animate-fadeInUp">
-            <Check className="h-3.5 w-3.5" /> Додано
-          </span>
-        )}
       </div>
 
       {/* ── Контент ── */}

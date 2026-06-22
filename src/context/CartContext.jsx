@@ -89,9 +89,18 @@ export function CartProvider({ children, products = [] }) {
     refreshCartPrices();
   }, [refreshCartPrices]);
 
+  // Глобальний сигнал «додано в кошик» (показує <CartToast/>).
+  const [toast, setToast] = useState(null);
+  const clearToast = useCallback(() => setToast(null), []);
+
   // ─── Actions ──────────────────────────────────────────────────────────────
   const addToCart = useCallback((product) => {
     trackAddToCart(product, 1);
+    setToast({
+      key: Date.now(),
+      title: product.title,
+      image: resolveProductImage(product),
+    });
     setCart((prev) => {
       const addons      = Array.isArray(product.addons) ? product.addons : [];
       const fingerprint = makeFingerprint(product.id, addons);
@@ -189,9 +198,11 @@ export function CartProvider({ children, products = [] }) {
       removeAddon,
       clearCart,
       refreshCartPrices,
+      toast,
+      clearToast,
     }),
     [cart, cartCount, cartTotal, addToCart, changeQty,
-     removeFromCart, removeAddon, clearCart, refreshCartPrices]
+     removeFromCart, removeAddon, clearCart, refreshCartPrices, toast, clearToast]
   );
 
   return (

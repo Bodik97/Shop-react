@@ -40,6 +40,7 @@ import Footer from "./components/Footer";
 import Layout from "./components/Layout";
 import PopularSlider from "./components/PopularSlider";
 import ContactFAB from "./components/ContactFAB";
+import CartToast from "./components/CartToast";
 import ReviewsSlider from "./components/ReviewsSlider";
 import FaqSection from "./components/FaqSection";
 import ConsultModal from "./components/ConsultModal";
@@ -266,6 +267,7 @@ function AppContent() {
       <Footer />
       </div>
       <ContactFAB />
+      <CartToast />
       <ConsultModal open={consultOpen} onClose={() => setConsultOpen(false)} />
     </>
   );

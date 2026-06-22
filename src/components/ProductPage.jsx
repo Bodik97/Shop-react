@@ -229,9 +229,6 @@ export default function ProductPage() {
     return () => window.removeEventListener("keydown", onKey);
   }, [openFS, fsPrev, fsNext]);
 
-  const [flashCart, setFlashCart] = useState(false);
-  const timerRef = useRef(null);
-
   const startDrag = (clientX, clientY) => {
     if (scale === 1) return;
     dragging.current = true;
@@ -386,9 +383,6 @@ export default function ProductPage() {
   const onAddToCart = () => {
     const chosen = addons.filter((a) => selectedAddons.includes(a.name));
     addToCart({ ...product, addons: chosen });
-    if (timerRef.current) clearTimeout(timerRef.current);
-    setFlashCart(true);
-    timerRef.current = setTimeout(() => setFlashCart(false), 2000);
   };
 
   return (
@@ -432,14 +426,6 @@ export default function ProductPage() {
               <script type="application/ld+json">{seo.productSchemaJson}</script>
               <script type="application/ld+json">{seo.breadcrumbSchemaJson}</script>
             </Helmet>
-          )}
-
-          {flashCart && (
-            <div className="fixed left-1/2 -translate-x-1/2 top-20 lg:top-24 z-[80] animate-slideUpFade">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-trust text-white text-xs font-semibold px-3 py-1.5 shadow-lg">
-                ✅ Додано в кошик
-              </span>
-            </div>
           )}
 
           <nav className="text-xs sm:text-sm text-ink-soft mb-4">
