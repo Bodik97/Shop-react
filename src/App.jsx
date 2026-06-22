@@ -215,7 +215,8 @@ function AppContent() {
 
                 <section className="mt-5">
                   {isLoading ? (
-                    <div className="flex justify-center py-10"><Loader2 className="animate-spin text-accent" /></div>
+                    /* Резервуємо висоту, щоб поява товарів не зсувала макет (CLS) */
+                    <div className="flex justify-center items-center min-h-[420px]"><Loader2 className="animate-spin text-accent" /></div>
                   ) : products.length ? (
                     <PopularSlider products={products.slice(0, 16)} title="Популярні товари" />
                   ) : (

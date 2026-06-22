@@ -1,0 +1,34 @@
+# AirSoft-UA — магазин пневматики та спорядження
+
+Офіційний інтернет-магазин пневматичної зброї та засобів самозахисту в Україні: пневматичні й PCP-гвинтівки, револьвери флобера, пневматичні та стартові пістолети, перцеві балончики. Перевіряємо кожен товар перед відправленням, доставка Новою Поштою по всій Україні, оплата при отриманні.
+
+## Основні сторінки
+- [Головна](https://airsoft-ua.com/)
+- [Каталог товарів](https://airsoft-ua.com/catalog)
+- [Блог та гайди](https://airsoft-ua.com/blog)
+- [Про нас](https://airsoft-ua.com/about)
+- [Контакти](https://airsoft-ua.com/contact)
+
+## Категорії товарів
+- [Пневматичні гвинтівки](https://airsoft-ua.com/category/air_rifles)
+- [PCP гвинтівки](https://airsoft-ua.com/category/psp-rifles)
+- [Револьвери флобера](https://airsoft-ua.com/category/flobers)
+- [Пневматичні пістолети](https://airsoft-ua.com/category/pnevmo-pistols)
+- [Стартові пістолети](https://airsoft-ua.com/category/start-pistols)
+- [Перцеві балончики](https://airsoft-ua.com/category/pepper-sprays)
+
+## Гайди для покупців
+- [Як обрати пневматичну гвинтівку](https://airsoft-ua.com/blog/yak-obraty-pnevmatychnu-hvyntivku)
+- [PCP чи пружина: що краще для початківця](https://airsoft-ua.com/blog/pcp-chy-pruzhyna-shcho-krashche)
+- [Калібр 4.5 чи 5.5 мм](https://airsoft-ua.com/blog/kalibr-4-5-chy-5-5-mm)
+- [Як накачати PCP-гвинтівку](https://airsoft-ua.com/blog/yak-nakachaty-pcp-hvyntivku)
+- [Чи легальна пневматика в Україні](https://airsoft-ua.com/blog/chy-lehalna-pnevmatyka-v-ukraini)
+- [Який перцевий балончик обрати](https://airsoft-ua.com/blog/yakyy-pertsevyy-balonchyk-obraty)
+
+## Умови
+- Продаж особам від 18 років. Представлені вироби перебувають у вільному цивільному обігу й не належать до вогнепальної зброї.
+- Оплата при отриманні (накладений платіж), доставка Новою Поштою, 14 днів на повернення.
+- Зв'язок: Viber та Telegram (кнопки на сайті) або заявка через форму консультації.
+
+## Карта сайту
+- [Sitemap (XML)](https://airsoft-ua.com/sitemap.xml)
