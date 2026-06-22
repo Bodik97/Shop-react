@@ -49,7 +49,7 @@ export default function CategorySidebar() {
   });
 
   return (
-    <aside className="rounded-xl border border-line bg-white overflow-hidden">
+    <aside aria-label="Категорії товарів" className="rounded-xl border border-line bg-white overflow-hidden">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}

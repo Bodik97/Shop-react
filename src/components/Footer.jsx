@@ -99,7 +99,7 @@ export default function Footer() {
       <div className="border-t border-white/10">
         <div className="max-w-6xl mx-auto px-4 py-5 flex flex-col sm:flex-row items-center justify-between gap-2 text-[13px] text-stone-400">
           <p>© {year} AIRSOFT-UA. Усі права захищено.</p>
-          <p className="text-stone-500">Ціни в гривні (₴) · Оплата при отриманні</p>
+          <p className="text-stone-400">Ціни в гривні (₴) · Оплата при отриманні</p>
         </div>
       </div>
     </footer>

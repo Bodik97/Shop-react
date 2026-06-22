@@ -12,7 +12,7 @@ export default function CartSidebar() {
   const preview = cart.slice(0, 5);
 
   return (
-    <aside className="hidden lg:block rounded-xl border border-line bg-white overflow-hidden">
+    <aside aria-label="Кошик" className="hidden lg:block rounded-xl border border-line bg-white overflow-hidden">
       <div className="flex items-center gap-2 px-4 py-3 bg-ink text-white font-display font-semibold text-[15px]">
         <ShoppingCart className="w-4 h-4" />
         Кошик

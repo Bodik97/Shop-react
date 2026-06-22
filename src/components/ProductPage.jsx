@@ -567,7 +567,7 @@ export default function ProductPage() {
                   {product.oldPrice && (
                     <div className="flex items-center gap-2 flex-wrap">
                         <span className="text-ink-soft line-through text-base sm:text-lg tabular-nums">{formatUAH(product.oldPrice)}</span>
-                        <span className="bg-red-100 text-red-600 px-2 py-0.5 rounded-lg text-xs font-bold">
+                        <span className="bg-red-100 text-red-700 px-2 py-0.5 rounded-lg text-xs font-bold">
                             -{Math.round((1 - product.price / product.oldPrice) * 100)}%
                         </span>
                     </div>
