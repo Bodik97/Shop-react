@@ -459,7 +459,7 @@ export default function Cart({ freeShippingFrom = 0 }) {
                     transition shrink-0 shadow-lg
                   "
                 >
-                  Купити
+                  Оформити
                 </button>
               </div>
             </div>

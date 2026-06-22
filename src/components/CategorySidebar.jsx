@@ -1,8 +1,9 @@
 // src/components/CategorySidebar.jsx
 // Закріплене бокове меню категорій + розділ "Інформація".
 // Рендериться через <Layout> лише на сторінках каталогу/товарів/головній.
+import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { Wind, Target, Disc, Crosshair, Zap, SprayCan, Info, Phone, Menu } from "lucide-react";
+import { Wind, Target, Disc, Crosshair, Zap, SprayCan, Info, Phone, Menu, ChevronDown } from "lucide-react";
 
 // ID збігаються з Sanity-схемою та Header.jsx (канонічний порядок).
 const CATEGORIES = [
@@ -27,14 +28,26 @@ const itemClass = ({ isActive }) =>
   }`;
 
 export default function CategorySidebar() {
+  // На мобільному список згорнутий — тап по заголовку розгортає.
+  // На десктопі (lg+) меню завжди розкрите, тож стан тут не впливає.
+  const [open, setOpen] = useState(false);
+
   return (
     <aside className="lg:sticky lg:top-[88px] rounded-xl border border-line bg-white overflow-hidden">
-      <div className="flex items-center gap-2 px-4 py-3.5 bg-ink text-white font-display font-semibold text-[15px]">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        className="w-full flex items-center gap-2 px-4 py-3.5 bg-ink text-white font-display font-semibold text-[15px] lg:cursor-default"
+      >
         <Menu className="w-4 h-4" />
         Категорії
-      </div>
+        <ChevronDown
+          className={`w-4 h-4 ml-auto transition-transform lg:hidden ${open ? "rotate-180" : ""}`}
+        />
+      </button>
 
-      <nav>
+      <nav className={`${open ? "block" : "hidden"} lg:block`} onClick={() => setOpen(false)}>
         {CATEGORIES.map(({ id, name, Icon }) => (
           <NavLink key={id} to={`/category/${id}`} className={itemClass}>
             <Icon className="w-5 h-5 text-ink-soft" />

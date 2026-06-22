@@ -628,7 +628,7 @@ export default function ModalBuy({
                   disabled={sending}
                   className="h-14 sm:h-16 px-6 sm:px-8 rounded-2xl bg-accent !text-white text-base sm:text-lg font-bold uppercase tracking-wide hover:brightness-95 active:scale-[0.98] disabled:opacity-50 transition shadow-lg"
                 >
-                  {sending ? "Надсилаємо…" : "Купити"}
+                  {sending ? "Надсилаємо…" : isCart ? "Замовити" : "Купити"}
                 </button>
               </div>
             </div>
