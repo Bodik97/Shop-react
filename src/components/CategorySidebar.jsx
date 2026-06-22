@@ -3,7 +3,9 @@
 // Рендериться через <Layout> лише на сторінках каталогу/товарів/головній.
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { Wind, Target, Disc, Crosshair, Zap, SprayCan, Info, Phone, Menu, ChevronDown } from "lucide-react";
+import { client } from "../sanityClient";
 
 // ID збігаються з Sanity-схемою та Header.jsx (канонічний порядок).
 const CATEGORIES = [
@@ -15,8 +17,17 @@ const CATEGORIES = [
   { id: "pepper-sprays",  name: "Перцеві балончики",      Icon: SprayCan },
 ];
 
+// Кількість товарів у кожній категорії — один легкий запит (тільки числа).
+// Семантика збігається з CatalogPage (фільтр category === id).
+const fetchCategoryCounts = async () => {
+  const projection = CATEGORIES.map(
+    ({ id }) => `"${id}": count(*[_type == "product" && category == "${id}"])`
+  ).join(",");
+  return await client.fetch(`{${projection}}`);
+};
+
 const itemBase =
-  "flex items-center gap-3 px-4 py-3 text-[15px] border-line " +
+  "flex items-center gap-2.5 px-3 py-3 text-[15px] border-line " +
   "transition-colors lg:hover:bg-surface lg:hover:text-accent " +
   "border-b";
 
@@ -31,6 +42,11 @@ export default function CategorySidebar() {
   // На мобільному список згорнутий — тап по заголовку розгортає.
   // На десктопі (lg+) меню завжди розкрите, тож стан тут не впливає.
   const [open, setOpen] = useState(false);
+
+  const { data: counts } = useQuery({
+    queryKey: ["categoryCounts"],
+    queryFn: fetchCategoryCounts,
+  });
 
   return (
     <aside className="lg:sticky lg:top-[88px] rounded-xl border border-line bg-white overflow-hidden">
@@ -50,8 +66,17 @@ export default function CategorySidebar() {
       <nav className={`${open ? "block" : "hidden"} lg:block`} onClick={() => setOpen(false)}>
         {CATEGORIES.map(({ id, name, Icon }) => (
           <NavLink key={id} to={`/category/${id}`} className={itemClass}>
-            <Icon className="w-5 h-5 text-ink-soft" />
-            {name}
+            <Icon className="w-5 h-5 text-ink-soft shrink-0" />
+            <span className="min-w-0 truncate">{name}</span>
+            {counts?.[id] != null && (
+              <span
+                className="ml-auto shrink-0 inline-flex items-center justify-center min-w-[1.25rem]
+                  rounded-full bg-surface px-1 text-[11px] font-semibold text-ink-soft tabular-nums"
+                aria-label={`товарів: ${counts[id]}`}
+              >
+                {counts[id]}
+              </span>
+            )}
           </NavLink>
         ))}
       </nav>
