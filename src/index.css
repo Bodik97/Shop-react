@@ -290,6 +290,14 @@
   .policy-title { font-size: 2.1rem; }
 }
 
+/* Поява toast/нотатки «додано в кошик» (заміна framer-motion для меншого JS). */
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(-14px) scale(0.98); }
+  to   { opacity: 1; transform: none; }
+}
+.animate-toastIn { animation: toastIn 0.26s ease-out both; }
+@media (prefers-reduced-motion: reduce) { .animate-toastIn { animation: none; } }
+
 /* ═══════════════════════════════════════════════════
    ПОМАРАНЧЕВІ CTA-КНОПКИ
    Трохи приглушений («мляві») помаранчевий + чорний бордер.

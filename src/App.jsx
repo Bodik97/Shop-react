@@ -41,8 +41,6 @@ import Layout from "./components/Layout";
 import PopularSlider from "./components/PopularSlider";
 import ContactFAB from "./components/ContactFAB";
 import CartToast from "./components/CartToast";
-import ReviewsSlider from "./components/ReviewsSlider";
-import FaqSection from "./components/FaqSection";
 import ConsultModal from "./components/ConsultModal";
 import HeroRadar from "./components/HeroRadar";
 
@@ -59,6 +57,9 @@ const TermsOfService   = lazy(() => import("./components/TermsOfService"));
 const Blog             = lazy(() => import("./components/Blog"));
 const BlogPost         = lazy(() => import("./components/BlogPost"));
 const NotFound         = lazy(() => import("./components/NotFound"));
+// Нижче згину на головній — лінива загрузка (виносить framer-motion з критичного бандла).
+const ReviewsSlider    = lazy(() => import("./components/ReviewsSlider"));
+const FaqSection       = lazy(() => import("./components/FaqSection"));
 
 const RouteFallback = () => (
   <div className="flex items-center justify-center min-h-[50vh]">
@@ -223,8 +224,10 @@ function AppContent() {
                     </div>
                   )}
                 </section>
-                <ReviewsSlider />
-                <FaqSection />
+                <Suspense fallback={null}>
+                  <ReviewsSlider />
+                  <FaqSection />
+                </Suspense>
               </main>
             }
           />
