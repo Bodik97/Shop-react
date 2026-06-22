@@ -225,14 +225,14 @@ export default function BlogPost() {
         </div>
 
         {post.mainImage && (
-          <img
-            src={urlFor(post.mainImage).width(1200).height(630).fit("crop").auto("format").url()}
-            alt={post.title}
-            width={1200}
-            height={630}
-            className="w-full rounded-2xl border border-line mt-6 mb-8"
-            decoding="async"
-          />
+          <div className="mt-6 mb-8 rounded-2xl border border-line bg-surface flex items-center justify-center p-6 sm:p-10">
+            <img
+              src={urlFor(post.mainImage).width(1200).fit("max").auto("format").url()}
+              alt={post.title}
+              className="w-auto max-w-full max-h-[300px] sm:max-h-[440px] object-contain"
+              decoding="async"
+            />
+          </div>
         )}
 
         <div className="text-[16px]">

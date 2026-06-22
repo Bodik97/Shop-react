@@ -1,13 +1,13 @@
 // src/components/HeroRadar.jsx
 // Декоративний "радар" у Hero: статичні кільця + обертовий промінь + пульсуючі пінги.
 // Чисто декоративний (aria-hidden, pointer-events-none), поважає prefers-reduced-motion.
-export default function HeroRadar() {
+export default function HeroRadar({
+  className = "bottom-4 right-4 w-36 sm:w-44 md:w-52 lg:bottom-auto lg:top-1/2 lg:-translate-y-1/2 lg:-right-6 lg:w-[26rem]",
+}) {
   return (
     <div
       aria-hidden="true"
-      className="block pointer-events-none absolute aspect-square text-accent
-        bottom-4 right-4 w-36 sm:w-44 md:w-52
-        lg:bottom-auto lg:top-1/2 lg:-translate-y-1/2 lg:-right-6 lg:w-[26rem]"
+      className={`block pointer-events-none absolute aspect-square text-accent ${className}`}
     >
       <svg viewBox="0 0 200 200" className="w-full h-full">
         {/* Статичні кільця + перехрестя */}
