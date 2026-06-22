@@ -20,7 +20,7 @@ export default function NotFound() {
           <Link to="/" className="px-6 py-2 bg-blue-600 rounded-lg text-white">
             На головну
           </Link>
-          <Link to="/catalog" className="px-6 py-2 bg-orange-500 rounded-lg text-white">
+          <Link to="/catalog" className="px-6 py-2 bg-accent rounded-lg text-white">
             До каталогу
           </Link>
         </div>

@@ -289,3 +289,20 @@
   .heading-title { font-size: 2.7rem; }
   .policy-title { font-size: 2.1rem; }
 }
+
+/* ═══════════════════════════════════════════════════
+   ПОМАРАНЧЕВІ CTA-КНОПКИ
+   Трохи приглушений («мляві») помаранчевий + чорний бордер.
+   Правило поза @layer → перекриває утиліту bg-accent.
+   box-sizing: border-box → бордер не зсуває верстку.
+   .accent-bare — opt-out для дрібних елементів (пагінація тощо).
+   ═══════════════════════════════════════════════════ */
+button.bg-accent:not(.accent-bare),
+a.bg-accent:not(.accent-bare) {
+  background-color: color-mix(in srgb, var(--color-accent) 87%, #78716c 13%);
+  border: 2px solid #000;
+}
+button.bg-accent:not(.accent-bare):hover,
+a.bg-accent:not(.accent-bare):hover {
+  background-color: color-mix(in srgb, var(--color-accent) 80%, #78716c 20%);
+}

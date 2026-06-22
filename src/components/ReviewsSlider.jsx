@@ -167,7 +167,7 @@ export default function ReviewsSlider() {
                   <button
                     key={i}
                     onClick={() => setIndex(i)}
-                    className={`h-1.5 rounded-full transition-all duration-300 ${
+                    className={`accent-bare h-1.5 rounded-full transition-all duration-300 ${
                       i === index ? "w-6 bg-accent" : "w-1.5 bg-line hover:bg-stone-300"
                     }`}
                     aria-label={`Перейти до відгуку ${i + 1}`}

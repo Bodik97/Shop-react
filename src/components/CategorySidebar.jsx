@@ -71,7 +71,7 @@ export default function CategorySidebar() {
             {counts?.[id] != null && (
               <span
                 className="ml-auto shrink-0 inline-flex items-center justify-center min-w-[1.25rem]
-                  rounded-full bg-surface px-1 text-[11px] font-semibold text-ink-soft tabular-nums"
+                  rounded-full bg-accent px-1 text-[11px] font-semibold text-white border border-black tabular-nums"
                 aria-label={`товарів: ${counts[id]}`}
               >
                 {counts[id]}
