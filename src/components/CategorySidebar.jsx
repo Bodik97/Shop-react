@@ -49,7 +49,7 @@ export default function CategorySidebar() {
   });
 
   return (
-    <aside className="lg:sticky lg:top-[88px] rounded-xl border border-line bg-white overflow-hidden">
+    <aside className="rounded-xl border border-line bg-white overflow-hidden">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
