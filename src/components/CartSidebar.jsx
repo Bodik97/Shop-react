@@ -9,7 +9,7 @@ import { formatUAH } from "../utils/format";
 
 export default function CartSidebar() {
   const { cart, cartCount, cartTotal } = useCart();
-  const preview = cart.slice(0, 3);
+  const preview = cart.slice(0, 5);
 
   return (
     <aside className="hidden lg:block rounded-xl border border-line bg-white overflow-hidden">
@@ -29,26 +29,39 @@ export default function CartSidebar() {
         </div>
       ) : (
         <div className="p-3">
-          <ul className="space-y-2.5">
+          <ul className="space-y-3">
             {preview.map((item) => (
-              <li key={item.cartItemId || item.id} className="flex items-center gap-2.5">
-                <div className="w-10 h-10 shrink-0 rounded-lg bg-surface border border-line flex items-center justify-center overflow-hidden">
-                  {item.image && (
-                    <img src={item.image} alt="" className="max-w-full max-h-full object-contain" />
-                  )}
+              <li key={item.cartItemId || item.id}>
+                <div className="flex items-center gap-2.5">
+                  <div className="w-10 h-10 shrink-0 rounded-lg bg-surface border border-line flex items-center justify-center overflow-hidden">
+                    {item.image && (
+                      <img src={item.image} alt="" className="max-w-full max-h-full object-contain" />
+                    )}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[12px] text-ink leading-tight line-clamp-1">{item.title}</p>
+                    <p className="text-[11px] text-ink-soft mt-0.5 tabular-nums">
+                      {item.qty} × {formatUAH(Number(item.price) || 0)}
+                    </p>
+                  </div>
                 </div>
-                <div className="min-w-0 flex-1">
-                  <p className="text-[12px] text-ink leading-tight line-clamp-1">{item.title}</p>
-                  <p className="text-[11px] text-ink-soft mt-0.5 tabular-nums">
-                    {item.qty} × {formatUAH(Number(item.unitTotal) || Number(item.price) || 0)}
-                  </p>
-                </div>
+
+                {Array.isArray(item.addons) && item.addons.length > 0 && (
+                  <ul className="mt-1 ml-[3.125rem] space-y-0.5">
+                    {item.addons.map((a, i) => (
+                      <li key={a.id || a.name || i} className="flex items-center justify-between gap-2 text-[11px] text-ink-soft">
+                        <span className="line-clamp-1">+ {a.name}</span>
+                        <span className="shrink-0 tabular-nums">{formatUAH(Number(a.price) || 0)}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </li>
             ))}
           </ul>
 
-          {cart.length > 3 && (
-            <p className="text-[12px] text-ink-soft mt-2">+ ще {cart.length - 3}</p>
+          {cart.length > 5 && (
+            <p className="text-[12px] text-ink-soft mt-2.5">+ ще {cart.length - 5}</p>
           )}
 
           <div className="flex items-center justify-between mt-3 pt-3 border-t border-line">
