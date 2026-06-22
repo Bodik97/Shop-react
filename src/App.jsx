@@ -160,6 +160,18 @@ function AppContent() {
                   <title>AirSoft-UA — Професійна пневматика та спорядження | Купити в Україні</title>
                   <meta name="description" content="Офіційний магазин пневматики та спорядження в Україні. Перевіряємо товар перед відправленням, доставка по всій Україні, оплата при отриманні." />
                   <link rel="canonical" href="https://airsoft-ua.com/" />
+
+                  <meta property="og:type" content="website" />
+                  <meta property="og:url" content="https://airsoft-ua.com/" />
+                  <meta property="og:title" content="AirSoft-UA — Професійна пневматика та спорядження" />
+                  <meta property="og:description" content="Офіційний магазин пневматики та спорядження в Україні. Доставка по всій Україні, оплата при отриманні." />
+                  <meta property="og:image" content="https://airsoft-ua.com/img/ogp-img.webp" />
+                  <meta property="og:image:width" content="1200" />
+                  <meta property="og:image:height" content="630" />
+                  <meta name="twitter:card" content="summary_large_image" />
+                  <meta name="twitter:title" content="AirSoft-UA — Професійна пневматика та спорядження" />
+                  <meta name="twitter:description" content="Офіційний магазин пневматики та спорядження в Україні. Доставка по всій Україні, оплата при отриманні." />
+                  <meta name="twitter:image" content="https://airsoft-ua.com/img/ogp-img.webp" />
                 </Helmet>
 
                 {/* HERO — ціннісна пропозиція + заклики */}
