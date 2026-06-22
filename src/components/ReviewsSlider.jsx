@@ -120,7 +120,7 @@ export default function ReviewsSlider() {
                 <Quote className="absolute top-6 right-6 w-14 h-14 text-accent/10" aria-hidden="true" />
 
                 {/* Рейтинг */}
-                <div className="flex gap-1 mb-5" aria-label={`Оцінка: ${current.rating} з 5`}>
+                <div className="flex gap-1 mb-5" role="img" aria-label={`Оцінка: ${current.rating} з 5`}>
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={i}

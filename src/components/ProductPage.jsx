@@ -455,7 +455,7 @@ export default function ProductPage() {
 
             {/* Соцдоказ біля заголовка: зірки + бейдж популярності */}
             <div className="flex items-center gap-2 sm:gap-3 flex-wrap text-sm text-ink-soft">
-              <span className="inline-flex items-center gap-0.5 text-amber-400" aria-label="Рейтинг 5 з 5">
+              <span className="inline-flex items-center gap-0.5 text-amber-400" role="img" aria-label="Рейтинг 5 з 5">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <Star key={i} className="h-4 w-4 fill-amber-400 stroke-amber-400" aria-hidden="true" />
                 ))}

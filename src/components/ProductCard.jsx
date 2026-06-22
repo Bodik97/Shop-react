@@ -1,6 +1,6 @@
 // src/components/ProductCard.jsx
 import { memo, useMemo } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Flame, Truck, Clock } from "lucide-react";
 import ImageWithPlaceholder from "./ImageWithPlaceholder";
 import { useCart } from "../context/CartContext";
@@ -9,7 +9,6 @@ import { urlFor } from "../sanityClient";
 import { sanityFmt, sanitySrcSet } from "../utils/sanityImg";
 
 const ProductCard = memo(function ProductCard({ product }) {
-  const navigate = useNavigate();
   const { addToCart } = useCart();
 
   // ─── Derived data ────────────────────────────────────────────────────────
@@ -51,29 +50,17 @@ const ProductCard = memo(function ProductCard({ product }) {
   const imageSrcSet = sanitySrcSet(baseUrl, [320, 480, 600, 800], 75);
 
   // ─── Actions ─────────────────────────────────────────────────────────────
-  const go = () => navigate(productHref);
-  const stopPropagate = (e) => { e.preventDefault(); e.stopPropagation(); };
-
-  const handleAddToCart = (e) => {
-    stopPropagate(e);
-    addToCart(product);
-  };
+  const handleAddToCart = () => addToCart(product);
 
   return (
     <article
-      role="button"
-      tabIndex={0}
-      onClick={go}
-      onKeyDown={(e) => ((e.key === "Enter" || e.key === " ") && go())}
-      aria-label={`Перейти до товару ${product.title}`}
       className="
         group relative flex flex-col
         bg-white rounded-2xl overflow-hidden
         border border-gray-200
         transition-all duration-200
         hover:shadow-xl hover:-translate-y-1
-        active:scale-[0.99]
-        cursor-pointer
+        focus-within:ring-2 focus-within:ring-accent
       "
     >
       {/* ── Зображення + бейджі ── */}
@@ -125,10 +112,12 @@ const ProductCard = memo(function ProductCard({ product }) {
 
       {/* ── Контент ── */}
       <div className="flex-1 flex flex-col p-3 sm:p-4 gap-1.5 sm:gap-2">
+        {/* Stretched link: розтягуємо клікабельну зону на всю картку через ::after,
+            без вкладених інтерактивів (кнопка «Додати» лишається зверху, z-10). */}
         <Link
           to={productHref}
-          onClick={(e) => e.stopPropagation()}
-          className="text-sm sm:text-base font-semibold text-gray-900 leading-snug line-clamp-2 hover:text-accent"
+          className="text-sm sm:text-base font-semibold text-gray-900 leading-snug line-clamp-2 hover:text-accent
+            after:absolute after:inset-0 after:z-0 focus:outline-none rounded-sm"
         >
           {product.title}
         </Link>
@@ -160,7 +149,7 @@ const ProductCard = memo(function ProductCard({ product }) {
               {formatUAH(product.price)}
             </span>
             {hasDiscount && (
-              <span className="text-xs sm:text-sm text-gray-400 line-through tabular-nums">
+              <span className="text-xs sm:text-sm text-gray-600 line-through tabular-nums">
                 {formatUAH(product.oldPrice)}
               </span>
             )}
@@ -169,7 +158,7 @@ const ProductCard = memo(function ProductCard({ product }) {
           <button
             type="button"
             onClick={handleAddToCart}
-            className="mt-2 sm:mt-3 w-full h-11 sm:h-12 inline-flex items-center justify-center rounded-xl !bg-accent !text-white font-semibold text-sm shadow-md hover:brightness-95 active:scale-[0.98] transition"
+            className="relative z-10 mt-2 sm:mt-3 w-full h-11 sm:h-12 inline-flex items-center justify-center rounded-xl !bg-accent !text-white font-semibold text-sm shadow-md hover:brightness-95 active:scale-[0.98] transition"
           >
             Додати в кошик
           </button>
