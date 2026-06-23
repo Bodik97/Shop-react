@@ -159,13 +159,13 @@ export default function CatalogPage() {
       </nav>
 
       <div className="mb-6">
-        <h1 className="font-display font-bold text-ink text-3xl sm:text-4xl mb-2">{pageTitle}</h1>
+        <h1 className="font-display font-bold text-ink text-2xl sm:text-3xl lg:text-4xl mb-2 break-words [overflow-wrap:anywhere]">{pageTitle}</h1>
         {categoryDescription && (
-          <div className="max-w-4xl border-l-2 border-accent pl-4 py-1 mt-3">
-            <div className={`text-ink-soft text-sm sm:text-base leading-relaxed transition-all ${isExpanded ? "line-clamp-none" : "line-clamp-4"}`}>
+          <div className="max-w-4xl border-l-2 border-accent pl-3 sm:pl-4 py-1 mt-3">
+            <div className={`text-ink-soft text-sm sm:text-base leading-relaxed transition-all ${isExpanded ? "line-clamp-none" : "line-clamp-3 sm:line-clamp-4"}`}>
               {categoryDescription}
             </div>
-            {categoryDescription.length > 450 && (
+            {categoryDescription.length > 200 && (
               <button onClick={() => setIsExpanded(!isExpanded)} className="text-accent font-semibold text-[12px] uppercase mt-3 flex items-center gap-1 tracking-wide">
                 {isExpanded ? <>Згорнути <ChevronUp className="w-3 h-3"/></> : <>Показати все <ChevronDown className="w-3 h-3"/></>}
               </button>

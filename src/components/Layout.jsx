@@ -19,7 +19,7 @@ export default function Layout({ children }) {
   if (!withAside) return children;
 
   return (
-    <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
       <div className="grid lg:grid-cols-[248px_1fr] gap-5 lg:gap-7 items-start">
         {/* Меню категорій + закріплений міні-кошик тримаються разом (sticky) */}
         <div className="lg:sticky lg:top-[88px] lg:self-start space-y-4">
