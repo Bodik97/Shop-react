@@ -42,10 +42,13 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Гарантія від горизонтального скролу («сайт не їде») на html (кореневий
-     scroll-контейнер) — sticky лишається відносно вʼюпорта. */
+  /* Гарантія від горизонтального «тікання» сайту: overflow-x: clip, а НЕ hidden.
+     hidden змусив би overflow-y обчислитись як auto (CSS-спец) → html став би
+     скрол-контейнером, який на iOS Safari горизонтально «гумиться» (rubber-band).
+     clip — виняток: не створює скрол-контейнер, тож sticky лишається цілим,
+     а на iOS обрізає надійніше за hidden. */
   html {
-    overflow-x: hidden;
+    overflow-x: clip;
   }
 
   body {
