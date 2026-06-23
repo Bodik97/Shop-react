@@ -116,7 +116,11 @@ export default function Header() {
     <>
       {/* Верхня смуга: переваги — бігаючий рядок */}
       <div className="bg-ink text-white text-[13px]">
-        <div className="relative max-w-7xl mx-auto h-9 overflow-hidden flex items-center">
+        {/* transform:translateZ(0)+contain — iOS Safari НЕ обрізає композитний
+            (will-change-transform) marquee лише через overflow-hidden, тож шар
+            «витікає» і робить сторінку горизонтально протягуваною. Власний
+            композитний/клип-контекст на контейнері змушує iOS обрізати його. */}
+        <div className="relative max-w-7xl mx-auto h-9 overflow-hidden flex items-center [transform:translateZ(0)] [contain:paint]">
           <div className="flex shrink-0 items-center whitespace-nowrap will-change-transform animate-marquee">
             {PERKS.map((p) => (
               <span key={p.text} className="flex items-center gap-1.5 text-stone-300 px-6">
