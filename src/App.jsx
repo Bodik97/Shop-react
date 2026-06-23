@@ -1,5 +1,5 @@
 // src/App.jsx
-import { useEffect, useState, lazy, Suspense } from "react";
+import { useEffect, useLayoutEffect, useState, lazy, Suspense } from "react";
 import { Routes, Route, useLocation, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { Loader2, ArrowRight, BadgeCheck, ShieldCheck, Truck, RotateCcw, ScanSearch } from "lucide-react";
@@ -31,6 +31,18 @@ function PageViewTracker() {
   useEffect(() => {
     trackPageView(location.pathname + location.search);
   }, [location.pathname, location.search]);
+  return null;
+}
+
+// Скрол вгору при переході — НА ВСІХ сторінках, КРІМ каталогу/категорій
+// (там пам'ять позиції тримає CatalogPage через useScrollRestoration).
+const SCROLL_MEMORY = [/^\/catalog/, /^\/category\//];
+function ScrollManager() {
+  const { pathname } = useLocation();
+  useLayoutEffect(() => {
+    if (SCROLL_MEMORY.some((re) => re.test(pathname))) return;
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, [pathname]);
   return null;
 }
 
@@ -101,7 +113,7 @@ function AppContent() {
 
   return (
     <>
-      {/* ScrollToTop видалено, щоб не конфліктувати з відновленням скролу */}
+      <ScrollManager />
       <PageViewTracker />
 
       <div className="flex min-h-dvh flex-col">

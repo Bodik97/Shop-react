@@ -9,7 +9,6 @@ import { formatUAH } from "../utils/format";
 import { Loader2, ChevronLeft, ChevronRight, ShieldCheck, RotateCcw, CreditCard, Star, Zap } from "lucide-react";
 
 import { trackViewItem } from "../utils/analytics";
-import { useScrollRestoration } from "../hooks/useScrollRestoration";
 import { sanityFmt } from "../utils/sanityImg";
 import ProductCard from "./ProductCard";
 
@@ -101,12 +100,7 @@ export default function ProductPage() {
       }
     }
     fetchProduct();
-    // Скрол керується через useScrollRestoration нижче:
-    // PUSH (новий товар) → top, POP (back з кошика на той самий товар) → restore.
   }, [id]);
-
-  // Скрол вгору на новий товар або відновлення при back-навігації
-  useScrollRestoration({ ready: !loading && !!product });
 
   // GA4 view_item — після успішного завантаження товару (один раз на товар)
   useEffect(() => {
