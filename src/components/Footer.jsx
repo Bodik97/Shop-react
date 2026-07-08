@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { ShieldCheck, Truck, RotateCcw, ScanSearch, Mail, Clock } from "lucide-react";
-import { FaTelegramPlane, FaViber } from "react-icons/fa";
+import { TelegramIcon, ViberIcon } from "./icons/BrandIcons";
 
 // Канонічний порядок категорій (збігається з Header / CategorySidebar).
 const CATEGORIES = [
@@ -41,14 +41,14 @@ export default function Footer() {
               aria-label="Telegram"
               className="grid place-items-center w-11 h-11 rounded-full bg-white/5 text-white hover:bg-accent active:scale-95 transition"
             >
-              <FaTelegramPlane className="w-5 h-5 translate-x-[-1px]" />
+              <TelegramIcon className="w-5 h-5 translate-x-[-1px]" />
             </a>
             <a
               href={VIBER}
               aria-label="Viber"
               className="grid place-items-center w-11 h-11 rounded-full bg-white/5 text-white hover:bg-accent active:scale-95 transition"
             >
-              <FaViber className="w-5 h-5" />
+              <ViberIcon className="w-5 h-5" />
             </a>
           </div>
         </div>

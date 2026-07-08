@@ -3,23 +3,25 @@ import { useCart } from "../context/CartContext";
 
 import { useState, useRef, useEffect } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
+// lucide з аліасами під старі назви heroicons — щоб не тягнути другу
+// бібліотеку іконок у бандл (решта сайту вже на lucide).
 import {
-  ShoppingCartIcon,
-  XMarkIcon,
-  MagnifyingGlassIcon,
-  PhoneIcon,
-  ShieldCheckIcon,
-  TruckIcon,
-  HomeIcon,
-  Squares2X2Icon,
-  ChevronRightIcon,
-  InformationCircleIcon,
-  ClipboardDocumentListIcon,
-  ArrowPathIcon,
-  CheckBadgeIcon,
-  SparklesIcon,
-  ClockIcon,
-} from "@heroicons/react/24/outline";
+  ShoppingCart as ShoppingCartIcon,
+  X as XMarkIcon,
+  Search as MagnifyingGlassIcon,
+  Phone as PhoneIcon,
+  ShieldCheck as ShieldCheckIcon,
+  Truck as TruckIcon,
+  Home as HomeIcon,
+  LayoutGrid as Squares2X2Icon,
+  ChevronRight as ChevronRightIcon,
+  Info as InformationCircleIcon,
+  ClipboardList as ClipboardDocumentListIcon,
+  RotateCcw as ArrowPathIcon,
+  BadgeCheck as CheckBadgeIcon,
+  Sparkles as SparklesIcon,
+  Clock as ClockIcon,
+} from "lucide-react";
 import logo from "/img/Logo.svg";
 
 
