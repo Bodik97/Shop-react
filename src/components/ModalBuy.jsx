@@ -1,7 +1,7 @@
 // src/components/ModalBuy.jsx
 import { useEffect, useMemo, useRef, useState, useId } from "react";
 import { useNavigate } from "react-router-dom";
-import { trackBeginCheckout, trackPurchase } from "../utils/analytics";
+import { trackBeginCheckout, trackPurchase, getGaClientId } from "../utils/analytics";
 import { formatPhoneUA, isValidPhoneUA, phoneToE164UA } from "../utils/format";
 import { sanityFmt } from "../utils/sanityImg";
 
@@ -197,6 +197,8 @@ export default function ModalBuy({
       phone: phoneToE164UA(phone),
       order: buildOrderPayload(),
       createdAt: new Date().toISOString(),
+      // Для офлайн-конверсій (Measurement Protocol), коли угода закриється по телефону
+      gaClientId: getGaClientId(),
     };
 
     try {

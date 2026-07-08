@@ -51,6 +51,20 @@ export const trackBeginCheckout = (items, total) => {
   });
 };
 
+// GA4 client_id з _ga cookie ("GA1.1.123456789.987654321" → "123456789.987654321").
+// Зберігаємо разом із заявкою — щоб потім можна було надіслати офлайн-конверсію
+// через Measurement Protocol, коли угода закриється по телефону.
+export const getGaClientId = () => {
+  try {
+    const m = document.cookie.match(/(?:^|;\s*)_ga=([^;]+)/);
+    if (!m) return null;
+    const parts = decodeURIComponent(m[1]).split(".");
+    return parts.length >= 4 ? parts.slice(-2).join(".") : null;
+  } catch {
+    return null;
+  }
+};
+
 // Клік по кнопці «Консультація» (відкриття модалки)
 export const trackConsultClick = () => {
   safeGtag("event", "click_consultation", {

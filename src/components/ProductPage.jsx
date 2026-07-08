@@ -6,7 +6,8 @@ import { Helmet } from "react-helmet-async";
 import { client } from "../sanityClient";
 import { useCart } from "../context/CartContext";
 import { formatUAH } from "../utils/format";
-import { Loader2, ChevronLeft, ChevronRight, ShieldCheck, RotateCcw, CreditCard, Star, Zap } from "lucide-react";
+import { dispatchMessage } from "../utils/dispatch";
+import { Loader2, ChevronLeft, ChevronRight, ShieldCheck, RotateCcw, CreditCard, Star, Zap, Clock } from "lucide-react";
 
 import { trackViewItem } from "../utils/analytics";
 import { sanityFmt } from "../utils/sanityImg";
@@ -634,6 +635,12 @@ export default function ProductPage() {
                     Додати в кошик
                   </button>
                 </div>
+
+                {/* Дедлайн відправки — м'який стимул не відкладати замовлення */}
+                <p className="mt-3 flex items-center justify-center gap-1.5 text-[13px] font-semibold text-trust">
+                  <Clock className="w-4 h-4 shrink-0" aria-hidden="true" />
+                  {dispatchMessage()}
+                </p>
               </div>
 
             </aside>

@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useId } from "react";
 import { X, Send, CheckCircle2 } from "lucide-react";
 import { formatPhoneUA, isValidPhoneUA, phoneToE164UA } from "../utils/format";
-import { trackGenerateLead } from "../utils/analytics";
+import { trackGenerateLead, getGaClientId } from "../utils/analytics";
 
 export default function ConsultModal({ open, onClose }) {
   const [name, setName] = useState("");
@@ -54,6 +54,8 @@ export default function ConsultModal({ open, onClose }) {
           type: "consult",
           name: name.trim(),
           phone: phoneToE164UA(phone),
+          // Для офлайн-конверсій, коли консультація закриється продажем
+          gaClientId: getGaClientId(),
         }),
       });
       const data = await r.json().catch(() => ({}));

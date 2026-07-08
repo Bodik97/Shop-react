@@ -103,6 +103,8 @@ const type = (safeStr(b.type || b.form || "", 40) || "").toLowerCase();
   const phoneRaw = safeStr(b.phone || b.customer?.phone, 40);
   const email = safeStr(b.email || b.customer?.email, 120);
   const orderId = safeStr(b.orderId || b.id, 80);
+  // GA4 client_id — для офлайн-конверсії через Measurement Protocol
+  const gaClientId = safeStr(b.gaClientId, 64);
 
   const items = Array.isArray(b.cart)
     ? b.cart
@@ -141,6 +143,64 @@ const type = (safeStr(b.type || b.form || "", 40) || "").toLowerCase();
   if (!validStr(phone, 18) || phone.length < 10) warnings.push("Invalid phone");
   if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) warnings.push("Invalid email");
 
+  // ---------- server-side price check ----------
+  // Перераховуємо суму за цінами з Sanity (клієнту не довіряємо).
+  // НЕ пишемо у warnings — вони деградують відправку до мінімального ліда
+  // без складу замовлення. Розбіжність — окремий блок у повідомленні.
+  // Fail-open: якщо Sanity недоступний, замовлення не блокуємо.
+  const priceAlerts = [];
+  let verifiedTotal = null;
+  if (!isConsult && items.length) {
+    try {
+      const ids = [...new Set(items.map((it) => safeStr(it?.id, 80)).filter(Boolean))];
+      if (ids.length) {
+        const query = `*[_type=="product" && _id in $ids]{_id, price, "addons": addons[]{name, price}}`;
+        const url =
+          "https://xzcx3aim.apicdn.sanity.io/v2024-01-01/data/query/production" +
+          `?query=${encodeURIComponent(query)}&%24ids=${encodeURIComponent(JSON.stringify(ids))}`;
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 3500);
+        const r = await fetch(url, { signal: controller.signal });
+        clearTimeout(timer);
+        const data = await r.json().catch(() => null);
+        const prods = Array.isArray(data?.result) ? data.result : null;
+        if (prods) {
+          const byId = new Map(prods.map((p) => [p._id, p]));
+          let expected = 0;
+          let allKnown = true;
+          for (const it of items) {
+            const qty = Math.max(1, Number(it?.qty) || 1);
+            const prod = byId.get(safeStr(it?.id, 80));
+            if (!prod) {
+              allKnown = false;
+              priceAlerts.push(`⚠️ Товар не знайдено в каталозі: ${esc(safeStr(it?.title || it?.id, 100))}`);
+              continue;
+            }
+            const catalogAddons = Array.isArray(prod.addons) ? prod.addons : [];
+            const claimedAddons = Array.isArray(it?.addons) ? it.addons : [];
+            // Addons рахуємо за цінами каталогу (match по назві); чужі — 0
+            const addonsSum = claimedAddons.reduce((s, a) => {
+              const match = catalogAddons.find((c) => c?.name === a?.name);
+              return s + (Number(match?.price) || 0);
+            }, 0);
+            expected += ((Number(prod.price) || 0) + addonsSum) * qty;
+          }
+          if (allKnown) {
+            verifiedTotal = Math.max(0, expected - discount + shipping);
+            if (Math.abs(verifiedTotal - total) > 1) {
+              priceAlerts.push(
+                `🚨 <b>Сума не збігається з каталогом!</b> Клієнт: ${total} ₴, каталог: <b>${verifiedTotal} ₴</b>`
+              );
+              log("warn", "price-mismatch", { clientTotal: total, verifiedTotal });
+            }
+          }
+        }
+      }
+    } catch (err) {
+      log("warn", "price-check-skip", { err: safeStr(err?.message, 200) });
+    }
+  }
+
   // ---------- message builder ----------
   const fmtUAH = (n) =>
     new Intl.NumberFormat("uk-UA", { maximumFractionDigits: 0 }).format(Number(n) || 0) + " ₴";
@@ -157,6 +217,7 @@ const type = (safeStr(b.type || b.form || "", 40) || "").toLowerCase();
   lines.push(`👤 Ім'я: <b>${esc(name || "—")}</b>`);
   lines.push(`📞 Телефон: <b>${esc(phone || phoneRaw || "—")}</b>`);
   if (email) lines.push(`✉️ Email: <b>${esc(email)}</b>`);
+  if (gaClientId) lines.push(`📊 GA: <code>${esc(gaClientId)}</code>`);
 
   if (!isConsult) {
     if (Array.isArray(items) && items.length) {
@@ -217,6 +278,13 @@ const type = (safeStr(b.type || b.form || "", 40) || "").toLowerCase();
         lines.push(`💚 Ваша економія: <b>${fmtUAH(totalSavings)}</b>`);
       }
       if (total) lines.push(`💰 Разом: <b>${fmtUAH(total)}</b>`);
+
+      // Результат серверної перевірки цін
+      if (priceAlerts.length) {
+        lines.push(...priceAlerts);
+      } else if (verifiedTotal !== null) {
+        lines.push(`✅ Суму перевірено по каталогу`);
+      }
   }
 
   if (warnings.length) {
