@@ -86,9 +86,12 @@ export default function ModalBuy({
 
     const t = setTimeout(() => closeBtnRef.current?.focus(), 0);
     document.documentElement.classList.add("overflow-hidden", "overscroll-none");
+    // Сигнал для MobileCartBar: форма відкрита — сховати закріплений бар кошика
+    window.dispatchEvent(new Event("modalbuy:open"));
     return () => {
       clearTimeout(t);
       document.documentElement.classList.remove("overflow-hidden", "overscroll-none");
+      window.dispatchEvent(new Event("modalbuy:close"));
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, product?.id]);

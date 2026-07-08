@@ -3,7 +3,7 @@
 // «Деталі» розгортає вміст кошика інлайн (+ кнопка «Перейти в кошик»);
 // «Оформити» відкриває форму замовлення (ModalBuy) прямо тут — з будь-якої
 // сторінки. Показується на мобайлі коли в кошику є товари, крім /cart і /thanks.
-import { useState, lazy, Suspense } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { useCart } from "../context/CartContext";
@@ -18,14 +18,27 @@ export default function MobileCartBar() {
   const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  // true, поки будь-де відкрита форма замовлення (ModalBuy) — напр. «Купити зараз»
+  const [buyFormOpen, setBuyFormOpen] = useState(false);
+
+  useEffect(() => {
+    const onOpen = () => setBuyFormOpen(true);
+    const onClose = () => setBuyFormOpen(false);
+    window.addEventListener("modalbuy:open", onOpen);
+    window.addEventListener("modalbuy:close", onClose);
+    return () => {
+      window.removeEventListener("modalbuy:open", onOpen);
+      window.removeEventListener("modalbuy:close", onClose);
+    };
+  }, []);
 
   if (cartCount === 0) return null;
   if (HIDE.some((re) => re.test(pathname))) return null;
 
   return (
     <>
-      {/* Ховаємо бар, поки відкрита форма замовлення (щоб не перекривав модалку) */}
-      {!showForm && (
+      {/* Ховаємо бар, поки відкрита будь-яка форма замовлення (щоб не перекривав модалку) */}
+      {!showForm && !buyFormOpen && (
         <div className="fixed inset-x-0 bottom-0 z-[60] lg:hidden">
           <div className="mx-auto max-w-2xl px-2 pb-[max(env(safe-area-inset-bottom),8px)]">
             <div className="rounded-t-2xl border border-line bg-white shadow-2xl overflow-hidden">
