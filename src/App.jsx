@@ -56,6 +56,7 @@ import CartToast from "./components/CartToast";
 import MobileCartBar from "./components/MobileCartBar";
 import ConsultModal from "./components/ConsultModal";
 import HeroRadar from "./components/HeroRadar";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 // Lazy сторінки
 const CatalogPage      = lazy(() => import("./components/CatalogPage"));
@@ -154,6 +155,7 @@ function AppContent() {
 
       <div className="flex-1">
       <Layout>
+      <ErrorBoundary>
       <Suspense fallback={<RouteFallback />}>
         <Routes>
           <Route
@@ -265,6 +267,7 @@ function AppContent() {
           <Route path="*"                 element={<NotFound />} />
         </Routes>
       </Suspense>
+      </ErrorBoundary>
       </Layout>
       </div>
 

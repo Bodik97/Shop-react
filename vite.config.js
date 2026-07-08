@@ -11,4 +11,7 @@ export default defineConfig({
     cssCodeSplit: true,
     chunkSizeWarningLimit: 800,
   },
+  test: {
+    environment: 'jsdom',
+  },
 })
