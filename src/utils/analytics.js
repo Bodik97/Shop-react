@@ -51,6 +51,21 @@ export const trackBeginCheckout = (items, total) => {
   });
 };
 
+// Клік по кнопці «Консультація» (відкриття модалки)
+export const trackConsultClick = () => {
+  safeGtag("event", "click_consultation", {
+    page_location: typeof window !== "undefined" ? window.location.href : undefined,
+  });
+};
+
+// Успішна відправка заявки з форми консультації — головна лід-конверсія.
+// Стандартна GA4-подія generate_lead; позначити як Key event у GA4.
+export const trackGenerateLead = () => {
+  safeGtag("event", "generate_lead", {
+    form_name: "consultation",
+  });
+};
+
 export const trackPurchase = ({ orderId, items, total, shipping = 0 }) => {
   if (!Array.isArray(items) || items.length === 0) return;
   safeGtag("event", "purchase", {

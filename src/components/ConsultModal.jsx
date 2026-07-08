@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useId } from "react";
 import { X, Send, CheckCircle2 } from "lucide-react";
 import { formatPhoneUA, isValidPhoneUA, phoneToE164UA } from "../utils/format";
+import { trackGenerateLead } from "../utils/analytics";
 
 export default function ConsultModal({ open, onClose }) {
   const [name, setName] = useState("");
@@ -57,6 +58,8 @@ export default function ConsultModal({ open, onClose }) {
       });
       const data = await r.json().catch(() => ({}));
       if (!r.ok || data?.ok !== true) throw new Error("fail");
+      // GA4 generate_lead — лише коли заявка реально відправлена
+      trackGenerateLead();
       setDone(true);
     } catch {
       setErrors((p) => ({

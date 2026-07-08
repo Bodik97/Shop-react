@@ -13,6 +13,7 @@ import {
   Phone,
 } from "lucide-react";
 import ConsultModal from "./ConsultModal";
+import { trackConsultClick } from "../utils/analytics";
 
 export default function Contact() {
   const EMAIL = "support@airsoft.shop";
@@ -48,7 +49,7 @@ export default function Contact() {
 
           <button
             type="button"
-            onClick={() => setConsultOpen(true)}
+            onClick={() => { trackConsultClick(); setConsultOpen(true); }}
             className="mt-6 inline-flex items-center justify-center gap-2 h-12 px-6 rounded-lg bg-accent text-white font-display font-semibold hover:brightness-95 active:scale-95 transition shadow-sm"
           >
             <Phone className="h-5 w-5" />

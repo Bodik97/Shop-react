@@ -9,7 +9,7 @@ import {
   useQuery 
 } from "@tanstack/react-query"; // Додано React Query
 import { client } from "./sanityClient";
-import { trackPageView } from "./utils/analytics";
+import { trackPageView, trackConsultClick } from "./utils/analytics";
 
 import { CartProvider } from "./context/CartContext";
 import { useCart } from "./context/CartContext";
@@ -194,7 +194,7 @@ function AppContent() {
                       <Link to="/catalog" className="inline-flex items-center gap-2 rounded-lg bg-accent px-6 py-3.5 font-display font-semibold text-white hover:brightness-95 active:scale-95 transition">
                         Перейти в каталог <ArrowRight className="w-5 h-5" />
                       </Link>
-                      <button type="button" onClick={() => setConsultOpen(true)} className="inline-flex items-center rounded-lg border-2 border-ink px-6 py-3.5 font-display font-semibold text-ink hover:bg-ink hover:text-white transition">
+                      <button type="button" onClick={() => { trackConsultClick(); setConsultOpen(true); }} className="inline-flex items-center rounded-lg border-2 border-ink px-6 py-3.5 font-display font-semibold text-ink hover:bg-ink hover:text-white transition">
                         Консультація
                       </button>
                     </div>
