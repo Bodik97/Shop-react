@@ -4,6 +4,7 @@
 // блокує перехід на інші.
 import { Component } from "react";
 import { useLocation } from "react-router-dom";
+import { reportError } from "../utils/sentry";
 
 class Boundary extends Component {
   state = { hasError: false };
@@ -14,6 +15,7 @@ class Boundary extends Component {
 
   componentDidCatch(error, info) {
     console.error("[ErrorBoundary]", error, info?.componentStack);
+    reportError(error, { componentStack: info?.componentStack });
   }
 
   componentDidUpdate(prevProps) {
