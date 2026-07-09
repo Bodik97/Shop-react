@@ -172,6 +172,19 @@ async function main() {
         )
         .catch(() => {});
       await new Promise((r) => setTimeout(r, 300)); // дати Helmet домалювати <head>
+      // Повертаємо шрифтовий link у неблокуючий стан: у живому DOM трюк
+      // preload→stylesheet уже спрацював, і без відкату він серіалізується
+      // як render-blocking rel="stylesheet" на кожній пререндереній сторінці
+      // (це коштувало ~1с FCP/LCP на мобільному).
+      await page.evaluate(() => {
+        document
+          .querySelectorAll('link[rel="stylesheet"][href*="fonts.googleapis.com"]')
+          .forEach((l) => {
+            l.setAttribute("rel", "preload");
+            l.setAttribute("as", "style");
+            l.setAttribute("onload", "this.onload=null;this.rel='stylesheet'");
+          });
+      });
       const html = await page.content();
       await page.close();
       await savePrerendered(route, html);
