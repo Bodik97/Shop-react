@@ -68,6 +68,18 @@
     text-decoration: none;
   }
 
+  /* iOS зумить сторінку при фокусі на полі з font-size < 16px, і після
+     закриття клавіатури зум ЛИШАЄТЬСЯ → зʼявляється горизонтальний скрол
+     (баг «нижнього скролу» після форми/пошуку). 16px прибирає сам тригер.
+     !important — бо утиліти (text-sm, text-[15px]) інакше переважать. */
+  @media (max-width: 767px) {
+    input:not([type="checkbox"]):not([type="radio"]),
+    select,
+    textarea {
+      font-size: 16px !important;
+    }
+  }
+
   /* Кнопки — скидаємо браузерні дефолти щоб Tailwind мав повний контроль */
   button {
     border: 0;
